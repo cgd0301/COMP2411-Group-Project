@@ -2,7 +2,7 @@
 
 ## Subscription:
 
-- Period: seasonly subscription (No automatically subscribing, manual subscribe is compulsory)
+- Period: seasonly subscription(12 week, spring season: from 2026-3-2T00:00:00 to 2026-5-24T00:00:00; summer season: from 2026-5-25T00:00:00 to 2026-8-16T00:00:00; autumn season: from 2026-8-17T00:00:00 to 2026-11-8T00:00:00;)(No automatically subscribing, manual subscribe is compulsory)
 - Season to subscribe: Every year has three seasons to subscribe, including spring, summer and autumn.
 - Subscription time: if a customer starts subscription, then the subscription length starts from current time to the end of this season. (Price of subscription will adjust according to remian seasonal delivery percentage)
 - Subscription window period: customer could start subscribe for the current season immediatly, or book the subscription of next season less than one week before the start of next season.
