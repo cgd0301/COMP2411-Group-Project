@@ -1,0 +1,1 @@
+1. Transfer the detailed rules into business rules under manual supervision
