@@ -7,23 +7,24 @@
    - There are 2 plan types for a seasonal subscription, including farmers' choice subscription and customizable subscription.
    - There are 2 frequency types for each types of subscription: weekly (once a week), biweekly (once two week; For each season, the first Delivery Planning Date is an actual subscription delivery date, the second is not, and the pattern continues alternately thereafter.) (Two frequency shares the same planning delivery days, however, biweekly frequency will not have actual delivery on some of the planning deivery days)
    - The frequency and plan of subscription are immutable once the subscription is submitted
-   - There are is a season attribute for a subscription: can be spring, summer and autumn (exclusive)
+   - Each subscription is for exactly one season: the spring, summer or autumn (exclusive) of one year; a season is identified by its name and year
    - There are 4 status of subscription of each season: planned, active, finished and cancelled
-      1. planned: the subscription season does not start, the customer has subscribed for this season and not choose to skip
+      1. planned: the subscription season does not start, the customer has subscribed for this season and has not cancelled it
       2. active: the season for this subscription has started, customer does not cancel the subscription
       3. finished: the subscription season ends, the customer does not cancel the subscription
       4. cancelled: the subscription has been cancelled by customer
 
 2. Customer
    - A customer could have multiple subscription. However, they can have at most one subscription for a specific season.
+   - Each customer has a unique email.
 
 
 3. Delivery
    - Each delivery has 1 statuse, can be success, failed, skipped, planned, cancelled (cancelled would only happen if the customer cancells the subscription)
-   - At the beginning of this season, status of every planned delivery for each subscriber of this season will be set to planned
-   - Each delivery has exactly one corresponding delivery day
+   - On the first day of the subscription range, every subscription of this season that is not cancelled gets all its deliveries with status planned (weekly: all 12 planning days; biweekly: the 1st, 3rd, 5th, 7th, 9th and 11th); before that day a subscription has no delivery
+   - Each delivery has exactly one corresponding delivery day; a delivery is identified by its subscription and its week number (1 to 12), and its delivery day = first planning day + 7 × (week number − 1)
    - Monday is set to be the delivery planning day for each week. (Delivery can only happen on Monday, whether each customer has delivery on that day depends on their subscription status, subscription plan and frequency type, whether they choose to skip that day; A Delivery Planning Day does not imply that every customer has a delivery scheduled on that date.)
-   - If customers do not choose to skip the delivery and their subscription status is active for this season, the status of the delivery will be kept as planned until the delivery day, If subscription status is cancelled for this season, the status of all the planned delivery will be set to cancelled
+   - If customers do not choose to skip the delivery and their subscription status is active for this season, the status of the delivery will be kept as planned until the delivery day, If subscription status is cancelled for this season, the status of every planned delivery whose delivery day is after the cancellation date will be set to cancelled; a planned delivery on or before the cancellation date keeps waiting for its result
    - The day after the delivery day, for delivery (whose status is planned) planned to happen on that delivery day and not skipped by customers, the status will be changed to either success or failed from planned
 
    - Skipping delivery
@@ -48,14 +49,17 @@
    - for each seasonal subcription, the owner of the subscription enjoys 2 times of refundable skipping during that season
    - if the refundable skipping time is 0, the delivery can still be skipped, but there customer will not be refunded the allocated subscription cost per delivery for specified plan and the fee of add-on purchase
    - refunding fee for a skipping delivery = allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + fee of add-on purchase (if a customer does not require an add-on purchase for that delivery, the fee of add-on purchase is 0)
-   - refunding fee for subscription during its season: min(left refundable skipping time, number of delivery in "planned" status) * allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + add-on fee for delivery in "planned status"
+   - refunding fee for a failed delivery = allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + fee of add-on purchase for that delivery; it is refunded on the day after the delivery day, when the delivery is changed to failed, and it does not use a refundable skipping time
+   - refunding fee for subscription during its season: min(left refundable skipping time, number of delivery in "planned" status whose delivery day is after the cancellation date) * allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + add-on fee for those deliveries
+   - Each refund record belongs to exactly one subscription and has a type: skip, failed or cancellation. A skip or failed refund refers to exactly one delivery of the same subscription (a delivery has at most one refund); a cancellation refund refers to no delivery
 
 6. Plan
    - Farmer's choice plan: 6 types of products (can not choose for types of products, and types of products will not change during the whole season)
-   - Customizable choice plan: 8 types selected from total of 10 types of products when subscribing, (types are chosen and subscription is submitted, the types of products is immutable since the season starts)
+   - Customizable choice plan: 8 types selected from total of 10 types of products of its own season when subscribing, (types are chosen and subscription is submitted, the types of products is immutable since the subscription range starts)
 
 
 7. Agriculture product
+   - Each product belongs to exactly one season; each season has exactly 10 products, 6 of which are flagged as farmers' choice
    - Spring
    Farmers' Choice: Spinach 32 HKD/kg, Lettuce 22 HKD/kg, Pak Choi 20 HKD/kg, Chinese Kale 28 HKD/kg, Choy Sum 35 HKD/kg, Broccoli 30 HKD/kg  
    Customizable: Spinach 32 HKD/kg, Lettuce 22 HKD/kg, Pak Choi 20 HKD/kg, Chinese Kale 28 HKD/kg, Choy Sum 35 HKD/kg, Broccoli 30 HKD/kg, Carrots 15 HKD/kg, Snow Peas 48 HKD/kg, Asparagus 58 HKD/kg, Strawberries 85 HKD/kg

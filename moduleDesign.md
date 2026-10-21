@@ -7,7 +7,8 @@
 - Subscription window: the window for each season is the season before it (winter for spring, spring for summer, summer for autumn). Autumn does not open a winter subscription.
 - Active period: the subscription is active from the first day of that range through the last day (both included). There is no mid-season join, and the price is not prorated.
 - Skipping: each subscription has 2 refundable skips. A further skip is still allowed, but it refunds neither the allocated delivery cost nor the add-on fee. A refundable skip refunds the allocated cost per delivery (20% off for a renewal) plus that delivery's add-on fee.
-- Cancellation: before the season begins, the subscription fee already charged is refunded in full. During the season, the refund is min(remaining refundable skips, deliveries still planned) times the subscription's allocated cost per delivery (20% off for a renewal), plus add-on fees already on those planned deliveries. The refund is counted first, refundable skips are then set to zero, and planned deliveries are then set to cancelled. After the season ends, the subscription cannot be cancelled.
+- Failed delivery: a delivery changed to failed on the day after its delivery day refunds that delivery's price at once, which is the allocated cost per delivery (20% off for a renewal) plus its add-on fee. It does not use a refundable skip.
+- Cancellation: before the season begins, the subscription fee already charged is refunded in full. During the season, the refund is min(remaining refundable skips, deliveries still planned whose delivery day is after the cancellation date) times the subscription's allocated cost per delivery (20% off for a renewal), plus add-on fees already on those deliveries. The refund is counted first, refundable skips are then set to zero, and those deliveries are then set to cancelled; a planned delivery on or before the cancellation date keeps waiting for its result. After the season ends, the subscription cannot be cancelled.
 
 ## Plan differences
 
@@ -47,7 +48,7 @@
     - At the beginning of this season, status of every planned delivery for each subscriber of this season will be set to planned
     - Each delivery has exactly one corresponding delivery day
     - Monday is set to be the delivery planning day for each week. (Delivery can only happen on Monday, whether each customer has delivery on that day depends on their subscription status, subscription plan and frequency type, whether they choose to skip that day; A Delivery Planning Day does not imply that every customer has a delivery scheduled on that date.)
-    - If customers do not choose to skip the delivery and their subscription status is active for this season, the status of the delivery will be kept as planned until the delivery day, If subscription status is cancelled for this season, the status of all the planned delivery will be set to cancelled
+    - If customers do not choose to skip the delivery and their subscription status is active for this season, the status of the delivery will be kept as planned until the delivery day, If subscription status is cancelled for this season, the status of every planned delivery whose delivery day is after the cancellation date will be set to cancelled; a planned delivery on or before the cancellation date keeps waiting for its result
     - The day after the delivery day, for delivery (whose status is planned) planned to happen on that delivery day and not skipped by customers, the status will be changed to either success or failed from planned
 
     - Skipping delivery
@@ -72,7 +73,8 @@
     - for each seasonal subcription, the owner of the subscription enjoys 2 times of refundable skipping during that season
     - if the refundable skipping time is 0, the delivery can still be skipped, but there customer will not be refunded the allocated subscription cost per delivery for specified plan and the fee of add-on purchase
     - refunding fee for a skipping delivery = allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + fee of add-on purchase (if a customer does not require an add-on purchase for that delivery, the fee of add-on purchase is 0)
-    - refunding fee for subscription during its season: min(left refundable skipping time, number of delivery in "planned" status) * allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + add-on fee for delivery in "planned status"
+    - refunding fee for a failed delivery = allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + fee of add-on purchase for that delivery; it is refunded on the day after the delivery day, when the delivery is changed to failed, and it does not use a refundable skipping time
+    - refunding fee for subscription during its season: min(left refundable skipping time, number of delivery in "planned" status whose delivery day is after the cancellation date) * allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + add-on fee for those deliveries
 
     6. Plan
     - Farmer's choice plan: 6 types of products (can not choose for types of products, and types of products will not change during the whole season)
