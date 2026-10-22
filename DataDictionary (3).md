@@ -38,7 +38,6 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | submission_date | DATE | — | NO | — | — | Enrolment/renewal date |
 | cancellation_date | DATE | — | YES | NULL | — | NULL = not cancelled (legitimate missing value) |
 | remaining_refundable_skip | TINYINT UNSIGNED | — | NO | 2 | CHECK (<= 2) | Refundable skip quota, consumed by skip refunds |
-| renewed_from_sub_id | INT UNSIGNED | FK→subscription; UNIQUE | YES | NULL | — | Previous subscription for a renewal (recursive 1:1); NULL = first-time. NOTE: CHECK (<> subscription_id) impossible — AUTO_INCREMENT column cannot be referenced; enforced by in-transaction check |
 
 **Derived (not stored):** fee() = delivery count x allocated_cost; see Conventions above.
 
@@ -51,6 +50,8 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | refund_id | INT UNSIGNED | FK→refund; UNIQUE | YES | NULL | — | 1:1 compensate (partial both sides); NULL = no refund for this delivery. Same-subscription rule is cross-table -> in-transaction check |
 
 **Derived (not stored):** delivery_date() = season start + (week_no-1) x 7 (x14 for biweekly); add_on_fee() = SUM(weight x price_per_kg); price() is computed on the fly. See Conventions above.
+
+**ER cardinality (refunded via):** a subscription has **at most 12 refunds** (0..12 on the ER diagram); this is a cross-row rule and cannot be a CHECK -> in-transaction check.
 
 ## 5. refund
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |
