@@ -31,7 +31,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | subscription_id | INT UNSIGNED AUTO_INCREMENT | PK | NO | — | — | Surrogate identifier |
 | customer_id | INT UNSIGNED | FK→customer; part of CK | NO | — | UNIQUE(customer_id, season_id) | Holder (BR1: at most 1 per customer per season; cancelled still occupies the slot) |
 | season_id | SMALLINT UNSIGNED | FK→season; part of CK | NO | — | — | Season subscribed |
-| status | VARCHAR(10) | — | NO | 'PENDING' | CHECK IN ('PENDING','ACTIVE','FINISHED','CANCELLED') | Lifecycle state |
+| status | VARCHAR(10) | — | NO | 'planned' | CHECK IN ('planned','active','finished','cancelled') | Lifecycle state |
 | plan_type | VARCHAR(20) | — | NO | — | CHECK IN ('farmer''s choice','customizable') | Chosen at enrolment, immutable afterwards |
 | frequency | VARCHAR(10) | — | NO | — | CHECK IN ('weekly','biweekly') | Chosen at enrolment, immutable afterwards |
 | allocated_cost | DECIMAL(8,2) | — | NO | — | CHECK (>= 0) | Single-delivery price snapshot incl. 20% renewal discount (stored to lock price) |
