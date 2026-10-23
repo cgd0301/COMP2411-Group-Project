@@ -23,7 +23,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | season_id | SMALLINT UNSIGNED AUTO_INCREMENT | PK | NO | — | — | Surrogate identifier |
 | season_name | VARCHAR(10) | part of CK1 | NO | — | IN ('spring','summer','autumn') | Season within a year |
 | year | SMALLINT UNSIGNED | part of CK1 | NO | — | — | Calendar year |
-| first_planning_day | DATE | UNIQUE (CK2) | NO | — | — | Anchor date; start_day() = +6, end_day() = +84 (derived, not stored) |
+| first_planning_day | DATE | UNIQUE (CK2) | NO | — | — | Anchor date; start_day() = -6, end_day() = +77 (derived, not stored) |
 
 ## 3. subscription
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |

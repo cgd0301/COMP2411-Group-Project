@@ -28,7 +28,7 @@
    - The day after the delivery day, for delivery (whose status is planned) planned to happen on that delivery day and not skipped by customers, the status will be changed to either success or failed from planned
 
    - Skipping delivery
-      1. For a delivery, from the next day of previous delivery day of planned delivery day to yesterday of the planned delivery day, customers can choose to skip the delivery. (refundability is defined in the refundability rules)
+      1. For a delivery, from the next day of previous planned delivery day to yesterday of the planned delivery day, customers can choose to skip the delivery. (refundability is defined in the refundability rules)
       2. Since there is not previous delivery day of the first delivery day of a season, for that day, customer could make a skip for the delivery on that day from 6 days ago to yesterday of that day
       3. A delivery whose status has become success/failed/cancelled can not be skipped
       4. Once skipped, the status of the delivery will be changed to skipped, and can not be modified to success/failed/planned later
@@ -46,12 +46,13 @@
    - Cancellation of the subscription should counted refunding first and updatethe refundable skipping to zero then update the delivery status
 
 5. Refundability
-   - for each seasonal subcription, the owner of the subscription enjoys 2 times of refundable skipping during that season
+   - for each seasonal subcription, the owner of the subscription enjoys 2 times of refundable skipping during that season (every skipping will consumer a refundable skipping time, which means minus 1 (the refundable skipping time should be >= 0))
    - if the refundable skipping time is 0, the delivery can still be skipped, but there customer will not be refunded the allocated subscription cost per delivery for specified plan and the fee of add-on purchase
-   - refunding fee for a skipping delivery = allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + fee of add-on purchase (if a customer does not require an add-on purchase for that delivery, the fee of add-on purchase is 0)
+   - refunding fee for a skipping delivery = allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + fee of add-on purchase for that delivery (if a customer does not require an add-on purchase for that delivery, the fee of add-on purchase is 0; Refunding fee will be issued on the same day when the skipping requirement is submitted)
    - refunding fee for a failed delivery = allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + fee of add-on purchase for that delivery; it is refunded on the day after the delivery day, when the delivery is changed to failed, and it does not use a refundable skipping time
    - refunding fee for subscription during its season: min(left refundable skipping time, number of delivery in "planned" status whose delivery day is after the cancellation date) * allocated subscription cost per delivery for specified plan (20 percent off discount for a renewal subscription) + add-on fee for those deliveries
    - Each refund record belongs to exactly one subscription and has a type: skip, failed or cancellation. A skip or failed refund refers to exactly one delivery of the same subscription (a delivery has at most one refund); a cancellation refund refers to no delivery
+
 
 6. Plan
    - Farmer's choice plan: 6 types of products (can not choose for types of products, and types of products will not change during the whole season)
