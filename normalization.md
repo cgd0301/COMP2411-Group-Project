@@ -30,6 +30,7 @@
   - refund_id -> amount
   - refund_id -> type
   - refund_id -> refund_date
+  - refund_id -> week_no
   - subscription_id, type, refund_date -> refund_id
 
 2. Candidate Key
@@ -112,12 +113,10 @@
 # delivery (weak entity)
 
 1. Functional Dependency
-  - subscription_id, week_no -> status, refund_id (primary key)
-  - refund_id -> subscription_id, week_no (compensate is 1:1; a refund is linked to at most one delivery, so the unique refund_id determines the delivery it belongs to; status follows)
+  - subscription_id, week_no -> status (primary key)
 
 2. Candidate Key
   - subscription_id, week_no ({subscription_id, week_no}+ = all attributes; chosen as primary key)
-  (refund_id can be null, which therefore is not the candidate key)
 
 3. Normalization
   - Lossless: No decomposition needed, not applicable

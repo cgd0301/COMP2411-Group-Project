@@ -47,7 +47,6 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | subscription_id | INT UNSIGNED | PK part 1; FK→subscription | NO | — | — | Owner entity PK (identifying relationship) |
 | week_no | TINYINT UNSIGNED | PK part 2 (partial key) | NO | — | CHECK (BETWEEN 1 AND 12) | Week within the season |
 | status | VARCHAR(10) | — | NO | 'planned' | CHECK IN ('planned','skipped','success','failed','cancelled') | Delivery state machine; transitions guarded by UPDATE in transactions |
-| refund_id | INT UNSIGNED | FK→refund; UNIQUE | YES | NULL | — | 1:1 compensate (partial both sides); NULL = no refund for this delivery. Same-subscription rule is cross-table -> in-transaction check |
 
 **Derived (not stored):** delivery_date() = season start + (week_no-1) x 7 (x14 for biweekly); add_on_fee() = SUM(weight x price_per_kg); price() is computed on the fly. See Conventions above.
 
@@ -61,6 +60,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | amount | DECIMAL(8,2) | — | NO | — | CHECK (> 0) | Computed at discounted allocated cost (anti-arbitrage) |
 | type | VARCHAR(12) | — | NO | — | CHECK IN ('skip','failed','cancellation') | 'skip' consumes quota; 'failed' does not; 'cancellation' ties to no delivery |
 | refund_date | DATETIME | — | NO | — | — | When the refund was issued |
+| week_no | TINYINT UNSIGNED | Make up the composite foreign key with subscription_id referencing delivery(subscription_id, week_no); UNIQUE(subscription_id, week_no) | YES | NULL | CHECK: If type is skip or failed, it should be non null; if type is cancellation, it must be null | Null indicates cancellation, which does not refer to any delivery; When it is non null, the composite foreign key gurantees the refund and delivery belong to the same subscription. |
 
 ## 6. product
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |

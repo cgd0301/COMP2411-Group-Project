@@ -36,8 +36,7 @@ products; add-on purchases are limited to the plan's products (farmer's choice:
 6 fixed types; customizable: 8 types chosen from the 10 at subscription time).
 Cross-entity refund integrity: a refund always belongs to a single subscription;
 a skip or failed refund is tied to exactly one delivery of that same
-subscription; a cancellation refund is tied to no delivery. These cross-entity
-rules, and the timing rules, are enforced by explicit in-transaction SQL checks
+subscription; a cancellation refund is tied to no delivery. The timing rules are enforced by explicit in-transaction SQL checks The association between refund and delivery is enforced through declarative constraints. 
 (MySQL CHECK constraints are row-level only), not by declarative constraints.
 
 Management questions:
