@@ -19,7 +19,7 @@
 3. Normalization
   - Lossless: No decomposition needed, not applicable
   - Preserving: No decomposition needed, not applicable
-  - BCNF/3NF: Satisfies 3NF but not BCNF, because the functional dependency of submission_date -> season_id is not a trivial dependency and submission_date is not a super key. However, {season_id} - {submission_date} = {season_id} belongs to the candidate keys, which suggests that the table satisfies the 3NF. The reason why we choose to keep 3NF rather than further decompose it to BCNF is the further decomposition will sacrifice the dependency preserving for checking whether a customer has only one subscription in the same season.
+  - BCNF/3NF: Satisfies 3NF but not BCNF, because the functional dependency of submission_date -> season_id is not a trivial dependency and submission_date is not a super key. However, {season_id} - {submission_date} = {season_id} belongs to the candidate keys, which suggests that the table satisfies the 3NF. The reason why we choose to keep 3NF rather than further decompose it to BCNF is the further decomposition will sacrifice the dependency preserving. There will be two tables, R1{submission_date, season_id} and R2{R - season_id}, after BCNF decomposition. Though the decomposition is lossless due to the fact that submission_date is the super key of R1, it will discard (customer_id, season_id) -> subscription_id. Therefore, we choose to keep as 3NF. 
 
 
 
@@ -107,7 +107,7 @@
 3. Normalization
   - Lossless: No decomposition needed, not applicable
   - Preserving: No decomposition needed, not applicable
-  - BCNF/3NF: The sole determinant, product_id, is a superkey. product is in BCNF.
+  - BCNF/3NF: The product_id is a super key of product. Since it is assumed that there will not be products in a identical name in a season, the season_id and name are also the super key of product. Therefore, product satisfies BCNF.
 
 
 # delivery (weak entity)
