@@ -1,4 +1,4 @@
-G7 / D17-W04
+G085 / D17-W04
 
 Organization name and type:
 Farmlander Farm, a local farm operating a Community Supported Agriculture (CSA)
@@ -12,8 +12,8 @@ types at subscription time, skip deliveries, and place add-on orders.
 
 Business objects and core events:
 A seasonal CSA subscription (spring / summer / autumn; each season has a fixed
-12-week delivery window, D+7 to D+84). Core events: enrolment for the next
-season's vegetable box; batch generation of deliveries on each delivery day;
+12-week delivery window, D-6 to D+77 D is defined as the first planning seasonal delivery day). Core events: enrolment for the next
+season's vegetable box; Generation of all delivery records on the first day of a season (subscription range);
 recording each delivery's outcome; three kinds of refund, all computed at the
 subscription's (possibly discounted) allocated cost per delivery — (a) a
 refundable skip, at most 2 per subscription, further skips allowed but without
@@ -37,16 +37,17 @@ products; add-on purchases are limited to the plan's products (farmer's choice:
 Cross-entity refund integrity: a refund always belongs to a single subscription;
 a skip or failed refund is tied to exactly one delivery of that same
 subscription; a cancellation refund is tied to no delivery. The timing rules are enforced by explicit in-transaction SQL checks The association between refund and delivery is enforced through declarative constraints. 
-(MySQL CHECK constraints are row-level only), not by declarative constraints.
+
 
 Management questions:
-Q1: Per plan type, how many subscriptions were sold last season, what is the
+Q1: Per plan type, how many subscriptions were sold in Spring 2026, what is the
 net income after refunds, and what is the total refund amount?
 Q2: Per plan type, which products generate the largest add-on income from
 successful deliveries?
 Q3: Which delivery weeks have the highest skip rates and failure rates?
 Q4: Which products are most frequently chosen by customers subscribing to the
 customizable plan?
+Q5: For subscriptions in the Spring 2026 season that were not cancelled, what proportion of each plan type's subscribers renewed into Summer 2026, and which plan type had a renewal rate below 60%?
 
 Excluded processes:
 No delivery assignment / routing; no real payment processing (only fee and

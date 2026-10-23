@@ -17,8 +17,8 @@
   - customer_id, submission_date
 
 3. Normalization
-  - Lossless: No decomposition needed, not applicable
-  - Preserving: No decomposition needed, not applicable
+  - Lossless: The discarded decomposition is lossless
+  - Preserving: The discarded decomposition is not dependency preserving
   - BCNF/3NF: Satisfies 3NF but not BCNF, because the functional dependency of submission_date -> season_id is not a trivial dependency and submission_date is not a super key. However, {season_id} - {submission_date} = {season_id} belongs to the candidate keys, which suggests that the table satisfies the 3NF. The reason why we choose to keep 3NF rather than further decompose it to BCNF is the further decomposition will sacrifice the dependency preserving. There will be two tables, R1{submission_date, season_id} and R2{R - season_id}, after BCNF decomposition. Though the decomposition is lossless due to the fact that submission_date is the super key of R1, it will discard (customer_id, season_id) -> subscription_id. Therefore, we choose to keep as 3NF. 
 
 
@@ -31,6 +31,7 @@
   - refund_id -> type
   - refund_id -> refund_date
   - refund_id -> week_no
+  - subscription_id, week_no -> refund_id
   - subscription_id, type, refund_date -> refund_id
 
 2. Candidate Key
@@ -40,13 +41,13 @@
 3. Normalization
   - Lossless: No decomposition needed, not applicable
   - Preserving: No decomposition needed, not applicable
-  - BCNF/3NF: Satisfies BCNF (and therefore 3NF), because the left-hand side of every non-trivial functional dependency is a super key: refund_id is a candidate key, and {subscription_id, type, refund_date} is also a candidate key. The second candidate key holds because the skipping windows of different deliveries do not overlap and a delivery can be skipped only once (at most one skip refund per day), a failed refund is issued on the day after its unique delivery day (at most one failed refund per day), and a subscription can be cancelled at most once (at most one cancellation refund).
+  - BCNF/3NF: Satisfies BCNF (and therefore 3NF), because the left-hand side of every non-trivial functional dependency is a super key: refund_id is a candidate key, and {subscription_id, type, refund_date} is also a candidate key. The second candidate key holds because the skipping windows of different deliveries do not overlap and a delivery can be skipped only once (at most one skip refund per day), a failed refund is issued on the day after its unique delivery day (at most one failed refund per day), and a subscription can be cancelled at most once (at most one cancellation refund). In the dependency subscription_id, week_no -> refund_id , the subscription and week_no are the super key of  the refund, which can not be primary key because the week_no can be null.
 
 
 # chosen_products
 
 1. Functional Dependency
-  - null
+  - only trivial dependency
 
 2. Candidate Key
   - subscription_id, product_id
@@ -121,7 +122,7 @@
 3. Normalization
   - Lossless: No decomposition needed, not applicable
   - Preserving: No decomposition needed, not applicable
-  - BCNF/3NF: No partial dependency: neither subscription_id alone nor week_no alone determines anything (one subscription has many weeks; many subscriptions share the same week number).
+  - BCNF/3NF: subscription_id and week_no forms the primary key of delivery. Therefore, the delivery satisfies BCNF.
 
 
 # add_on (M:N junction, relationship attribute weight)
