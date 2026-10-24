@@ -1,0 +1,1730 @@
+% =====================================================================
+%  COMP2411 Stage 1 Proposal -- LaTeX 模板（单文件版，可直接用于 Overleaf）
+% =====================================================================
+%
+%  本文件从上到下分为 6 个区（在 Overleaf 里按 Ctrl+F 搜 "区 2" 等可直接跳转）：
+%    区 0  新手指南（就是你现在读的注释，不会出现在 PDF 里）
+%    区 1  基础宏包（不用改；只有正文字号可以改）
+%    区 2  填写区：标题、Group ID、Canvas 组名、成员姓名和学号
+%    区 3  样式调节区：字体、页边距、行距、颜色、表格字号
+%    区 4  宏包与辅助命令（不用改）
+%    区 5  正文：封面、目录、Section 1-8、References、Appendix
+%
+%  正文里每一节开头都有一段中文注释，写明：指南要求、评分、建议篇幅、草稿来源。
+%  灰色方括号里的英文 [ ... ] 是写作提示（\placeholder），写完就把它整个删掉。
+%
+% =====================================================================
+%  区 0  新手指南
+% =====================================================================
+%
+% ---------------------------------------------------------------------
+%  0.1 第一次在 Overleaf 上使用
+% ---------------------------------------------------------------------
+%  1. 登录 https://www.overleaf.com -> 左上角 "New Project" -> "Blank Project"，
+%     项目名随意（例如 COMP2411_Stage1_Proposal）。
+%  2. 左侧文件列表里已有一个 main.tex：点开，Ctrl+A 全选删除，再粘贴本文件全部内容。
+%     （也可以用左上角的 Upload 图标直接上传本文件，覆盖原来的 main.tex。）
+%  3. 点上方绿色的 "Recompile"（快捷键 Ctrl+S 或 Ctrl+Enter），右侧出现 PDF 预览。
+%     建议每改一小段就编译一次，出错时很容易定位。
+%  4. 编译器保持 Overleaf 默认的 pdfLaTeX 即可（左上角 Menu -> Compiler）。
+%  5. 编辑器请用 "Code Editor"（左上方切换）；"Visual Editor" 对本模板的表格支持有限。
+%  6. 两人协作：右上角 "Share" -> 输入队友邮箱 -> "Can edit"。
+%     两人可以同时编辑，但最好分工改不同的 Section。
+%  7. 改坏了想回退：右上角 "History" 可以查看并恢复任意历史版本。
+%  8. 在右侧 PDF 上双击某处，左侧代码会跳到对应的位置，找代码很方便。
+%  9. 下载 PDF：PDF 预览上方的下载图标。提交前把文件名改成 proposal.pdf。
+%
+% ---------------------------------------------------------------------
+%  0.2 从 draw.io 导出图片并上传
+% ---------------------------------------------------------------------
+%  1. 用 draw.io 打开 stage1/diagrams/ER_diagram(latest).drawio。
+%  2. File -> Export as -> PDF...，勾选 "Crop"（裁掉四周空白），导出。
+%  3. 把导出的文件改名为 er_diagram.pdf
+%     （文件名只用小写字母、数字和下划线，不要有空格和括号）。
+%  4. 关系模式图同理：Relational_schema(latest).drawio -> relational_schema.pdf。
+%  5. 在 Overleaf 左上角点 Upload 图标，上传这两个 PDF，放在和 main.tex 同一层。
+%  6. 重新编译，灰色占位框会自动换成你的图。PDF 是矢量图，放大不会模糊。
+%     如果一定要用 PNG：导出时把 Zoom 设为 200% 以上，并把正文里 \ERfigure{...}
+%     中的文件名改成 .png 结尾（扩展名必须写上）。
+%
+% ---------------------------------------------------------------------
+%  0.3 LaTeX 最少需要知道的规则
+% ---------------------------------------------------------------------
+%  * % 后面的内容是注释，不会出现在 PDF 里。选中多行按 Ctrl+/ 可一次加上或去掉 %。
+%  * 分段：两段之间空一行。只换行不空行，LaTeX 会把它们当成同一段。
+%  * 段内强制换行：\newline。表格单元格里换行也用 \newline，不要在单元格里空行。
+%  * 加粗 \textbf{text}；斜体 \emph{text}；等宽字体 \texttt{text}。
+%  * 命令的参数写在花括号 { } 里，花括号必须成对出现
+%    （光标放在一个括号旁边，Overleaf 会高亮与它配对的另一个括号）。
+%  * 列表（正文中使用）：
+%        \begin{itemize}
+%          \item First point.
+%          \item Second point.
+%        \end{itemize}
+%    编号列表把 itemize 换成 enumerate。每个 \begin{...} 都必须有对应的 \end{...}。
+%  * 表格的一行：单元格之间用 & 分隔，行末写 \\ 。例如 3 列表格的一行：
+%        Rule & Type & Test \\
+%    每行 & 的个数 = 列数 - 1。要加一行：复制一整行再改内容。
+%  * 交叉引用：图表或标题后面写 \label{name}，正文用 \ref{name} 得到编号，
+%    例如 Table~\ref{tab:dd-customer}、Section~\ref{sec:er}。（~ 是不断行的空格）
+%  * 英文双引号写成 ``planned''（两个反引号 + 两个单引号）；单引号 'planned' 直接写。
+%  * 改完要重新编译，以右侧 PDF 为准。
+%
+% ---------------------------------------------------------------------
+%  0.4 特殊字符（最常见的报错来源！）
+% ---------------------------------------------------------------------
+%  下面这些字符在 LaTeX 里有特殊含义，要在正文里打出它们本身，必须这样写：
+%     想打出    要写成              说明
+%       %       \%                  例如 20\% off。直接写 % 会把这一行后半截变成注释！
+%       _       \_                  表名/列名推荐用 \col{customer_id}（见 0.5）
+%       &       \&                  & 是表格的分列符
+%       #       \#
+%       $       \$                  $ 用来进入数学模式
+%       { }     \{  \}
+%       ~       \textasciitilde
+%       ^       \textasciicircum
+%       \       \textbackslash
+%  下面这些符号本模板已经处理好，可以直接从 .md 草稿粘贴：
+%       ×  ÷  −（减号）  →  ←  ↔  ⇒  ≥  ≤  ≠  ≈  ∈  ∉  ⊆  ∪  ∩  ✓  ✗  “ ”  ‘ ’  –  —  …
+%  中文字符和中文标点不能出现在正文里（只能写在 % 注释里），否则会报错：
+%       Unicode character ... not set up for use with LaTeX
+%  （模板会把最常见的几个全角标点自动换成英文标点，但最好不要依赖这一点。）
+%
+% ---------------------------------------------------------------------
+%  0.5 本模板自带的快捷命令（建议多用）
+% ---------------------------------------------------------------------
+%   \col{customer_id}
+%       表名、列名、SQL 取值都用它。等宽字体显示，里面的 _ 不需要转义，
+%       长名字会在 _ 处自动换行。例：\col{remaining_refundable_skip}、\col{'planned'}
+%       注意：\col{...} 里面不要再写 \_，也不要放其他命令。
+%   \fd{customer_id, season_id}{status, plan_type}
+%       函数依赖，显示为 customer_id, season_id -> status, plan_type
+%   \closure{customer_id, season_id}
+%       属性闭包，显示为 {customer_id, season_id}+
+%   \pk{customer_id}
+%       主键（带下划线），用于 Section 4 的文字版关系模式
+%   \fk{customer_id}{customer}
+%       外键，同时显示它引用的表
+%   \placeholder{...}
+%       灰色斜体的写作提示。写完一处，就把整个 \placeholder{...} 删掉换成正文。
+%       每个还没删掉的 \placeholder 都会在 Logs 里产生一条黄色警告
+%       "Package proposal Warning: Unfinished placeholder"，点击它就能跳到附近的代码。
+%   \Yes  \No
+%       表格里的 ✓ 和 ✗
+%   \begin{steps} \item ... \item ... \end{steps}
+%       紧凑的编号步骤，专门用在表格单元格里（例如 UC 的 Main flow）
+%   \begin{points} \item ... \item ... \end{points}
+%       紧凑的圆点列表，同样用在表格单元格里
+%   \ERfigure{er_diagram.pdf}{Caption}{fig:label}
+%       插入图片；文件还没上传时显示灰色占位框，不会报错
+%
+% ---------------------------------------------------------------------
+%  0.6 从 Markdown 草稿（businessRules.md 等）搬运内容
+% ---------------------------------------------------------------------
+%     Markdown 写法              LaTeX 写法
+%     **bold**                ->  \textbf{bold}
+%     *italic*                ->  \emph{italic}
+%     `customer_id`           ->  \col{customer_id}
+%     - item（无序列表）        ->  正文中用 itemize；表格单元格里用 points
+%     1. item（有序列表）       ->  正文中用 enumerate；表格单元格里用 steps
+%     | a | b |（表格行）       ->  a & b \\
+%     20%                     ->  20\%
+%  建议：每搬完一张卡片（一个 BR / UC / MQ）就编译一次。
+%
+% ---------------------------------------------------------------------
+%  0.7 报错了怎么办
+% ---------------------------------------------------------------------
+%  编译出错时，Recompile 按钮旁边的 "Logs and output files" 会列出每个错误和行号
+%  （例如 l.523 表示第 523 行），点击即可跳到那一行。
+%  先只处理第一个错误：后面的错误常常是第一个错误引起的连锁反应。
+%    Missing $ inserted
+%        正文里有没转义的 _ 或 ^。改成 \_，或者改用 \col{...}。
+%    Misplaced alignment tab character &
+%        表格外面出现了 &，改成 \&。
+%    Extra alignment tab has been changed to \cr
+%        表格某一行的 & 太多（超过"列数 - 1"）。
+%    Undefined control sequence
+%        命令拼错了（例如 \textbf 写成 \txtbf），看报错行。
+%    Unicode character ... not set up for use with LaTeX
+%        正文里有中文、全角标点或少见符号，删掉或换成英文。
+%    File `xxx' not found
+%        文件名写错或文件没上传。注意大小写和扩展名。
+%    Runaway argument? / File ended while scanning use of ...
+%        花括号没有配对，通常是少了一个 }。
+%    Too many }'s
+%        多了一个 }。
+%    \begin{...} on input line ... ended by \end{...}
+%        \begin 和 \end 没有配对，或者名字不一致。
+%  黄色的 Warning 大多可以忽略，例如 Overfull \hbox（某行略微超出页边）、
+%  "Label(s) may have changed"（再编译一次就好）。
+%  实在找不到原因：用 History 退回上一个能编译的版本，或者把报错截图发出来求助。
+%
+% ---------------------------------------------------------------------
+%  0.8 提交前检查
+% ---------------------------------------------------------------------
+%  [ ] 打开 "Logs and output files"，确认已经没有 "Unfinished placeholder" 警告
+%      （也就是所有灰色写作提示都已替换成正文）；表格里也没有空着的格子。
+%  [ ] 封面上的 Group ID、Canvas 组名、Scenario ID、成员姓名和学号与 Canvas 和
+%      metadata.json 完全一致。
+%  [ ] 页数：正文从第 1 页开始编号，References 之前最后一页的页码就是计入 8-12 页
+%      的正文页数（封面、目录、References、Appendix 都不计）。
+%  [ ] 两张图在 PDF 里放大到 100% 以上仍然清晰。
+%  [ ] ER 图、关系模式、数据字典、FD、可追溯矩阵中的表名和列名完全一致。
+%  [ ] 下载 PDF，改名为 proposal.pdf，放进 COMP2411_2026_GXXX_Stage1/ 文件夹。
+%  [ ] ai_usage.md 里写明了"用 AI 生成了本 LaTeX 排版模板"。
+%
+% =====================================================================
+%  区 1  基础宏包（不用改）
+% =====================================================================
+% 正文字号：把 11pt 改成 10pt 或 12pt，全文（包括标题）会按比例缩放。
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}     % 字体编码
+\usepackage[utf8]{inputenc}  % 文件编码
+\usepackage{amsmath}         % 数学符号
+\usepackage[table]{xcolor}   % 颜色、表格底色
+\usepackage{geometry}        % 页边距
+\usepackage{setspace}        % 行距
+
+% =====================================================================
+%  区 2  填写区（只改每行最后一对花括号里的内容）
+% =====================================================================
+% 这里的信息会自动出现在封面、页眉和 Section 1 的 fingerprint 表里，只需改这一处。
+% 指南〔5.1, 9.2〕要求：Group ID、完整 Canvas 组名、Scenario ID、team size、
+% 成员姓名和学号都要写在封面上，并且与 Canvas 和 metadata.json 完全一致。
+
+% 报告标题和副标题（可改）
+\newcommand{\ProposalTitle}{Farmlander Farm CSA Subscription Database}
+\newcommand{\ProposalSubtitle}{Stage 1 Proposal and Database Design}
+
+% Group ID：G + 三位数字，例如 Group 2 -> G002。
+% 注意：Fingerprint.md 写的是 G085，DataDictionary.md 写的是 G7，请对照 Canvas 核实！
+\newcommand{\GroupID}{G085}
+
+% 完整 Canvas 组名：从 Canvas 逐字复制（包括日期、时间、教室），
+% 例如 Group 2, Nov 25, 8:36-8:41, TU103。复制好后把 \placeholder{...} 整个替换掉。
+\newcommand{\CanvasGroupName}{\placeholder{Copy the full Canvas group name, e.g.\ Group 2, Nov 25, 8:36-8:41, TU103}}
+
+% Scenario ID 与它的含义（D17 = 领域种子，W04 = 焦点卡）
+\newcommand{\ScenarioID}{D17-W04}
+\newcommand{\ScenarioName}{Local farm subscription and distribution + Membership or subscription}
+
+% 组员人数（2、3 或 4，必须等于下面的成员数）
+\newcommand{\TeamSize}{2}
+
+% 成员姓名（与 Canvas 一致）和学号。把 \placeholder{...} 整个替换成真实内容。
+\newcommand{\MemberOneName}{\placeholder{Member 1 full name}}
+\newcommand{\MemberOneID}{\placeholder{Student ID}}
+\newcommand{\MemberTwoName}{\placeholder{Member 2 full name}}
+\newcommand{\MemberTwoID}{\placeholder{Student ID}}
+% 3-4 人组：去掉下面对应行前的 %，再到封面（Ctrl+F 搜 "成员表"）去掉对应行前的 %。
+% \newcommand{\MemberThreeName}{\placeholder{Member 3 full name}}
+% \newcommand{\MemberThreeID}{\placeholder{Student ID}}
+% \newcommand{\MemberFourName}{\placeholder{Member 4 full name}}
+% \newcommand{\MemberFourID}{\placeholder{Student ID}}
+
+% 课程信息
+\newcommand{\CourseName}{COMP2411 Database Systems}
+\newcommand{\InstructorName}{HUANG Xiao}
+\newcommand{\AcademicYear}{2026/27}
+\newcommand{\SubmissionDate}{26 October 2026}
+
+% =====================================================================
+%  区 3  样式调节区（想改外观，只需要改这里）
+% =====================================================================
+
+% ---- 3.1 正文字体：下面 5 行只保留 1 行不带 %（选中两行后按 Ctrl+/ 切换）----
+\usepackage{XCharter}                              % (1) Charter：清晰耐看（默认）
+% \usepackage{newtxtext}\usepackage{newtxmath}     % (2) Times 风格：最常见的论文字体
+% \usepackage{newpxtext}\usepackage{newpxmath}     % (3) Palatino 风格：典雅
+% \usepackage{libertinus}                          % (4) Libertinus：现代、偏人文
+% \usepackage{lmodern}                             % (5) Latin Modern：LaTeX 默认字体
+
+% ---- 3.2 标题字体 ----
+\usepackage{tgheros}                % 无衬线字体 TeX Gyre Heros（类似 Helvetica / Arial）
+\newcommand{\HeadingFont}{\sffamily}
+% 上一行的 \sffamily = 标题用无衬线字体；改成 \rmfamily = 标题和正文用同一种字体。
+
+% ---- 3.3 代码字体（\col{...} 里的表名、列名）：Inconsolata，scaled 调大小 ----
+\usepackage[varqu,scaled=0.95]{zi4}
+
+% ---- 3.4 页边距（想让一页放更多内容就改小 left/right，不建议小于 2.0cm）----
+\geometry{top=2.5cm, bottom=2.5cm, left=2.3cm, right=2.3cm,
+          headheight=15pt, headsep=0.7cm}
+
+% ---- 3.5 行距：1.0 单倍；1.15 推荐；1.5 很宽松 ----
+\setstretch{1.15}
+
+% ---- 3.6 段落间距（本模板段首不缩进，段与段之间留一点空白）----
+\newcommand{\ParagraphSkip}{0.55em plus 0.15em}
+
+% ---- 3.7 颜色 ----
+% 主题色控制：标题、表头底色、表格线、链接、页眉线。只改六位十六进制颜色码即可，
+% 备选：2F5D50 农场绿   7A4A22 土棕   5B2C6F 深紫   333333 炭黑
+\definecolor{ThemeColor}{HTML}{1F4E79}            % 默认：深蓝
+\colorlet{TableHeadColor}{ThemeColor!12}          % 表头底色：!后数字越大越深（0-100）
+\colorlet{RuleColor}{ThemeColor!70}               % 表格横线颜色
+\definecolor{PlaceholderColor}{HTML}{8A8A8A}      % 写作提示 [ ... ] 的灰色
+
+% ---- 3.8 表格 ----
+% 字号从小到大：\scriptsize  \footnotesize  \small  \normalsize
+\newcommand{\TableFontSize}{\small}               % 普通表格、BR/UC/MQ/FD 卡片
+\newcommand{\WideTableFontSize}{\footnotesize}    % 宽表：数据字典、可追溯矩阵
+\newcommand{\TableRowStretch}{1.2}                % 表格行高倍数（1.0 最紧凑）
+\newlength{\CardLabelWidth}
+\setlength{\CardLabelWidth}{3.1cm}                % 卡片左栏（Rule / Type ...）宽度
+
+% =====================================================================
+%  区 4  宏包与辅助命令（一般不用改；改坏了会导致整篇无法编译）
+% =====================================================================
+\usepackage{microtype}
+\usepackage{parskip}
+\setlength{\parskip}{\ParagraphSkip}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{xltabular}       % 可跨页、带自动宽度 X 列的表格
+\usepackage{enumitem}
+\usepackage{caption}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{pdflscape}       % 横向页面（landscape 环境）
+\usepackage{pifont}          % 勾和叉符号
+\usepackage{hyperref}        % 目录和交叉引用可点击（放在最后）
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=ThemeColor,
+  urlcolor=ThemeColor,
+  citecolor=ThemeColor,
+  bookmarksnumbered=true,
+  pdftitle={\ProposalTitle},
+  pdfauthor={\GroupID}
+}
+
+% ---- 从 Markdown 粘贴过来的常见 Unicode 符号 ----
+\DeclareUnicodeCharacter{00D7}{\ensuremath{\times}}          % 乘号
+\DeclareUnicodeCharacter{00F7}{\ensuremath{\div}}            % 除号
+\DeclareUnicodeCharacter{2212}{\ensuremath{-}}               % 减号
+\DeclareUnicodeCharacter{2192}{\ensuremath{\rightarrow}}     % 右箭头
+\DeclareUnicodeCharacter{2190}{\ensuremath{\leftarrow}}      % 左箭头
+\DeclareUnicodeCharacter{2194}{\ensuremath{\leftrightarrow}} % 双向箭头
+\DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}     % 双线右箭头
+\DeclareUnicodeCharacter{2264}{\ensuremath{\leq}}            % 小于等于
+\DeclareUnicodeCharacter{2265}{\ensuremath{\geq}}            % 大于等于
+\DeclareUnicodeCharacter{2260}{\ensuremath{\neq}}            % 不等于
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}         % 约等于
+\DeclareUnicodeCharacter{2208}{\ensuremath{\in}}             % 属于
+\DeclareUnicodeCharacter{2209}{\ensuremath{\notin}}          % 不属于
+\DeclareUnicodeCharacter{2286}{\ensuremath{\subseteq}}       % 子集
+\DeclareUnicodeCharacter{222A}{\ensuremath{\cup}}            % 并
+\DeclareUnicodeCharacter{2229}{\ensuremath{\cap}}            % 交
+\DeclareUnicodeCharacter{2713}{\ding{51}}                    % 勾
+\DeclareUnicodeCharacter{2714}{\ding{51}}                    % 粗勾
+\DeclareUnicodeCharacter{2717}{\ding{55}}                    % 叉
+% 全角标点 -> 英文标点（防止不小心混入中文标点）
+\DeclareUnicodeCharacter{FF0C}{,}                            % 全角逗号
+\DeclareUnicodeCharacter{3001}{,}                            % 顿号
+\DeclareUnicodeCharacter{3002}{.}                            % 句号
+\DeclareUnicodeCharacter{FF1A}{:}                            % 全角冒号
+\DeclareUnicodeCharacter{FF1B}{;}                            % 全角分号
+\DeclareUnicodeCharacter{FF08}{(}                            % 全角左括号
+\DeclareUnicodeCharacter{FF09}{)}                            % 全角右括号
+
+% ---- 标题样式 ----
+\titleformat{\section}
+  {\HeadingFont\Large\bfseries\color{ThemeColor}}
+  {\thesection}{0.75em}{}
+  [{\color{ThemeColor!35}\titlerule[0.8pt]}]
+\titleformat{\subsection}
+  {\HeadingFont\large\bfseries\color{ThemeColor}}
+  {\thesubsection}{0.6em}{}
+\titleformat{\subsubsection}
+  {\HeadingFont\normalsize\bfseries}
+  {\thesubsubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{2.2ex plus 0.6ex minus 0.2ex}{1.2ex}
+\titlespacing*{\subsection}{0pt}{1.8ex plus 0.5ex minus 0.2ex}{0.8ex}
+\titlespacing*{\subsubsection}{0pt}{1.4ex plus 0.4ex minus 0.2ex}{0.5ex}
+\setcounter{tocdepth}{2}
+
+% ---- 页眉页脚 ----
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[L]{\small\HeadingFont\color{ThemeColor}COMP2411 Stage 1 Proposal}
+\fancyhead[R]{\small\HeadingFont\color{ThemeColor}\GroupID\enspace$\cdot$\enspace\ScenarioID}
+\fancyfoot[C]{\small\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\headrule}{{\color{ThemeColor!40}%
+  \hrule width\headwidth height\headrulewidth \vskip-\headrulewidth}}
+\fancypagestyle{plain}{\fancyhf{}\fancyfoot[C]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0pt}}
+
+% ---- 图表标题 ----
+\DeclareCaptionFont{themecolor}{\color{ThemeColor}}
+\captionsetup{font=small, labelfont={bf,themecolor}, labelsep=period, skip=6pt}
+\setlength{\LTcapwidth}{\linewidth}
+
+% ---- 表格 ----
+\arrayrulecolor{RuleColor}
+\renewcommand{\arraystretch}{\TableRowStretch}
+\setlength{\LTpre}{0.7\baselineskip}
+\setlength{\LTpost}{0.7\baselineskip}
+% 列类型：L{宽度} 左对齐；C{宽度} 居中；B{宽度} 左对齐加粗；Y 自动宽度；K 卡片左栏
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{B}[1]{>{\bfseries\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcolumntype{K}{>{\bfseries\raggedright\arraybackslash}p{\CardLabelWidth}}
+% 所有 xltabular 表格：单倍行距 + 表格字号
+\AtBeginEnvironment{xltabular}{\setstretch{1}\TableFontSize}
+% WideTable：把里面的表格换成更小的字号和更窄的列间距
+\newenvironment{WideTable}
+  {\par\renewcommand{\TableFontSize}{\WideTableFontSize}\setlength{\tabcolsep}{3.5pt}}
+  {\par}
+
+% 卡片标题行：\cardtitle{编号}{标题}
+% 卡片没有 \caption，但 longtable 仍会给表格计数器加 1，这里减回去，免得表格编号跳号。
+% 标题下的横线画在标题行内部（而不是用 \midrule），这样标题不会孤零零留在页底。
+\newcommand{\cardtitle}[2]{%
+  \multicolumn{2}{@{}l@{}}{%
+    \addtocounter{table}{-1}%
+    \rlap{\raisebox{-0.6em}[0pt][0pt]{\color{RuleColor}\rule{\linewidth}{\lightrulewidth}}}%
+    \colorbox{ThemeColor}{\color{white}\HeadingFont\bfseries #1}%
+    \hspace{0.6em}{\HeadingFont\bfseries\color{ThemeColor}#2}}\\*[0.45em]}
+
+% 跨页表格的续表提示：\ContinuedFrom{列数}  \ContinuedOn{列数}
+\newcommand{\ContinuedFrom}[1]{%
+  \multicolumn{#1}{@{}l}{\footnotesize\itshape Table \thetable\ (continued)}\\}
+\newcommand{\ContinuedOn}[1]{%
+  \multicolumn{#1}{@{}r@{}}{\footnotesize\itshape Continued on next page}\\}
+
+% 数据字典表头（7 列）
+\newcommand{\DDheader}{%
+  \rowcolor{TableHeadColor}
+  \textbf{Column} & \textbf{MySQL type} & \textbf{Key} & \textbf{Null} &
+  \textbf{Default} & \textbf{Constraint / domain} & \textbf{Description} \\}
+
+% 可追溯矩阵表头（5 列）
+\newcommand{\TraceHeader}{%
+  \rowcolor{TableHeadColor}
+  \textbf{Req.} & \textbf{ER construct} & \textbf{Relation / constraint} &
+  \textbf{Enforcement} & \textbf{Planned test} \\}
+
+% ---- 列表 ----
+% 让表格单元格里的列表与左栏文字顶端对齐：去掉列表上方的空白，
+% 并且不让 hyperref 在第一项之前插入锚点（锚点会把整个列表往下推）。
+\makeatletter
+\newcommand{\CellListFix}{\@minipagetrue\let\refstepcounter\stepcounter}
+\makeatother
+\setlist{itemsep=1pt, topsep=3pt, parsep=0pt, partopsep=0pt}
+\setlist[itemize]{leftmargin=1.4em}
+\setlist[enumerate]{leftmargin=1.8em}
+\newlist{steps}{enumerate}{1}
+\setlist[steps]{label=\arabic*., leftmargin=*, nosep, before=\CellListFix}
+\newlist{points}{itemize}{1}
+\setlist[points]{label=\textbullet, leftmargin=*, nosep, before=\CellListFix}
+
+% ---- 写作辅助命令 ----
+\NewDocumentCommand{\placeholder}{m}{%
+  \PackageWarning{proposal}{Unfinished placeholder}%
+  \textcolor{PlaceholderColor}{\textit{[#1]}}}
+\newcommand{\Yes}{\ding{51}}
+\newcommand{\No}{\ding{55}}
+
+\ExplSyntaxOn
+\tl_new:N \l__proposal_col_tl
+\cs_generate_variant:Nn \tl_replace_all:Nnn { NVn }
+\NewDocumentCommand{\col}{m}
+  {
+    \tl_set:Nx \l__proposal_col_tl { \tl_to_str:n {#1} }
+    \tl_replace_all:NVn \l__proposal_col_tl \c_underscore_str
+      { \textunderscore \allowbreak }
+    \textup { \texttt { \l__proposal_col_tl } }
+  }
+\ExplSyntaxOff
+
+\NewDocumentCommand{\fd}{mm}{%
+  \col{#1}\nobreak\hspace{0.35em}\ensuremath{\rightarrow}\hspace{0.35em}\col{#2}}
+\NewDocumentCommand{\closure}{m}{\ensuremath{\{}\col{#1}\ensuremath{\}^{+}}}
+\NewDocumentCommand{\pk}{m}{\underline{\col{#1}}}
+\NewDocumentCommand{\fk}{mm}{%
+  \col{#1}\textsuperscript{\,FK\,\ensuremath{\rightarrow}\,\col{#2}}}
+
+\pdfstringdefDisableCommands{%
+  \let\col\detokenize
+  \def\placeholder#1{#1}%
+}
+
+% ---- 图片：\ERfigure[宽度]{文件名}{图题}{标签} ----
+\newcommand{\MissingFigureBox}[2]{%
+  \fcolorbox{PlaceholderColor}{PlaceholderColor!6}{%
+    \parbox[c][4.5cm][c]{\dimexpr #1-2\fboxsep-2\fboxrule\relax}{%
+      \centering\color{PlaceholderColor}\itshape
+      Figure file \col{#2} not found.\par
+      Export it from draw.io and upload it to this Overleaf project.}}}
+\NewDocumentCommand{\ERfigure}{O{\linewidth} m m m}{%
+  \par\noindent
+  \begin{minipage}{\linewidth}
+    \centering
+    \IfFileExists{#2}%
+      {\includegraphics[width=#1,height=0.72\textheight,keepaspectratio]{#2}}%
+      {\MissingFigureBox{#1}{#2}}%
+    \captionof{figure}{#3}\label{#4}%
+  \end{minipage}\par\medskip}
+
+% =====================================================================
+%  区 5  正文
+% =====================================================================
+\begin{document}
+
+% ---------------------------------------------------------------------
+%  封面（不计入 8-12 页）。内容全部来自"区 2 填写区"，这里一般不用改。
+% ---------------------------------------------------------------------
+\begin{titlepage}
+  \centering
+  \vspace*{0.4cm}
+  {\HeadingFont\large\bfseries\color{ThemeColor}\CourseName\par}
+  \vspace{0.2cm}
+  {\HeadingFont\normalsize The Hong Kong Polytechnic University\par}
+  \vspace{1.8cm}
+  {\color{ThemeColor}\rule{\linewidth}{1.5pt}\par}
+  \vspace{0.6cm}
+  {\HeadingFont\fontsize{24}{30}\selectfont\bfseries\ProposalTitle\par}
+  \vspace{0.4cm}
+  {\HeadingFont\Large\color{ThemeColor}\ProposalSubtitle\par}
+  \vspace{0.5cm}
+  {\color{ThemeColor}\rule{\linewidth}{1.5pt}\par}
+  \vspace{1.3cm}
+  % 基本信息
+  {\renewcommand{\arraystretch}{1.45}%
+  \begin{tabular}{@{}>{\HeadingFont\bfseries\color{ThemeColor}}r@{\hspace{1.2em}}p{0.62\linewidth}@{}}
+    Group ID          & \GroupID \\
+    Canvas group name & \CanvasGroupName \\
+    Scenario ID       & \ScenarioID\ (\ScenarioName) \\
+    Team size         & \TeamSize \\
+    Instructor        & \InstructorName \\
+    Submission date   & \SubmissionDate \\
+  \end{tabular}\par}
+  \vspace{1.0cm}
+  % 成员表：3-4 人组请去掉对应行前的 %
+  {\renewcommand{\arraystretch}{1.35}%
+  \begin{tabular}{@{}p{0.45\linewidth}p{0.25\linewidth}@{}}
+    \toprule
+    \rowcolor{TableHeadColor}
+    {\HeadingFont\bfseries Member name} & {\HeadingFont\bfseries Student ID} \\
+    \midrule
+    \MemberOneName   & \MemberOneID \\
+    \MemberTwoName   & \MemberTwoID \\
+    % \MemberThreeName & \MemberThreeID \\
+    % \MemberFourName  & \MemberFourID \\
+    \bottomrule
+  \end{tabular}\par}
+  \vfill
+  {\small\color{black!60}\CourseName\enspace$\cdot$\enspace Project Stage 1\enspace$\cdot$\enspace Academic Year \AcademicYear\par}
+\end{titlepage}
+
+% ---------------------------------------------------------------------
+%  目录（罗马数字页码，不计入页数）。不想要目录：在下面 \tableofcontents 前加 %。
+% ---------------------------------------------------------------------
+\pagenumbering{roman}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}   % 正文从第 1 页开始编号
+
+% =====================================================================
+%  Section 1  Scenario Fingerprint and Scope（场景指纹与范围）
+% ---------------------------------------------------------------------
+%  指南〔4.3, 5.1, 附录 B〕：完成附录 B 的 fingerprint 模板，写清 business object、
+%    workflow fit、scope、exclusions 和 difficulty rationale；至少 4 个 management
+%    questions（含 1 个聚合问题、1 个需要 3 张以上表的问题）。
+%    提交后 Scenario ID 和核心 fingerprint 会被锁定，之后大改需要书面批准。
+%  评分：与 Section 2 一起计入 "Requirements, feasible scope, business rules, and
+%    independent design rationale"（1 分）。
+%  建议篇幅：1-1.5 页。         草稿来源：Fingerprint.md
+% =====================================================================
+\section{Scenario Fingerprint and Scope}
+\label{sec:fingerprint}
+
+\placeholder{Optional: a short paragraph introducing Farmlander Farm and what the database supports. Delete this line if not needed.}
+
+\subsection{Scenario Fingerprint}
+\label{sec:fingerprint-table}
+% 前三行自动取自"区 2 填写区"，不用在这里改。
+% 其余每一行：在 & 和 \\ 之间写内容。内容再长也没关系，会自动换行，表格也能跨页。
+% 单元格里想分点：\begin{points} \item ... \item ... \end{points}；想换行：\newline。
+% "Difficulty rationale" 不在附录 B 模板里，但指南 5.1 要求写，所以单独加了一行。
+\begin{xltabular}{\linewidth}{@{}B{4.0cm}Y@{}}
+\caption{Scenario fingerprint (template of Appendix B of the project guidance)}\label{tab:fingerprint}\\
+\toprule
+\endfirsthead
+\ContinuedFrom{2}
+\toprule
+\endhead
+\bottomrule
+\endfoot
+\bottomrule
+\endlastfoot
+Group ID                             & \GroupID \\
+Full Canvas group name               & \CanvasGroupName \\
+Scenario ID                          & \ScenarioID\ (\ScenarioName) \\
+Organization name and type           & \\
+Principal users/roles                & \\
+Business object and core event       & \\
+Distinctive policy or constraint     & \\
+Management questions (at least four) & \\
+Excluded processes                   & \\
+Workflow fit and scope rationale     & \\
+Difficulty rationale                 & \\
+\end{xltabular}
+
+\subsection{Focus-Card Requirement and Scope}
+\label{sec:scope}
+% 下面引用的是指南附录 A.2 中 W04 的 minimum core requirement 原文（不要改）。
+% 这一要求必须完整实现，不能写成 limitation。
+\begin{quote}
+\itshape W04 Membership or subscription, minimum core requirement: ``Manage enrolment and renewal with explicit eligibility or validity rules, and record the use of defined benefits, entitlements, or quotas.''
+\end{quote}
+
+\placeholder{Explain how the design meets each part of this requirement (enrolment and renewal; eligibility or validity rules; use of benefits, entitlements or quotas) and name the business rules that implement each part.}
+
+\textbf{In scope.}
+\begin{itemize}
+  \item \placeholder{Process or rule that the database implements}
+  \item \placeholder{...}
+\end{itemize}
+
+\textbf{Out of scope.}
+% 并发处理（concurrency）和自动排程（automatic scheduling）本来就不要求，可以顺带写明。
+\begin{itemize}
+  \item \placeholder{Process that will not be implemented, and why}
+  \item \placeholder{...}
+\end{itemize}
+
+% =====================================================================
+%  Section 2  Requirements（需求：业务规则、用例、管理问题）
+% ---------------------------------------------------------------------
+%  指南〔5.1〕：
+%    * 至少 6 条精确的业务规则，覆盖 cardinality、participation、uniqueness、value
+%      等类型；每条规则都必须影响模型、SQL 或测试中的至少一项。
+%    * 4 个操作用例，分别会 create、change 或 retrieve 数据。
+%    * 至少 4 个管理问题，其中至少 1 个聚合问题、至少 1 个需要 3 张以上的表。
+%  评分：计入 "Requirements ..."（1 分）。
+%  建议篇幅：2-2.5 页。
+%  草稿来源：businessRules.md、userCases.md、mgtQuestions.md
+% =====================================================================
+\section{Requirements}
+\label{sec:requirements}
+
+\subsection{Enforcement Labels and Conventions}
+\label{sec:conventions}
+% 草稿 businessRules.md 开头的 "Enforcement labels" 和错误号说明放在这里。
+% 第一列已经填好，在第二列写含义；不需要的行整行删掉。
+\placeholder{One or two sentences explaining how each rule below is enforced and how test outcomes are reported.}
+
+\begin{xltabular}{\linewidth}{@{}B{3.1cm}Y@{}}
+\caption{Enforcement labels and MySQL error numbers used in this proposal}\label{tab:conventions}\\
+\toprule
+\rowcolor{TableHeadColor}
+Label or code & \textbf{Meaning} \\
+\midrule
+\endfirsthead
+\bottomrule
+\endlastfoot
+DB constraint & \\
+SQL check     & \\
+Limitation    & \\
+\midrule
+1048          & \\
+1062          & \\
+1452          & \\
+3819          & \\
+0 rows        & \\
+\end{xltabular}
+
+\subsection{Business Rules}
+\label{sec:rules}
+% 每条规则是一张"卡片"：第一行是编号和标题，下面每行左边是字段名、右边是内容。
+% 标题取自 businessRules.md，可以改。在每行的 & 和 \\ 之间填写内容。
+% 增加一条：复制从 \begin{xltabular} 到 \end{xltabular} 的整块，改编号和标题。
+% 删除一条：删掉从 \begin{xltabular} 到 \end{xltabular} 的整块。
+% Type 一栏写类型，例如 Cardinality; Participation; Uniqueness; Value。
+\placeholder{Optional: one sentence on how the rules are organised.}
+
+% ---------- BR1 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR1}{Subscription ownership}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR2 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR2}{One subscription per customer per season}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR3 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR3}{Season calendar and subscription status}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR4 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR4}{Enrolment window and renewal}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR5 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR5}{Plan, frequency and subscription fee}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR6 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR6}{Product types of a plan}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR7 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR7}{Delivery schedule and status}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR8 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR8}{Skipping and refundable skips}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR9 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR9}{Add-on purchases}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR10 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR10}{Cancellation and refund}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- BR11 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{BR11}{Refund records}
+Rule        & \\
+Type        & \\
+Enforcement & \\
+Test        & \\
+\bottomrule
+\end{xltabular}
+
+\subsection{Operational Use Cases}
+\label{sec:usecases}
+% 指南要求 4 个用例，每个都要 create / change / retrieve 数据。
+% Main flow 的步骤建议用 steps 列表，写法示例（去掉 % 后填写）：
+%   Main flow & \begin{steps}
+%                 \item First step ... (R) [BR3].
+%                 \item Second step ... (C) [BR1].
+%               \end{steps} \\
+% UC2 和 UC4 各有两条主流程，所以各预留了两行 Main flow。
+\placeholder{Optional: one sentence introducing the use cases and the notation (C) create, (U) change, (R) retrieve.}
+
+% ---------- UC1 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{UC1}{Book a subscription for an upcoming season}
+Actor            & \\
+Supporting actor & \\
+Trigger          & \\
+Preconditions    & \\
+Main flow        & \\
+Tables affected  & \\
+Rules checked    & \\
+Failure outcome  & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- UC2 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{UC2}{Record a weekly delivery}
+Actor                      & \\
+Supporting actor           & \\
+Trigger                    & \\
+Preconditions              & \\
+Main flow (success path)   & \\
+Main flow (failure path)   & \\
+Tables affected            & \\
+Rules checked              & \\
+Failure outcome            & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- UC3 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{UC3}{Skip a delivery}
+Actor            & \\
+Supporting actor & \\
+Trigger          & \\
+Preconditions    & \\
+Main flow        & \\
+Tables affected  & \\
+Rules checked    & \\
+Failure outcome  & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- UC4 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{UC4}{Cancel a subscription with two refund cases}
+Actor                                       & \\
+Supporting actor                            & \\
+Trigger                                     & \\
+Preconditions                               & \\
+Main flow, Case A: subscription is planned  & \\
+Main flow, Case B: subscription is active   & \\
+Tables affected                             & \\
+Rules checked                               & \\
+Failure outcome                             & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- UC5（可选）----------
+% 指南只要求 4 个用例。如果要保留 userCases.md 里的 UC5，选中下面整块按 Ctrl+/ 去掉 %，
+% 并在后面的汇总表和可追溯矩阵里各加一行 UC5。
+% \begin{xltabular}{\linewidth}{@{}KY@{}}
+% \cardtitle{UC5}{Purchase add-on items in an upcoming delivery}
+% Actor            & \\
+% Supporting actor & \\
+% Trigger          & \\
+% Preconditions    & \\
+% Main flow        & \\
+% Tables affected  & \\
+% Rules checked    & \\
+% Failure outcome  & \\
+% \bottomrule
+% \end{xltabular}
+
+% 用例汇总：在对应格子里写 \Yes 表示该用例做了这类操作，空着表示没有。
+\begin{xltabular}{\linewidth}{@{}L{1.0cm}YC{1.6cm}C{1.6cm}C{1.6cm}@{}}
+\caption{Data operations performed by each use case (\Yes\ = performed)}\label{tab:uc-summary}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{UC} & \textbf{Title} & \textbf{Create} & \textbf{Change} & \textbf{Retrieve} \\
+\midrule
+\endfirsthead
+\bottomrule
+\endlastfoot
+UC1 & Book a subscription for an upcoming season   & & & \\
+UC2 & Record a weekly delivery                     & & & \\
+UC3 & Skip a delivery                              & & & \\
+UC4 & Cancel a subscription with two refund cases  & & & \\
+\end{xltabular}
+
+\subsection{Management Questions}
+\label{sec:mq}
+% 按指南 5.1 的示例，每个问题写 Question / Tables / Analysis / Decision supported。
+% 不要推断因果（合成数据不能说明"为什么"）。
+% 标题是根据 mgtQuestions.md 拟的简短概括，可改可删（删掉后保留空的 {} 即可）。
+\placeholder{Optional: one sentence introducing the management questions.}
+
+% ---------- MQ1 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{MQ1}{Sales, refunds and net income per plan type}
+Question           & \\
+Tables             & \\
+Analysis           & \\
+Decision supported & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- MQ2 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{MQ2}{Top add-on products per plan type}
+Question           & \\
+Tables             & \\
+Analysis           & \\
+Decision supported & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- MQ3 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{MQ3}{Skip and failure rates per delivery week}
+Question           & \\
+Tables             & \\
+Analysis           & \\
+Decision supported & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- MQ4 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{MQ4}{Most chosen products of the customizable plan}
+Question           & \\
+Tables             & \\
+Analysis           & \\
+Decision supported & \\
+\bottomrule
+\end{xltabular}
+
+% ---------- MQ5 ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{MQ5}{Renewal rate per plan type}
+Question           & \\
+Tables             & \\
+Analysis           & \\
+Decision supported & \\
+\bottomrule
+\end{xltabular}
+
+% 管理问题汇总：让评分人一眼看到"聚合问题"和"3 张以上表的问题"都满足了。
+% Aggregate 和 3+ tables 两列写 \Yes 或 \No；Tables used 写表的数量或表名；
+% 最后一列写 Stage 2 计划用到的 SQL 技术（join, GROUP BY, HAVING, subquery ...）。
+\begin{xltabular}{\linewidth}{@{}L{1.0cm}C{1.7cm}YC{1.6cm}Y@{}}
+\caption{Coverage of the management-question requirements}\label{tab:mq-summary}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{MQ} & \textbf{Aggregate} & \textbf{Tables used} & \textbf{3+ tables} & \textbf{Planned SQL techniques (Stage 2)} \\
+\midrule
+\endfirsthead
+\bottomrule
+\endlastfoot
+MQ1 & & & & \\
+MQ2 & & & & \\
+MQ3 & & & & \\
+MQ4 & & & & \\
+MQ5 & & & & \\
+\end{xltabular}
+
+% =====================================================================
+%  Section 3  Entity-Relationship Model（ER 模型）
+% ---------------------------------------------------------------------
+%  指南〔5.1〕：图要清晰可读，显示实体、属性、候选键/主键、有名称的关系、
+%    cardinality 和 participation；弱实体、多值/复合/派生属性要正确表示；
+%    用到 ternary、specialization、aggregation、associative entity 等要写理由。
+%  评分：Section 3-5 共 3 分（Stage 1 的 60%），是重点。
+%  建议篇幅：约 2 页。     草稿来源：stage1/diagrams/ER_diagram(latest).drawio
+% =====================================================================
+\section{Entity--Relationship Model}
+\label{sec:er}
+
+\subsection{ER Diagram}
+\label{sec:er-diagram}
+\placeholder{One or two sentences guiding the reader through Figure~\ref{fig:er}: the main entities and how they connect.}
+
+% 插图：\ERfigure[宽度]{文件名}{图题}{标签}
+%   宽度可省略（默认整行宽）；想缩小就写 [0.85\linewidth]。
+%   文件名要带扩展名（.pdf 或 .png），并且与上传到 Overleaf 的文件名完全一致。
+\ERfigure{er_diagram.pdf}{ER diagram of the Farmlander Farm CSA subscription database}{fig:er}
+
+% 图太大、在竖版页面上看不清时，可以换成横向整页：把上面的 \ERfigure 一行加上 %，
+% 再去掉下面 5 行前面的 %（横向页会单独占一页）。
+% \begin{landscape}
+% \thispagestyle{plain}
+% \ERfigure{er_diagram.pdf}{ER diagram of the Farmlander Farm CSA subscription database}{fig:er}
+% \end{landscape}
+% \clearpage
+
+\subsection{Notation}
+\label{sec:notation}
+% 说明图中用的记法（例如 Chen 记法：双矩形 = 弱实体，虚线椭圆 = 派生属性 ...）。
+% 两列都留空，按你们实际用的记法填写；用不到的行删掉。
+\placeholder{State which ER notation the diagram uses.}
+
+\begin{xltabular}{\linewidth}{@{}L{4.6cm}Y@{}}
+\caption{Notation used in the ER diagram}\label{tab:notation}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Notation} & \textbf{Meaning} \\
+\midrule
+\endfirsthead
+\bottomrule
+\endlastfoot
+ & \\
+ & \\
+ & \\
+ & \\
+ & \\
+ & \\
+\end{xltabular}
+
+\subsection{Relationships, Cardinality and Participation}
+\label{sec:relationships}
+% 每个关系一行：名称、参与的实体、基数（1:1 / 1:N / M:N）、参与度（total / partial）、
+% 对应的业务规则。这张表能让评分人快速核对图上的每个标注。
+\begin{xltabular}{\linewidth}{@{}L{2.6cm}YL{1.9cm}YL{1.7cm}@{}}
+\caption{Named relationships with their cardinality and participation}\label{tab:relationships}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Relationship} & \textbf{Entities} & \textbf{Cardinality} & \textbf{Participation} & \textbf{Rules} \\
+\midrule
+\endfirsthead
+\ContinuedFrom{5}
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Relationship} & \textbf{Entities} & \textbf{Cardinality} & \textbf{Participation} & \textbf{Rules} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+ & & & & \\
+ & & & & \\
+ & & & & \\
+ & & & & \\
+ & & & & \\
+ & & & & \\
+ & & & & \\
+ & & & & \\
+\end{xltabular}
+
+\subsection{Design Constructs and Justification}
+\label{sec:constructs}
+% 第一列预填了数据字典草稿里出现过的构造，按实际情况增删。
+% 第二列写用在哪里（实体/关系/属性名，建议用 \col{...}），第三列写为什么这样建模。
+\begin{xltabular}{\linewidth}{@{}L{3.5cm}L{3.4cm}Y@{}}
+\caption{ER constructs used and their justification}\label{tab:constructs}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Construct} & \textbf{Where used} & \textbf{Justification} \\
+\midrule
+\endfirsthead
+\ContinuedFrom{3}
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Construct} & \textbf{Where used} & \textbf{Justification} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+Weak entity                    & & \\
+Composite attribute            & & \\
+Derived attributes             & & \\
+M:N relationship               & & \\
+M:N relationship with attribute & & \\
+Optional relationship          & & \\
+                               & & \\
+\end{xltabular}
+
+% =====================================================================
+%  Section 4  Relational Schema and ER-to-Relational Mapping（关系模式与映射）
+% ---------------------------------------------------------------------
+%  指南〔5.1〕：ER 到关系的映射前后一致，包括 M:N 关系和弱实体。
+%    一般设计约 5-8 张有意义、互相连接的表；多于或少于这个数要写理由。
+%  评分：属于 Section 3-5 的 3 分。
+%  建议篇幅：1-1.5 页。     草稿来源：stage1/diagrams/Relational_schema(latest).drawio
+% =====================================================================
+\section{Relational Schema and Mapping}
+\label{sec:schema}
+
+\subsection{Relational Schema}
+\label{sec:schema-diagram}
+\placeholder{One or two sentences introducing Figure~\ref{fig:schema} and the number of tables (and why this number is appropriate).}
+
+\ERfigure{relational_schema.pdf}{Relational schema}{fig:schema}
+
+\subsection{Relations}
+\label{sec:relations}
+% 文字版关系模式（可选，有图也可以只保留图）。写法示例：
+%   \item \col{customer}(\pk{customer_id}, \col{name}, \col{email}, ...)
+%   \item \col{subscription}(\pk{subscription_id}, \fk{customer_id}{customer}, ...)
+% 复合主键的每一列都用 \pk{...}；既是主键又是外键的列可以写 \pk{...}\textsuperscript{FK}。
+% 下面 8 行按数据字典的顺序排列，括号里换成属性列表。
+\placeholder{Optional: state the notation, e.g.\ primary keys are underlined and foreign keys are marked FK.}
+
+\begin{itemize}
+  \item \col{customer}(\placeholder{attributes})
+  \item \col{season}(\placeholder{attributes})
+  \item \col{subscription}(\placeholder{attributes})
+  \item \col{delivery}(\placeholder{attributes})
+  \item \col{refund}(\placeholder{attributes})
+  \item \col{product}(\placeholder{attributes})
+  \item \col{chosen_products}(\placeholder{attributes})
+  \item \col{add_on}(\placeholder{attributes})
+\end{itemize}
+
+\subsection{Mapping from the ER Model}
+\label{sec:mapping}
+% 每个 ER 构造（实体、弱实体、1:N、M:N、多值/复合/派生属性 ...）一行，
+% 写它映射成了什么（哪张表、哪个 PK/FK/UNIQUE），以及必要的说明。
+\begin{xltabular}{\linewidth}{@{}L{4.0cm}YY@{}}
+\caption{ER-to-relational mapping}\label{tab:mapping}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{ER construct} & \textbf{Relational result} & \textbf{Note} \\
+\midrule
+\endfirsthead
+\ContinuedFrom{3}
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{ER construct} & \textbf{Relational result} & \textbf{Note} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+ & & \\
+ & & \\
+ & & \\
+ & & \\
+ & & \\
+ & & \\
+ & & \\
+ & & \\
+ & & \\
+\end{xltabular}
+
+% =====================================================================
+%  Section 5  Data Dictionary（数据字典）
+% ---------------------------------------------------------------------
+%  指南〔5.1〕：每张表都要有数据字典，写明属性、MySQL 类型、主键/候选键、外键、
+%    是否可空、默认值、域约束。
+%  评分：属于 Section 3-5 的 3 分。
+%  建议篇幅：1.5-2 页（太长时可以把部分表放到 Appendix，但正文里要注明）。
+%  草稿来源：DataDictionary.md
+%  填写说明：
+%    * 每张表 7 列，所以每行有 6 个 &，行末写 \\ 。
+%    * 空行的数量与 DataDictionary.md 中该表的列数一致；不够就复制一行，多了就删掉。
+%    * 列名、表名、类型建议都用 \col{...}，例如 \col{customer_id}、\col{DECIMAL(8,2)}。
+%    * 想调整列宽：改 \begin{xltabular} 那一行里 L{2.5cm} 等数字（Y 列自动占满剩余宽度）。
+% =====================================================================
+\section{Data Dictionary}
+\label{sec:dd}
+
+Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\rightarrow$ \col{DATE}, timestamps $\rightarrow$ \col{DATETIME}; status/type columns $\rightarrow$ \col{VARCHAR} + \col{CHECK} (ANSI-standard, easier to extend than \col{ENUM}); every FK column has exactly the same type and signedness as the referenced PK. All foreign keys are declared \col{ON DELETE RESTRICT} (child rows must be removed first). Derived attributes from the ER diagram (marked with ()) are NOT stored: \col{subscription.fee()}, \col{delivery.delivery_date()}, \col{delivery.add_on_fee()}, \col{delivery.price()}; they are computed in SQL/application code.
+
+% ---------- 5.1 customer（6 行）----------
+\subsection{\col{customer}}
+\label{sec:dd-customer}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{customer}}\label{tab:dd-customer}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{customer_id} & \col{INT UNSIGNED AUTO_INCREMENT} & PK & NO & -- & -- & Surrogate identifier \\
+\col{name} & \col{VARCHAR(100)} & -- & NO & -- & -- & Full name \\
+\col{email} & \col{VARCHAR(255)} & UNIQUE (CK1) & NO & -- & -- & Login/contact; candidate key \\
+\col{street} & \col{VARCHAR(255)} & -- & NO & -- & -- & Address part 1 (composite attr) \\
+\col{building} & \col{VARCHAR(50)} & -- & NO & -- & -- & Address part 2 \\
+\col{room} & \col{VARCHAR(20)} & -- & NO & -- & -- & Address part 3 \\
+\end{xltabular}
+\end{WideTable}
+
+% ---------- 5.2 season（4 行）----------
+\subsection{\col{season}}
+\label{sec:dd-season}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{season}}\label{tab:dd-season}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{season_id} & \col{SMALLINT UNSIGNED AUTO_INCREMENT} & PK & NO & -- & -- & Surrogate identifier \\
+\col{season_name} & \col{VARCHAR(10)} & part of CK1 & NO & -- & \col{IN ('spring', 'summer', 'autumn')} & Season within a year \\
+\col{year} & \col{SMALLINT UNSIGNED} & part of CK1 & NO & -- & -- & Calendar year \\
+\col{first_planning_day} & \col{DATE} & UNIQUE (CK2), \col{CHECK (DAYOFWEEK(}\allowbreak\col{first_planning_day) = 2)} & NO & -- & -- & Anchor date; \col{start_day()} = $-6$, \col{end_day()} = $+77$ (derived, not stored) \\
+\end{xltabular}
+\end{WideTable}
+
+% ---------- 5.3 subscription（10 行）----------
+\subsection{\col{subscription}}
+\label{sec:dd-subscription}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{subscription}}\label{tab:dd-subscription}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{subscription_id} & \col{INT UNSIGNED AUTO_INCREMENT} & PK & NO & -- & -- & Surrogate identifier \\
+\col{customer_id} & \col{INT UNSIGNED} & FK $\rightarrow$ \col{customer}; part of CK & NO & -- & \col{UNIQUE(customer_id, season_id)} & Holder (BR1: at most 1 per customer per season; cancelled still occupies the slot) \\
+\col{season_id} & \col{SMALLINT UNSIGNED} & FK $\rightarrow$ \col{season}; part of CK & NO & -- & -- & Season subscribed \\
+\col{status} & \col{VARCHAR(10)} & -- & NO & \col{'planned'} & \col{CHECK IN ('planned', 'active', 'finished', 'cancelled')} & Lifecycle state \\
+\col{plan_type} & \col{VARCHAR(20)} & -- & NO & -- & \col{CHECK IN ('farmer'}\col{'s choice', 'customizable')} & Chosen at enrolment, immutable afterwards \\
+\col{frequency} & \col{VARCHAR(10)} & -- & NO & -- & \col{CHECK IN ('weekly', 'biweekly')} & Chosen at enrolment, immutable afterwards \\
+\col{allocated_cost} & \col{DECIMAL(8,2)} & -- & NO & -- & \col{CHECK IN (160, 192, 200, 240)} & Single-delivery price snapshot incl.\ 20\% renewal discount (stored to lock price) \\
+\col{submission_date} & \col{DATE} & -- & NO & -- & -- & Enrolment/renewal date \\
+\col{cancellation_date} & \col{DATE} & -- & YES & \col{NULL} & -- & \col{NULL} = not cancelled (legitimate missing value) \\
+\col{remaining_refundable_skip} & \col{TINYINT} & -- & NO & 2 & \col{CHECK BETWEEN 0 AND 2} & Refundable skip quota, consumed by skip refunds \\
+\end{xltabular}
+\end{WideTable}
+
+\textbf{Derived (not stored):} \col{fee()} = delivery count $\times$ \col{allocated_cost}; see Conventions above.
+
+% ---------- 5.4 delivery（3 行，弱实体）----------
+\subsection{\col{delivery}}
+\label{sec:dd-delivery}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{delivery}}\label{tab:dd-delivery}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{subscription_id} & \col{INT UNSIGNED} & PK part 1; FK $\rightarrow$ \col{subscription} & NO & -- & -- & Owner entity PK (identifying relationship) \\
+\col{week_no} & \col{TINYINT UNSIGNED} & PK part 2 (partial key) & NO & -- & \col{CHECK (BETWEEN 1 AND 12)} & Week within the season \\
+\col{status} & \col{VARCHAR(10)} & -- & NO & \col{'planned'} & \col{CHECK IN ('planned', 'skipped', 'success', 'failed', 'cancelled')} & Delivery state machine; transitions guarded by \col{UPDATE} in transactions \\
+\end{xltabular}
+\end{WideTable}
+
+\textbf{Derived (not stored):} \col{delivery_date()} = first planning delivery day + (\col{week_no} $-$ 1) $\times$ 7; \col{add_on_fee()} = SUM(\col{weight} $\times$ \col{price_per_kg}); \col{price()} is computed on the fly. See Conventions above.
+
+% ---------- 5.5 refund（6 行）----------
+\subsection{\col{refund}}
+\label{sec:dd-refund}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{refund}}\label{tab:dd-refund}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{refund_id} & \col{INT UNSIGNED AUTO_INCREMENT} & PK & NO & -- & -- & Surrogate identifier \\
+\col{subscription_id} & \col{INT UNSIGNED} & FK $\rightarrow$ \col{subscription} & NO & -- & -- & The subscription refunded \\
+\col{amount} & \col{DECIMAL(8,2)} & -- & NO & -- & \col{CHECK (> 0)} & Computed at discounted allocated cost (anti-arbitrage) \\
+\col{type} & \col{VARCHAR(12)} & -- & NO & -- & \col{CHECK IN ('skip', 'failed', 'cancellation')} & \col{'skip'} consumes quota; \col{'failed'} does not; \col{'cancellation'} ties to no delivery \\
+\col{refund_date} & \col{DATE} & -- & NO & -- & -- & When the refund was issued \\
+\col{week_no} & \col{TINYINT UNSIGNED} & Make up the composite foreign key with \col{subscription_id} referencing \col{delivery(}\allowbreak\col{subscription_id, week_no)}; \col{UNIQUE(}\allowbreak\col{subscription_id, week_no)} & YES & \col{NULL} & CHECK: If type is skip or failed, it should be non null; if type is cancellation, it must be null & Null indicates cancellation, which does not refer to any delivery; When it is non null, the composite foreign key guarantees the refund and delivery belong to the same subscription. \\
+\end{xltabular}
+\end{WideTable}
+
+% ---------- 5.6 product（5 行）----------
+\subsection{\col{product}}
+\label{sec:dd-product}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{product}}\label{tab:dd-product}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{product_id} & \col{INT UNSIGNED AUTO_INCREMENT} & PK & NO & -- & -- & Surrogate identifier \\
+\col{season_id} & \col{SMALLINT UNSIGNED} & FK $\rightarrow$ \col{season} & NO & -- & \col{UNIQUE(season_id, name)} & The season it is grown in (exactly 10 products per season; cross-row rule $\rightarrow$ in-transaction check) \\
+\col{name} & \col{VARCHAR(100)} & -- & NO & -- & \col{UNIQUE(season_id, name)} & Product name \\
+\col{is_farmers_choice} & \col{TINYINT(1)} & -- & NO & 0 & -- & 1 = one of the 6 fixed farmer's-choice items \\
+\col{price_per_kg} & \col{DECIMAL(6,2)} & -- & NO & -- & \col{CHECK (>= 0)} & Unit price for add-on charging \\
+\end{xltabular}
+\end{WideTable}
+
+% ---------- 5.7 chosen_products（2 行，M:N 联系表）----------
+\subsection{\col{chosen_products}}
+\label{sec:dd-chosen-products}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{chosen_products}}\label{tab:dd-chosen-products}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{subscription_id} & \col{INT UNSIGNED} & PK part 1; FK $\rightarrow$ \col{subscription} & NO & -- & -- & Customizable plan's picks \\
+\col{product_id} & \col{INT UNSIGNED} & PK part 2; FK $\rightarrow$ \col{product} & NO & -- & -- & Picked product (must be grown in the same season; cross-table $\rightarrow$ in-transaction check) \\
+\end{xltabular}
+\end{WideTable}
+
+\textbf{Note:} ``0..8 picks'' is a cross-row rule and cannot be a \col{CHECK}; enforced by in-transaction \col{COUNT(*)} check.
+
+% ---------- 5.8 add_on（4 行，带关系属性的 M:N 联系表）----------
+\subsection{\col{add_on}}
+\label{sec:dd-add-on}
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\caption{Data dictionary of \col{add_on}}\label{tab:dd-add-on}\\
+\toprule
+\DDheader
+\midrule
+\endfirsthead
+\ContinuedFrom{7}
+\toprule
+\DDheader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{7}
+\endfoot
+\bottomrule
+\endlastfoot
+\col{subscription_id} & \col{INT UNSIGNED} & PK part 1; composite FK $\rightarrow$ \col{delivery} & NO & -- & -- & Delivery the add-on belongs to \\
+\col{week_no} & \col{TINYINT UNSIGNED} & PK part 2; composite FK $\rightarrow$ \col{delivery} & NO & -- & -- & Same window as refundable skip \\
+\col{product_id} & \col{INT UNSIGNED} & PK part 3; FK $\rightarrow$ \col{product} & NO & -- & -- & Product added (limited to the plan's types) \\
+\col{weight} & \col{DECIMAL(5,2)} & -- & NO & -- & \col{CHECK (>= 0.10)} & Relationship attribute from ER diagram; fee = SUM(\col{weight} $\times$ \col{price_per_kg}) \\
+\end{xltabular}
+\end{WideTable}
+
+\textbf{Note:} (\col{subscription_id}, \col{week_no}) together form ONE composite foreign key referencing \col{delivery(}\allowbreak\col{subscription_id, week_no)}.
+
+% =====================================================================
+%  Section 6  Functional Dependencies and Normalization（函数依赖与规范化）
+% ---------------------------------------------------------------------
+%  指南〔5.1〕：列出重要的非平凡 FD、候选键和初始范式；分解到至少 3NF
+%    （合适时到 BCNF），或者论证已经满足目标范式；对不明显的分解讨论 lossless join
+%    和 dependency preservation。不要为了分解而编造 FD。
+%  评分：1 分。
+%  建议篇幅：约 1.5 页。     草稿来源：normalization.md
+%  写法：
+%    * FD 用 \fd{左边}{右边}，例如 \fd{customer_id}{name, email}
+%    * 闭包用 \closure{...}，例如 \closure{customer_id, season_id} = all attributes
+%    * 多条 FD 放在 points 列表里：
+%        \begin{points}
+%          \item \fd{customer_id}{name, email}
+%          \item \fd{email}{customer_id}
+%        \end{points}
+% =====================================================================
+\section{Functional Dependencies and Normalization}
+\label{sec:fd}
+
+\subsection{Approach}
+\label{sec:fd-approach}
+\placeholder{Explain how the FDs were derived from the business rules, how candidate keys were found (attribute closure), and the target normal form.}
+
+\subsection{Summary}
+\label{sec:fd-summary}
+% 每张表一行：候选键、最终范式（例如 BCNF / 3NF）、是否分解及原因。
+\begin{xltabular}{\linewidth}{@{}L{3.0cm}YC{1.8cm}Y@{}}
+\caption{Candidate keys and normal form of each relation}\label{tab:fd-summary}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Relation} & \textbf{Candidate keys} & \textbf{Normal form} & \textbf{Decomposition} \\
+\midrule
+\endfirsthead
+\bottomrule
+\endlastfoot
+\col{customer}        & & & \\
+\col{season}          & & & \\
+\col{subscription}    & & & \\
+\col{delivery}        & & & \\
+\col{refund}          & & & \\
+\col{product}         & & & \\
+\col{chosen_products} & & & \\
+\col{add_on}          & & & \\
+\end{xltabular}
+
+\subsection{Analysis per Relation}
+\label{sec:fd-detail}
+% 每张表一张卡片，顺序与数据字典一致。四行分别写：
+%   Functional dependencies：非平凡 FD（用 points 列表 + \fd{...}{...}）
+%   Candidate keys：候选键及闭包理由
+%   Normal form：初始/最终范式和判断理由
+%   Lossless join and dependency preservation：分解时的讨论；不需要分解就写 Not applicable
+%     并说明原因。
+
+% ---------- customer ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{customer}}{}
+Functional dependencies & \begin{points}
+  \item \fd{customer_id}{name}
+  \item \fd{customer_id}{email}
+  \item \fd{customer_id}{street, building, room}
+  \item \fd{email}{customer_id}
+  \item \fd{email}{name}
+  \item \fd{email}{street, building, room}
+\end{points} \\
+Candidate keys & \begin{points}
+  \item \col{customer_id}
+  \item \col{email}
+\end{points} \\
+Normal form & Satisfies BCNF (and therefore 3NF), because the left-hand side of every non-trivial functional dependency (\col{customer_id} or \col{email}) is a candidate key, and hence a super key. The address (\col{street}, \col{building}, \col{room}) and \col{name} do not determine any other attribute, since several customers may share the same address or name. \\
+Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
+\bottomrule
+\end{xltabular}
+
+% ---------- season ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{season}}{}
+Functional dependencies & \begin{points}
+  \item \fd{season_id}{season_name, year, first_planning_day} (primary key)
+  \item \fd{season_name, year}{season_id, first_planning_day} (CK1)
+  \item \fd{first_planning_day}{season_id, season_name, year} (CK2)
+\end{points} \\
+Candidate keys & \begin{points}
+  \item \col{season_id} (\closure{season_id} = all attributes; chosen as primary key)
+  \item \col{season_name, year} (\closure{season_name, year} = all attributes)
+  \item \col{first_planning_day} (\closure{first_planning_day} = all attributes)
+\end{points} \\
+Normal form & Every determinant (\col{season_id} / \{\col{season_name, year}\} / \col{first_planning_day}) is itself a candidate key, hence a superkey. \col{season} is in BCNF. \\
+Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
+\bottomrule
+\end{xltabular}
+
+% ---------- subscription ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{subscription}}{}
+Functional dependencies & \begin{points}
+  \item \fd{subscription_id}{customer_id}
+  \item \fd{subscription_id}{season_id}
+  \item \fd{subscription_id}{status}
+  \item \fd{subscription_id}{plan_type, frequency}
+  \item \fd{subscription_id}{allocated_cost}
+  \item \fd{subscription_id}{submission_date, cancellation_date}
+  \item \fd{subscription_id}{remaining_refundable_skip}
+  \item \fd{submission_date}{season_id}
+  \item \fd{customer_id, season_id}{subscription_id, status, plan_type, frequency, allocated_cost, submission_date, cancellation_date, remaining_refundable_skip}
+\end{points} \\
+Candidate keys & \begin{points}
+  \item \col{subscription_id}
+  \item \col{customer_id, season_id}
+  \item \col{customer_id, submission_date}
+\end{points} \\
+Normal form & Satisfies 3NF but not BCNF, because the functional dependency of \fd{submission_date}{season_id} is not a trivial dependency and \col{submission_date} is not a super key. However, \{\col{season_id}\} $-$ \{\col{submission_date}\} = \{\col{season_id}\} belongs to the candidate keys, which suggests that the table satisfies the 3NF. The reason why we choose to keep 3NF rather than further decompose it to BCNF is the further decomposition will sacrifice the dependency preserving. There will be two tables, R1\{\col{submission_date, season_id}\} and R2\{R $-$ \col{season_id}\}, after BCNF decomposition. Though the decomposition is lossless due to the fact that \col{submission_date} is the super key of R1, it will discard \fd{customer_id, season_id}{subscription_id}. Therefore, we choose to keep as 3NF. \\
+Lossless join and dependency preservation & Lossless: The discarded decomposition is lossless.\newline Preserving: The discarded decomposition is not dependency preserving. \\
+\bottomrule
+\end{xltabular}
+
+% ---------- delivery ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{delivery}}{}
+Functional dependencies & \begin{points}
+  \item \fd{subscription_id, week_no}{status} (primary key)
+\end{points} \\
+Candidate keys & \begin{points}
+  \item \col{subscription_id, week_no} (\closure{subscription_id, week_no} = all attributes; chosen as primary key)
+\end{points} \\
+Normal form & \col{subscription_id} and \col{week_no} form the primary key of \col{delivery}. Therefore, the \col{delivery} satisfies BCNF. \\
+Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
+\bottomrule
+\end{xltabular}
+
+% ---------- refund ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{refund}}{}
+Functional dependencies & \begin{points}
+  \item \fd{refund_id}{subscription_id}
+  \item \fd{refund_id}{amount}
+  \item \fd{refund_id}{type}
+  \item \fd{refund_id}{refund_date}
+  \item \fd{refund_id}{week_no}
+  \item \fd{subscription_id, week_no}{refund_id}
+  \item \fd{subscription_id, type, refund_date}{refund_id}
+\end{points} \\
+Candidate keys & \begin{points}
+  \item \col{refund_id}
+  \item \col{subscription_id, type, refund_date} (for each subscription, there would be only one refund of specific type on a specific refund date)
+\end{points} \\
+Normal form & Satisfies BCNF (and therefore 3NF), because the left-hand side of every non-trivial functional dependency is a super key: \col{refund_id} is a candidate key, and \{\col{subscription_id, type, refund_date}\} is also a candidate key. The second candidate key holds because the skipping windows of different deliveries do not overlap and a delivery can be skipped only once (at most one skip refund per day), a failed refund is issued on the day after its unique delivery day (at most one failed refund per day), and a subscription can be cancelled at most once (at most one cancellation refund). In the dependency \fd{subscription_id, week_no}{refund_id}, the subscription and \col{week_no} are the super key of the refund, which can not be primary key because the \col{week_no} can be null. \\
+Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
+\bottomrule
+\end{xltabular}
+
+% ---------- product ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{product}}{}
+Functional dependencies & \begin{points}
+  \item \fd{product_id}{season_id, name, is_farmers_choice, price_per_kg} (primary key)
+  \item \fd{season_id, name}{product_id, is_farmers_choice, price_per_kg}
+\end{points} \\
+Candidate keys & \begin{points}
+  \item \col{product_id} (\closure{product_id} = all attributes; only key)
+  \item \col{season_id, name}
+\end{points} \\
+Normal form & The \col{product_id} is a super key of \col{product}. Since it is assumed that there will not be products in an identical name in a season, the \col{season_id} and \col{name} are also the super key of \col{product}. Therefore, \col{product} satisfies BCNF. \\
+Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
+\bottomrule
+\end{xltabular}
+
+% ---------- chosen_products ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{chosen_products}}{}
+Functional dependencies & Only trivial dependencies. \\
+Candidate keys & \begin{points}
+  \item \col{subscription_id, product_id}
+\end{points} \\
+Normal form & Satisfies BCNF (and therefore 3NF), because the table only has trivial functional dependencies. Every attribute belongs to the only candidate key \{\col{subscription_id, product_id}\}, so there is no non-trivial functional dependency whose left-hand side is not a super key. \\
+Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
+\bottomrule
+\end{xltabular}
+
+% ---------- add_on ----------
+\begin{xltabular}{\linewidth}{@{}KY@{}}
+\cardtitle{\col{add_on}}{}
+Functional dependencies & \begin{points}
+  \item \fd{subscription_id, week_no, product_id}{weight} (primary key)
+\end{points}
+No other FD holds:
+\begin{points}
+  \item \{\col{subscription_id, week_no}\} does NOT determine \col{weight} (one delivery can carry several add-on products, each with its own weight)
+  \item \col{product_id} does NOT determine \col{weight} (the same product is weighed differently on different orders)
+  \item \col{weight} does NOT determine anything
+\end{points} \\
+Candidate keys & \begin{points}
+  \item \col{subscription_id, week_no, product_id} (\closure{subscription_id, week_no, product_id} = all attributes)
+\end{points} \\
+Normal form & The pair \{\col{subscription_id, week_no}\} is a composite FOREIGN KEY to \col{delivery}, but it is not a determinant inside \col{add_on} --- so there is no partial dependency on the key. The sole determinant is the whole key, a superkey. \col{add_on} is in BCNF. \\
+Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
+\bottomrule
+\end{xltabular}
+
+\subsection{Design-Rationale Notes}
+\label{sec:fd-notes}
+% normalization.md 末尾的 "Design-rationale notes" 放在这里（例如为什么快照属性
+% 不构成传递依赖、派生属性为什么不存、跨行规则为什么不是 FD）。
+\placeholder{Independent design decisions that affect the dependency analysis.}
+
+% =====================================================================
+%  Section 7  Traceability Matrix（可追溯矩阵）
+% ---------------------------------------------------------------------
+%  指南〔5.1〕：一张紧凑的矩阵，把主要需求连接到 ER 构造、关系/约束、
+%    执行方式（DB constraint / SQL check / Limitation）和计划测试。
+%  建议篇幅：约 1 页。
+%  填写说明：
+%    * 每行 5 列，所以有 4 个 &。
+%    * 每条 BR 都必须有一行，并且都要有计划测试。
+%    * 测试编号沿用 Stage 2 的命名：POS01（正常）、N01（预期失败）、
+%      TXC01（事务提交）、TXR01（事务回滚）。
+%    * 想横向排版（列更宽）：在 \begin{WideTable} 前加一行 \begin{landscape}，
+%      在 \end{WideTable} 后加一行 \end{landscape}。
+% =====================================================================
+\section{Traceability Matrix}
+\label{sec:traceability}
+
+\placeholder{One or two sentences explaining how to read the matrix and the test-ID convention.}
+
+\begin{WideTable}
+\begin{xltabular}{\linewidth}{@{}L{1.0cm}YYL{2.3cm}Y@{}}
+\caption{Traceability from requirements to design, enforcement and planned tests}\label{tab:traceability}\\
+\toprule
+\TraceHeader
+\midrule
+\endfirsthead
+\ContinuedFrom{5}
+\toprule
+\TraceHeader
+\midrule
+\endhead
+\midrule
+\ContinuedOn{5}
+\endfoot
+\bottomrule
+\endlastfoot
+\multicolumn{5}{@{}l}{\textit{Business rules}} \\
+BR1  & & & & \\
+BR2  & & & & \\
+BR3  & & & & \\
+BR4  & & & & \\
+BR5  & & & & \\
+BR6  & & & & \\
+BR7  & & & & \\
+BR8  & & & & \\
+BR9  & & & & \\
+BR10 & & & & \\
+BR11 & & & & \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Use cases}} \\
+UC1  & & & & \\
+UC2  & & & & \\
+UC3  & & & & \\
+UC4  & & & & \\
+\midrule
+\multicolumn{5}{@{}l}{\textit{Management questions}} \\
+MQ1  & & & & \\
+MQ2  & & & & \\
+MQ3  & & & & \\
+MQ4  & & & & \\
+MQ5  & & & & \\
+\end{xltabular}
+\end{WideTable}
+
+% =====================================================================
+%  Section 8  Work Plan and Implementation Risks（分工计划与风险）
+% ---------------------------------------------------------------------
+%  指南〔5.1, 3.3〕：分工计划 + 主要实现风险。Stage 2 的 contribution.pdf 要与这里对应。
+%  建议篇幅：约 0.5 页。
+%  任务名已按指南的交付项预填，可增删；Lead / Reviewer 填成员姓名，Target date 填日期。
+% =====================================================================
+\section{Work Plan and Risks}
+\label{sec:plan}
+
+\subsection{Division of Work}
+\label{sec:work}
+\begin{xltabular}{\linewidth}{@{}YL{2.7cm}L{2.7cm}L{2.2cm}@{}}
+\caption{Division of work}\label{tab:work}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Task} & \textbf{Lead} & \textbf{Reviewer} & \textbf{Target date} \\
+\midrule
+\endfirsthead
+\ContinuedFrom{4}
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Task} & \textbf{Lead} & \textbf{Reviewer} & \textbf{Target date} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+\multicolumn{4}{@{}l}{\textit{Stage 1}} \\
+Scenario fingerprint and scope                             & & & \\
+Business rules, use cases and management questions         & & & \\
+ER diagram                                                 & & & \\
+Relational mapping and data dictionary                     & & & \\
+Functional dependencies and normalization                  & & & \\
+Traceability matrix                                        & & & \\
+Proposal assembly, metadata and AI declaration             & & & \\
+\midrule
+\multicolumn{4}{@{}l}{\textit{Stage 2 (planned)}} \\
+Schema, constraints and index                              & & & \\
+Synthetic seed data and business queries (Q01--Q08)        & & & \\
+View, transaction and tests                                & & & \\
+README, report and presentation                            & & & \\
+\end{xltabular}
+
+\placeholder{How the team reviews each other's work so that every member can explain the whole design.}
+
+\subsection{Implementation Risks}
+\label{sec:risks}
+% 每个风险一行：风险是什么、可能造成的影响、应对办法。行数不够就复制一行。
+\begin{xltabular}{\linewidth}{@{}YYY@{}}
+\caption{Main implementation risks and mitigations}\label{tab:risks}\\
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Risk} & \textbf{Impact} & \textbf{Mitigation} \\
+\midrule
+\endfirsthead
+\bottomrule
+\endlastfoot
+ & & \\
+ & & \\
+ & & \\
+\end{xltabular}
+
+% =====================================================================
+%  References（参考文献，不计入 8-12 页）
+% ---------------------------------------------------------------------
+%  写法：每条资料一个 \bibitem{代号}；正文中用 \cite{代号} 引用，PDF 中显示为 [1]。
+%  网址用 \url{...} 包起来（网址里的 _ % # 不需要转义）。
+%  如果没有引用任何外部资料，可以删除从 \clearpage 到 \end{thebibliography} 的整段。
+% =====================================================================
+\clearpage
+\phantomsection
+\addcontentsline{toc}{section}{References}
+\begin{thebibliography}{9}
+  \bibitem{ref-example}
+    \placeholder{Author or organisation. \emph{Title of the page or document}. URL. Accessed DD Month 2026.}
+  % 示例（去掉 % 后使用）：
+  % \bibitem{brimwood}
+  %   Brimwood Farm. \emph{Community Supported Agriculture (CSA)}.
+  %   \url{https://www.brimwoodfarm.com/csa}. Accessed 10 October 2026.
+\end{thebibliography}
+
+% =====================================================================
+%  Appendix（附录，可选，不计入页数）
+% ---------------------------------------------------------------------
+%  用法：选中下面 4 行，按 Ctrl+/ 去掉 %。附录的小节编号会自动变成 A、B ...
+% =====================================================================
+% \clearpage
+% \appendix
+% \section{Additional Material}
+% \placeholder{Material that supports the proposal but does not need to be in the main text.}
+
+\end{document}
