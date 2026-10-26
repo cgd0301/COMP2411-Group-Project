@@ -1,0 +1,15 @@
+{
+    "group_id": "G085",
+    "canvas_group_name": "Group 85, Nov 25 Wed 12:40-12:45 PQ604A ",
+    "scenario_id": "D17-w04",
+    "stage": 1,
+    "team_size": 2,
+    "members": [
+    {"name": "CHEN Guanda", "student_id": "25095282d"},
+    {"name": "SHI Jingxuan", "student_id": "25101061d"}
+    ],
+    "dbms": "MySQL Community Server",
+    "dbms_version": "8.4.11",
+    "database_name": "comp2411_g085",
+    "approval_reference": null
+    }
