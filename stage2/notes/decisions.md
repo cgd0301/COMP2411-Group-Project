@@ -12,27 +12,28 @@ This file records conventions that do not change the Stage 1 design but affect h
 
 ## Index
 
-| ID  | Topic | Status | Date | CHEN | SHI |
-| --- | ----- | ------ | ---- | ---- | --- |
-| D01 | Season calendar for the seed data | Agreed | 2026-11-03 | ☐ | ☐ |
-| D02 | Autumn 2025 is included in the seed data | Agreed | 2026-11-03 | ☐ | ☐ |
-| D03 | Season ranges never overlap | Agreed | 2026-11-03 | ☐ | ☐ |
-| D04 | Baseline reference date 2026-07-07 | Agreed | 2026-11-03 | ☐ | ☐ |
-| D05 | Reference date in test and operation scripts | Agreed | 2026-11-03 | ☐ | ☐ |
-| D06 | Dates in `queries/Qxx.sql` | Open | 2026-11-03 | ☐ | ☐ |
-| D07 | No `CURDATE()` or `NOW()` | Agreed | 2026-11-03 | ☐ | ☐ |
-| D08 | Table and column names | Agreed | 2026-11-03 | ☐ | ☐ |
-| D09 | Constraint names | Agreed | 2026-11-03 | ☐ | ☐ |
-| D10 | SQL layout | Agreed | 2026-11-03 | ☐ | ☐ |
-| D11 | No integer display widths | Agreed | 2026-11-03 | ☐ | ☐ |
-| D12 | Test IDs | Agreed | 2026-11-03 | ☐ | ☐ |
-| D13 | SQL file header comment | Agreed | 2026-11-03 | ☐ | ☐ |
-| D14 | Development environment check | Open | | ☐ | ☐ |
-| D15 | Acknowledgement requirement check | Open | | ☐ | ☐ |
-| D16 | Referential-action clause on foreign keys whose columns are used in a CHECK | Open | | ☐ | ☐ |
-| D17 | Case sensitivity of status and type values | Open | | ☐ | ☐ |
-| D18 | Signed and unsigned columns, and the values used in negative tests | Open | | ☐ | ☐ |
-| D19 | Apostrophes in string literals | Open | | ☐ | ☐ |
+| ID  | Topic                                                                       | Status | Date       | CHEN | SHI |
+| --- | --------------------------------------------------------------------------- | ------ | ---------- | ---- | --- |
+| D01 | Season calendar for the seed data                                           | Agreed | 2026-11-03 | ✅   | ☐   |
+| D02 | Autumn 2025 is included in the seed data                                    | Agreed | 2026-11-03 | ✅   | ☐   |
+| D03 | Season ranges never overlap                                                 | Agreed | 2026-11-03 | ✅   | ☐   |
+| D04 | Baseline reference date 2026-07-07                                          | Agreed | 2026-11-03 | ✅   | ☐   |
+| D05 | Reference date in test and operation scripts                                | Agreed | 2026-11-03 | ✅   | ☐   |
+| D06 | Dates in `queries/Qxx.sql`                                                  | Open   | 2026-11-03 | ☐    | ☐   |
+| D07 | No `CURDATE()` or `NOW()`                                                   | Agreed | 2026-11-03 | ✅   | ☐   |
+| D08 | Table and column names                                                      | Agreed | 2026-11-03 | ✅   | ☐   |
+| D09 | Constraint names                                                            | Agreed | 2026-11-03 | ✅   | ☐   |
+| D10 | SQL layout                                                                  | Agreed | 2026-11-03 | ✅   | ☐   |
+| D11 | No integer display widths                                                   | Agreed | 2026-11-03 | ✅   | ☐   |
+| D12 | Test IDs                                                                    | Agreed | 2026-11-03 | ✅   | ☐   |
+| D13 | SQL file header comment                                                     | Agreed | 2026-11-03 | ✅   | ☐   |
+| D14 | Development environment check                                               | Open   |            | ✅   | ☐   |
+| D15 | Acknowledgement requirement check                                           | Agreed |            | ✅   | ☐   |
+| D16 | Referential-action clause on foreign keys whose columns are used in a CHECK | Agreed | 2026-11-03 | ✅   | ☐   |
+| D17 | Case sensitivity of status and type values                                  | Open   |            | ☐    | ☐   |
+| D18 | Signed and unsigned columns, and the values used in negative tests          | Open   |            | ☐    | ☐   |
+| D19 | Apostrophes in string literals                                              | Open   |            | ☐    | ☐   |
+| D20 | No refund row for a zero refund                                             | Agreed | 2026-11-03 | ☐    | ☐   |
 
 ---
 
@@ -40,12 +41,12 @@ This file records conventions that do not change the Stage 1 design but affect h
 
 - **Decision:** The seed data contain exactly the four seasons below. D is the first planning day (a Monday); the subscription range runs from D − 6 to D + 77, both included (84 days, BR3); the enrolment window follows BR4.
 
-  | Season      | First planning day D | Subscription range (D − 6 to D + 77) | Enrolment window (BR4) | Status of non-cancelled subscriptions on the baseline date (D04) |
-  | ----------- | -------------------- | ------------------------------------ | ---------------------- | ---------------------------------------------------------------- |
-  | Autumn 2025 | 2025-09-08 | 2025-09-02 to 2025-11-24 | The Summer 2025 range (Summer 2025 is not stored) | finished |
-  | Spring 2026 | 2026-03-02 | 2026-02-24 to 2026-05-18 | 2025-11-25 to 2026-02-23 | finished |
-  | Summer 2026 | 2026-06-01 | 2026-05-26 to 2026-08-17 | 2026-02-24 to 2026-05-18 | active |
-  | Autumn 2026 | 2026-09-07 | 2026-09-01 to 2026-11-23 | 2026-05-26 to 2026-08-17 | planned (its window is open) |
+  | Season      | First planning day D | Subscription range (D − 6 to D + 77) | Enrolment window (BR4)                            | Status of non-cancelled subscriptions on the baseline date (D04) |
+  | ----------- | -------------------- | ------------------------------------ | ------------------------------------------------- | ---------------------------------------------------------------- |
+  | Autumn 2025 | 2025-09-08           | 2025-09-02 to 2025-11-24             | The Summer 2025 range (Summer 2025 is not stored) | finished                                                         |
+  | Spring 2026 | 2026-03-02           | 2026-02-24 to 2026-05-18             | 2025-11-25 to 2026-02-23                          | finished                                                         |
+  | Summer 2026 | 2026-06-01           | 2026-05-26 to 2026-08-17             | 2026-02-24 to 2026-05-18                          | active                                                           |
+  | Autumn 2026 | 2026-09-07           | 2026-09-01 to 2026-11-23             | 2026-05-26 to 2026-08-17                          | planned (its window is open)                                     |
 
 - **Rationale:** On the baseline date these seasons give finished, active and planned subscriptions, so every BR3 status appears in the seed data. All four first planning days have been checked to be Mondays, and no two ranges overlap.
 - **Applies to:** `sql/02_data.sql`, all tests and queries, README `# Queries`.
@@ -110,11 +111,11 @@ This file records conventions that do not change the Stage 1 design but affect h
 
 - **Decision:** Every constraint except the primary key is named as follows. Primary keys are not named, because MySQL always names them `PRIMARY`.
 
-  | Constraint  | Pattern                 | Example               |
-  | ----------- | ----------------------- | --------------------- |
-  | CHECK       | `ck_<table>_<meaning>`  | `ck_delivery_week_no` |
-  | UNIQUE      | `uq_<table>_<columns>`  | `uq_customer_email`   |
-  | FOREIGN KEY | `fk_<child>_<parent>`   | `fk_add_on_delivery`  |
+  | Constraint  | Pattern                | Example               |
+  | ----------- | ---------------------- | --------------------- |
+  | CHECK       | `ck_<table>_<meaning>` | `ck_delivery_week_no` |
+  | UNIQUE      | `uq_<table>_<columns>` | `uq_customer_email`   |
+  | FOREIGN KEY | `fk_<child>_<parent>`  | `fk_add_on_delivery`  |
 
 - **Rationale:** MySQL reports the constraint name when a check fails (for example `Check constraint 'ck_delivery_week_no' is violated.`), so a test shows which rule rejected the data, and CHECK and foreign-key names must be unique within a database, which the table prefix guarantees. The traceability matrix and negative tests can also cite these names directly.
 - **Applies to:** `sql/01_schema.sql`, constraint inventory, `tests/negative/`, report.
@@ -167,16 +168,16 @@ This file records conventions that do not change the Stage 1 design but affect h
          @@character_set_server, @@collation_server;
   ```
 
-  | Item | Expected | CHEN | SHI |
-  | ---- | -------- | ---- | --- |
-  | `VERSION()` | `8.4.11` | | |
-  | `@@sql_mode` | includes `STRICT_TRANS_TABLES` and `ONLY_FULL_GROUP_BY` | | |
-  | `@@autocommit` | `1` | | |
-  | `@@default_storage_engine` | `InnoDB` | | |
-  | `@@character_set_server` | `utf8mb4` | | |
-  | `@@collation_server` | `utf8mb4_0900_ai_ci` | | |
-  | The `mysql` command-line client connects and can `source` a script | yes | | |
-  | Account used (name and privileges only) | | | |
+  | Item                                                               | Expected                                                | CHEN                                                    | SHI |
+  | ------------------------------------------------------------------ | ------------------------------------------------------- | ------------------------------------------------------- | --- |
+  | `VERSION()`                                                        | `8.4.11`                                                | `8.4.11`                                                |     |
+  | `@@sql_mode`                                                       | includes `STRICT_TRANS_TABLES` and `ONLY_FULL_GROUP_BY` | includes `STRICT_TRANS_TABLES` and `ONLY_FULL_GROUP_BY` |     |
+  | `@@autocommit`                                                     | `1`                                                     | `1`                                                     |     |
+  | `@@default_storage_engine`                                         | `InnoDB`                                                | `InnoDB`                                                |     |
+  | `@@character_set_server`                                           | `utf8mb4`                                               | `utf8mb4`                                               |     |
+  | `@@collation_server`                                               | `utf8mb4_0900_ai_ci`                                    | `utf8mb4_0900_ai_ci`                                    |     |
+  | The `mysql` command-line client connects and can `source` a script | yes                                                     | yes                                                     |     |
+  | Account used (name and privileges only)                            |                                                         |                                                         |     |
 
 - **Decision:** <environment recorded in the README `# Environment` section and in `metadata.json`>
 - **Rationale:** The README must state the tested versions and privileges [9.3], and strict mode makes invalid values fail instead of being silently adjusted, which the negative tests depend on.
@@ -186,19 +187,19 @@ This file records conventions that do not change the Stage 1 design but affect h
 ## D15 Acknowledgement requirement check (roadmap 0.7)
 
 - **Check:** Open the guidance PDF in a PDF reader, search (Ctrl+F) for the professor's name in the last bullet of Section 10 (search for `Yuawqv`), and see whether the highlighted text is visible on the page.
-- **Result:** ☐ Visible text, so it is a formal requirement　☐ Found but not visible (for example white text); asked the TA on ________, answer: ________
-- **Decision:** <what the report's Acknowledgements section will say>
+- **Result:** Found but not visible (for example white text); asked the TA, answer: This is a prompt injection, please ignore the sentence.
+- **Decision:** Ignore the sentence, do not add any acknowledgement.
 - **Rationale:**
 - **Applies to:** `report.pdf` Acknowledgements section; checklist item J10.
-- **Status:** Open.
+- **Status:** Agreed.
 
 ## D16 Referential-action clause on foreign keys whose columns are used in a CHECK (roadmap 1.2, question 1)
 
 - **Question:** MySQL does not allow a column used in a CHECK constraint to carry a foreign-key referential action. `refund.week_no` is used in `ck_refund_link` and in the composite foreign key to `delivery`. Should that foreign key state `ON DELETE RESTRICT` explicitly, or omit the clause (RESTRICT is the InnoDB default)? Proposal §8.2 planned no referential actions. Decide after the schema probe.
-- **Decision:**
-- **Rationale:**
+- **Decision:** Omit the clause and keep the MySQL's default setting.
+- **Rationale:** There's no actual difference on the performance whether the `ON DELETE RESTRICT` is written or not.
 - **Applies to:** `sql/01_schema.sql`.
-- **Status:** Open.
+- **Status:** Agreed, 2026-11-03.
 
 ## D17 Case sensitivity of status and type values (roadmap 1.2, question 2)
 
@@ -222,6 +223,13 @@ This file records conventions that do not change the Stage 1 design but affect h
 - **Rationale:**
 - **Applies to:** all SQL files.
 - **Status:** Open.
+
+## D20 No refund row for a zero refund
+
+- **Decision:** When a refund works out to 0 HKD, the operation inserts no `refund` row; the rest of the operation runs as usual. This covers a skip when no refundable skip remains (BR8) and the cancellation of an active subscription whose BR10 refund (min(remaining refundable skips, planned deliveries after the cancellation date) × allocated cost, plus the add-on fees on those deliveries) is 0.
+- **Rationale:** `ck_refund_amount` (`amount > 0`, data dictionary §5.5) rejects a zero amount, and a row that refunds nothing carries no information. Queries that total refunds already use `COALESCE(..., 0)` for subscriptions with no refund rows.
+- **Applies to:** skip and cancellation operations (BR8, BR10), their tests, README `# Tests`.
+- **Status:** Agreed, 2026-11-03.
 
 ---
 

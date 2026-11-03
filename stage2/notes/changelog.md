@@ -39,6 +39,7 @@ This is the working draft of the change log that `report.pdf` must contain [6, 6
 | ID   | Date       | Stage 1 location | Change | Reason | Affected files |
 | ---- | ---------- | ---------------- | ------ | ------ | -------------- |
 | CL01 | 2026-11-02 | Whole proposal   | Stage 1 feedback received: no issues raised; no design change planned. | Baseline entry: Stage 2 starts from the submitted Stage 1 design, and every later entry records a departure from it. | — |
+| CL02 | 2026-11-03 | §5.3 subscription | Before: `allocated_cost` CHECK IN (160, 192, 200, 240); After: `ck_subscription_allocated_cost` requires the cost to match the plan: 200 or 160 for `'farmer''s choice'`, 240 or 192 for `'customizable'`. | The data dictionary was weaker than the BR5 Enforcement field (§2.1), which already requires the cost to match the plan; with the old CHECK, the BR5 test (a farmer's choice subscription with a cost of 240 is rejected, 3819) would fail. | `DataDictionary.md`, `stage2/notes/constraint_inventory.md`, `sql/01_schema.sql`, report data dictionary section |
 
 ## Pending candidates (not yet agreed)
 

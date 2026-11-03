@@ -34,7 +34,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | status | VARCHAR(10) | — | NO | 'planned' | CHECK IN ('planned','active','finished','cancelled') | Lifecycle state |
 | plan_type | VARCHAR(20) | — | NO | — | CHECK IN ('farmer''s choice','customizable') | Chosen at enrolment, immutable afterwards |
 | frequency | VARCHAR(10) | — | NO | — | CHECK IN ('weekly','biweekly') | Chosen at enrolment, immutable afterwards |
-| allocated_cost | DECIMAL(8,2) | — | NO | — | CHECK IN (160, 192, 200, 240) | Single-delivery price snapshot incl. 20% renewal discount (stored to lock price) |
+| allocated_cost | DECIMAL(8,2) | — | NO | — | CHECK matches plan_type: IN (200, 160) for 'farmer''s choice', IN (240, 192) for 'customizable' | Single-delivery price snapshot incl. 20% renewal discount (stored to lock price) |
 | submission_date | DATE | — | NO | — | — | Enrolment/renewal date |
 | cancellation_date | DATE | — | YES | NULL | — | NULL = not cancelled (legitimate missing value) |
 | remaining_refundable_skip | TINYINT | — | NO | 2 | CHECK BETWEEN 0 AND 2 | Refundable skip quota, consumed by skip refunds |

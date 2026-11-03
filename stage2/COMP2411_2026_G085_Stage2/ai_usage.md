@@ -1,0 +1,3 @@
+| Tool     | purpose                                                           | affected sections | details                                                                                               |
+| -------- | ----------------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------- |
+| Opus-5.5 | Planning for detailed steps to finish the stage 2 of this project | Null              | Require the AI to analyse project requirements and plan a roadmap to guide us to work on the project. |
