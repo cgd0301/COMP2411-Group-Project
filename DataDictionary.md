@@ -45,7 +45,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |
 |---|---|---|---|---|---|---|
 | subscription_id | INT UNSIGNED | PK part 1; FK→subscription | NO | — | — | Owner entity PK (identifying relationship) |
-| week_no | TINYINT UNSIGNED | PK part 2 (partial key) | NO | — | CHECK (BETWEEN 1 AND 12) | Week within the season |
+| week_no | TINYINT | PK part 2 (partial key) | NO | — | CHECK (BETWEEN 1 AND 12) | Week within the season |
 | status | VARCHAR(10) | — | NO | 'planned' | CHECK IN ('planned','skipped','success','failed','cancelled') | Delivery state machine; transitions guarded by UPDATE in transactions |
 
 **Derived (not stored):** delivery_date() = first planning delivery day + (week_no-1) x 7; add_on_fee() = SUM(weight x price_per_kg); price() is computed on the fly. See Conventions above.
@@ -56,9 +56,9 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | refund_id | INT UNSIGNED AUTO_INCREMENT | PK | NO | — | — | Surrogate identifier |
 | subscription_id | INT UNSIGNED | FK→subscription | NO | — | — | The subscription refunded |
 | amount | DECIMAL(8,2) | — | NO | — | CHECK (> 0) | Computed at discounted allocated cost (anti-arbitrage) |
-| type | VARCHAR(12) | — | NO | — | CHECK IN ('skip','failed','cancellation') | 'skip' consumes quota; 'failed' does not; 'cancellation' ties to no delivery |
+| type | VARCHAR(12) | — | NO | — | CHECK IN ('skipped','failed','cancelled') | 'skipped' consumes quota; 'failed' does not; 'cancelled' ties to no delivery |
 | refund_date | DATE | — | NO | — | — | When the refund was issued |
-| week_no | TINYINT UNSIGNED | Make up the composite foreign key with subscription_id referencing delivery(subscription_id, week_no); UNIQUE(subscription_id, week_no) | YES | NULL | CHECK: If type is skip or failed, it should be non null; if type is cancellation, it must be null | Null indicates cancellation, which does not refer to any delivery; When it is non null, the composite foreign key gurantees the refund and delivery belong to the same subscription. |
+| week_no | TINYINT | Make up the composite foreign key with subscription_id referencing delivery(subscription_id, week_no); UNIQUE(subscription_id, week_no) | YES | NULL | CHECK: If type is skipped or failed, it should be non null; if type is cancelled, it must be null | Null indicates cancellation, which does not refer to any delivery; When it is non null, the composite foreign key gurantees the refund and delivery belong to the same subscription. |
 
 ## 6. product
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |
@@ -81,7 +81,7 @@ Note: "0..8 picks" is a cross-row rule and cannot be a CHECK; enforced by in-tra
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |
 |---|---|---|---|---|---|---|
 | subscription_id | INT UNSIGNED | PK part 1; composite FK→delivery | NO | — | — | Delivery the add-on belongs to |
-| week_no | TINYINT UNSIGNED | PK part 2; composite FK→delivery | NO | — | — | Same window as refundable skip |
+| week_no | TINYINT | PK part 2; composite FK→delivery | NO | — | — | Same window as refundable skip |
 | product_id | INT UNSIGNED | PK part 3; FK→product | NO | — | — | Product added (limited to the plan's types) |
 | weight | DECIMAL(5,2) | — | NO | — | CHECK (>= 0.10) | Relationship attribute from ER diagram; fee = SUM(weight x price_per_kg) |
 

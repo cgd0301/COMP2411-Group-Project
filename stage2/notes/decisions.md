@@ -31,7 +31,7 @@ This file records conventions that do not change the Stage 1 design but affect h
 | D15 | Acknowledgement requirement check                                           | Agreed |            | ✅   | ☐   |
 | D16 | Referential-action clause on foreign keys whose columns are used in a CHECK | Agreed | 2026-11-03 | ✅   | ☐   |
 | D17 | Case sensitivity of status and type values                                  | Open   |            | ☐    | ☐   |
-| D18 | Signed and unsigned columns, and the values used in negative tests          | Open   |            | ☐    | ☐   |
+| D18 | Signed and unsigned columns, and the values used in negative tests          | Agreed | 2026-11-04 | ✅    | ☐   |
 | D19 | Apostrophes in string literals                                              | Open   |            | ☐    | ☐   |
 | D20 | No refund row for a zero refund                                             | Agreed | 2026-11-03 | ☐    | ☐   |
 
@@ -211,11 +211,11 @@ This file records conventions that do not change the Stage 1 design but affect h
 
 ## D18 Signed and unsigned columns, and the values used in negative tests (roadmap 1.2, question 5)
 
-- **Question:** Confirm the signedness of each numeric column and choose negative-test values that trigger the intended CHECK (error 3819) rather than an out-of-range error. Expected behaviour, to be confirmed by the schema probe: `remaining_refundable_skip` is a signed `TINYINT`, so lowering 0 by 1 gives 3819; `week_no` is `TINYINT UNSIGNED`, so 13 gives 3819 but −1 gives 1264.
-- **Decision:**
-- **Rationale:**
+- **Question:** Confirm the signedness of each numeric column and choose negative-test values that trigger the intended CHECK (error 3819) rather than an out-of-range error. The early draft of this question expected `week_no` to stay `TINYINT UNSIGNED`, so that −1 would fail with 1264. That option was not taken.
+- **Decision:** Every numeric column used in a CHECK is signed. Every other numeric column stays unsigned. Signed: `delivery.week_no`, `refund.week_no`, `add_on.week_no` and `remaining_refundable_skip` (`TINYINT`); `allocated_cost`, `price_per_kg`, `amount` and `weight` (`DECIMAL`, signed by default). Unsigned: identifier columns and `season.year`. A negative test uses a value the signed type can store, such as `week_no = -1` or `remaining_refundable_skip = -1`, and expects 3819.
+- **Rationale:** An UNSIGNED column rejects a negative value with error 1264 (out of range) before the CHECK runs, so the message does not name the constraint. A signed column stores the value, the CHECK rejects it with 3819, and the message names the constraint, for example `ck_delivery_week_no`. The `week_no` type change from the Stage 1 data dictionary is CL04.
 - **Applies to:** `sql/01_schema.sql`, `tests/negative/`, `evidence/test_cases.csv`.
-- **Status:** Open.
+- **Status:** Agreed, 2026-11-04.
 
 ## D19 Apostrophes in string literals
 

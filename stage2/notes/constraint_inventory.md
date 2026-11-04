@@ -52,7 +52,7 @@ Rows are grouped by table in creation order: customer, season, product, subscrip
 | `fk_chosen_products_product` | chosen_products | FOREIGN KEY | `(product_id)` references `product(product_id)` ON DELETE RESTRICT | BR6 | `product_id = 9999` (no such product) | 1452 | (fill in §1.6) |
 | `PRIMARY` | delivery | PRIMARY KEY | `(subscription_id, week_no)` | BR7 | A second delivery for the same subscription and `week_no` | 1062 | (fill in §1.6) |
 | `fk_delivery_subscription` | delivery | FOREIGN KEY | `(subscription_id)` references `subscription(subscription_id)` ON DELETE RESTRICT | BR7 | `subscription_id = 9999` (no such subscription) | 1452 | (fill in §1.6) |
-| `ck_delivery_week_no` | delivery | CHECK | `week_no BETWEEN 1 AND 12` | BR7 | `week_no = 13`. `0` also gives 3819; `-1` gives 1264 and is not used (D18, to be probed) | 3819 | (fill in §1.6) |
+| `ck_delivery_week_no` | delivery | CHECK | `week_no BETWEEN 1 AND 12` | BR7 | `week_no = 13`, `0` or `-1`. `week_no` is signed `TINYINT` (CL04, D18), so `-1` gives 3819, not 1264 | 3819 | (fill in §1.6) |
 | `ck_delivery_status` | delivery | CHECK | `status IN ('planned', 'skipped', 'success', 'failed', 'cancelled')` | BR7 | `status = 'delivered'` | 3819 | (fill in §1.6) |
 | `PRIMARY` | add_on | PRIMARY KEY | `(subscription_id, week_no, product_id)` | BR9 | A second line for the same product on the same delivery | 1062 | (fill in §1.6) |
 | `fk_add_on_delivery` | add_on | FOREIGN KEY (composite) | `(subscription_id, week_no)` references `delivery(subscription_id, week_no)` ON DELETE RESTRICT | BR9 | `week_no = 2` for a biweekly subscription, which has no week-2 delivery | 1452 | (fill in §1.6) |
@@ -60,12 +60,11 @@ Rows are grouped by table in creation order: customer, season, product, subscrip
 | `ck_add_on_weight` | add_on | CHECK | `weight >= 0.10` | BR9 | `weight = 0.05` | 3819 | (fill in §1.6) |
 | `PRIMARY` | refund | PRIMARY KEY | `(refund_id)` | — (surrogate key) | Insert a row with an existing `refund_id` | 1062 | (fill in §1.6) |
 | `fk_refund_subscription` | refund | FOREIGN KEY | `(subscription_id)` references `subscription(subscription_id)` ON DELETE RESTRICT | BR11 | `subscription_id = 9999` (no such subscription) | 1452 | (fill in §1.6) |
-| `fk_refund_delivery` | refund | FOREIGN KEY (composite) | `(subscription_id, week_no)` references `delivery(subscription_id, week_no)`, with no ON DELETE clause (D16; the InnoDB default is RESTRICT) | BR11 | A skip refund with `week_no = 5` for a subscription that has no week-5 delivery | 1452 | (fill in §1.6) |
+| `fk_refund_delivery` | refund | FOREIGN KEY (composite) | `(subscription_id, week_no)` references `delivery(subscription_id, week_no)`, with no ON DELETE clause (D16; the InnoDB default is RESTRICT) | BR11 | A `'skipped'` refund with `week_no = 5` for a subscription that has no week-5 delivery | 1452 | (fill in §1.6) |
 | Column NOT NULL (unnamed) | refund | NOT NULL | `subscription_id` | BR11 | `subscription_id = NULL` | 1048 | (fill in §1.6) |
 | `uq_refund_subscription_week_no` | refund | UNIQUE | `(subscription_id, week_no)` | BR11 | A second refund for the same delivery | 1062 | (fill in §1.6) |
 | `ck_refund_amount` | refund | CHECK | `amount > 0` | BR11 (data dictionary only) | `amount = 0.00` | 3819 | (fill in §1.6) |
-| `ck_refund_type` | refund | CHECK | `type IN ('skip', 'failed', 'cancellation')` | BR11 | `type = 'bonus'` | 3819 | (fill in §1.6) |
-| `ck_refund_link` | refund | CHECK | `(type IN ('skip', 'failed') AND week_no IS NOT NULL) OR (type = 'cancellation' AND week_no IS NULL)` | BR11 | `type = 'skip'` with `week_no = NULL`; `type = 'cancellation'` with `week_no = 3` | 3819 | (fill in §1.6) |
+| `ck_refund_type` | refund | CHECK | `(type IN ('skipped', 'failed') AND week_no IS NOT NULL) OR (type = 'cancelled' AND week_no IS NULL)` | BR11 | `type = 'bonus'`; `type = 'skipped'` with `week_no = NULL`; `type = 'cancelled'` with `week_no = 3` | 3819 | (fill in §1.6) |
 
 ## Count check
 
@@ -74,9 +73,9 @@ Rows are grouped by table in creation order: customer, season, product, subscrip
 | PRIMARY KEY | 8 | One per table; 3 are composite (chosen_products, delivery, add_on) |
 | FOREIGN KEY | 10 | Checked one by one below; 2 are composite |
 | UNIQUE | 6 | customer 1, season 2, product 1, subscription 1, refund 1 |
-| CHECK | 14 | season 2, product 1, subscription 5, delivery 2, add_on 1, refund 3 |
+| CHECK | 13 | season 2, product 1, subscription 5, delivery 2, add_on 1, refund 2 |
 | NOT NULL (named in an Enforcement field) | 4 | subscription 2, product 1, refund 1 |
-| Total | 42 | 30 of them are named constraints (FOREIGN KEY, UNIQUE and CHECK) |
+| Total | 41 | 29 of them are named constraints (FOREIGN KEY, UNIQUE and CHECK) |
 
 Foreign keys checked against the ER mapping:
 
@@ -95,14 +94,16 @@ Foreign keys checked against the ER mapping:
 
 Result: 10 of 10, so no relationship was missed in the ER mapping. `add_on` has no separate foreign key to `subscription`: it belongs to a subscription through `fk_add_on_delivery`.
 
-CHECK and FOREIGN KEY names must be unique within the whole database. The table prefix in each name guarantees this (D09), and the 30 named constraints above are all distinct.
+CHECK and FOREIGN KEY names must be unique within the whole database. The table prefix in each name guarantees this (D09), and the 29 named constraints above are all distinct.
 
 ## Differences and notes
 
-- **`allocated_cost` (resolved, CL02):** The data dictionary gave only `CHECK IN (160, 192, 200, 240)`, which was weaker than the BR5 Enforcement field. BR5 requires the cost to match the plan, and its test case (a farmer's choice subscription with a cost of 240 is rejected) passes only with that version. This inventory uses the BR5 version, `ck_subscription_allocated_cost`; `DataDictionary.md` has been updated to match.
-- **`ck_refund_amount` (`amount > 0`, resolved, D20):** Some refunds work out to 0. Under BR8, a skip when no refundable skip remains refunds nothing. Under BR10, cancelling an active subscription can give 0, for example when no refundable skip remains and no add-on fee applies. In these cases the operation inserts no refund row, so this CHECK is never hit by a valid operation.
+- `allocated_cost` **(resolved, CL02):** The data dictionary gave only `CHECK IN (160, 192, 200, 240)`, which was weaker than the BR5 Enforcement field. BR5 requires the cost to match the plan, and its test case (a farmer's choice subscription with a cost of 240 is rejected) passes only with that version. This inventory uses the BR5 version, `ck_subscription_allocated_cost`; `DataDictionary.md` has been updated to match.
+- `ck_refund_amount` **(**`amount > 0`**, resolved, D20):** Some refunds work out to 0. Under BR8, a skip when no refundable skip remains refunds nothing. Under BR10, cancelling an active subscription can give 0, for example when no refundable skip remains and no add-on fee applies. In these cases the operation inserts no refund row, so this CHECK is never hit by a valid operation.
 - **NULL in UNIQUE and FOREIGN KEY:** `uq_refund_subscription_week_no` allows several rows with `week_no IS NULL`, so it does not limit a subscription to one cancellation refund. That limit comes from the BR10 transaction: its UPDATE matches only a planned or active subscription, and the subscription is cancelled afterwards. Likewise, `fk_refund_delivery` is not checked when `week_no IS NULL`. This is intended, because a cancellation refund is for no delivery.
 - **D16 (Agreed):** `fk_refund_delivery` has no ON DELETE clause. Also, `delivery.week_no` is a referenced column and is used in `ck_delivery_week_no`, so the probe must confirm that `fk_add_on_delivery` with `ON DELETE RESTRICT` raises no error.
+- **`ck_refund_type` (CL03):** Stage 1 stored `skip`, `failed` and `cancellation`, and described the week-number pairing separately. The DDL has one CHECK, `ck_refund_type`, with values `skipped`, `failed` and `cancelled`. There is no `ck_refund_link`.
+- **`week_no` (CL04, D18):** `delivery.week_no`, `refund.week_no` and `add_on.week_no` are signed `TINYINT`. `week_no = -1` violates `ck_delivery_week_no` (3819). It is not error 1264.
 - **Primary-key columns:** The foreign-key columns of `delivery`, `chosen_products` and `add_on` are part of each table's primary key, so they are NOT NULL automatically and have no NOT NULL rows of their own. In BR7, "the subscription is a NOT NULL foreign key" is guaranteed by the primary key of `delivery`.
 
 ## Pending candidates (not in the DDL)
