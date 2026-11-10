@@ -203,7 +203,7 @@
 
 % 完整 Canvas 组名：从 Canvas 逐字复制（包括日期、时间、教室），
 % 例如 Group 2, Nov 25, 8:36-8:41, TU103。复制好后把 \placeholder{...} 整个替换掉。
-\newcommand{\CanvasGroupName}{\placeholder{Copy the full Canvas group name, e.g.\ Group 2, Nov 25, 8:36-8:41, TU103}}
+\newcommand{\CanvasGroupName}{Group 85, Nov 25 Wed 12:40-12:45 PQ604A}
 
 % Scenario ID 与它的含义（D17 = 领域种子，W04 = 焦点卡）
 \newcommand{\ScenarioID}{D17-W04}
@@ -213,10 +213,10 @@
 \newcommand{\TeamSize}{2}
 
 % 成员姓名（与 Canvas 一致）和学号。把 \placeholder{...} 整个替换成真实内容。
-\newcommand{\MemberOneName}{\placeholder{Member 1 full name}}
-\newcommand{\MemberOneID}{\placeholder{Student ID}}
-\newcommand{\MemberTwoName}{\placeholder{Member 2 full name}}
-\newcommand{\MemberTwoID}{\placeholder{Student ID}}
+\newcommand{\MemberOneName}{CHEN Guanda}
+\newcommand{\MemberOneID}{25095282d}
+\newcommand{\MemberTwoName}{SHI Jingxuan}
+\newcommand{\MemberTwoID}{25101061d}
 % 3-4 人组：去掉下面对应行前的 %，再到封面（Ctrl+F 搜 "成员表"）去掉对应行前的 %。
 % \newcommand{\MemberThreeName}{\placeholder{Member 3 full name}}
 % \newcommand{\MemberThreeID}{\placeholder{Student ID}}
@@ -386,7 +386,6 @@
 
 % 卡片标题行：\cardtitle{编号}{标题}
 % 卡片没有 \caption，但 longtable 仍会给表格计数器加 1，这里减回去，免得表格编号跳号。
-% 标题下的横线画在标题行内部（而不是用 \midrule），这样标题不会孤零零留在页底。
 \newcommand{\cardtitle}[2]{%
   \multicolumn{2}{@{}l@{}}{%
     \addtocounter{table}{-1}%
@@ -547,7 +546,7 @@
 \section{Scenario Fingerprint and Scope}
 \label{sec:fingerprint}
 
-\placeholder{Optional: a short paragraph introducing Farmlander Farm and what the database supports. Delete this line if not needed.}
+The farmer lander follows a business pattern of weekly/biweekly delivery of farm products to subscribed customers[1]. In this group project, the database system designed for such business scenario mainly focuses on subscription management, including registration, renewal, and cancelation of the subscription for weekly/biweekly agriculture products delivery[4].
 
 \subsection{Scenario Fingerprint}
 \label{sec:fingerprint-table}
@@ -555,7 +554,7 @@
 % 其余每一行：在 & 和 \\ 之间写内容。内容再长也没关系，会自动换行，表格也能跨页。
 % 单元格里想分点：\begin{points} \item ... \item ... \end{points}；想换行：\newline。
 % "Difficulty rationale" 不在附录 B 模板里，但指南 5.1 要求写，所以单独加了一行。
-\begin{xltabular}{\linewidth}{@{}B{4.0cm}Y@{}}
+\begin{xltabular}{\linewidth}{@{}B{6.0cm}Y@{}}
 \caption{Scenario fingerprint (template of Appendix B of the project guidance)}\label{tab:fingerprint}\\
 \toprule
 \endfirsthead
@@ -568,39 +567,18 @@
 \endlastfoot
 Group ID                             & \GroupID \\
 Full Canvas group name               & \CanvasGroupName \\
-Scenario ID                          & \ScenarioID\ (\ScenarioName) \\
-Organization name and type           & \\
-Principal users/roles                & \\
-Business object and core event       & \\
-Distinctive policy or constraint     & \\
-Management questions (at least four) & \\
-Excluded processes                   & \\
-Workflow fit and scope rationale     & \\
-Difficulty rationale                 & \\
+Scenario ID                          & \ScenarioID\\
+Organization name and type           & Farmerland - Agriculture Cooperative\\
+Principal users/roles                & Farm Staff, Subscriber \newline \\
+Business object and core event       & \textbullet \quad Business object: a seasonal CSA subscription with a fixed 12-week delivery window \item \textbullet \quad Core event: enrolment, cancelation, and renewal for subscription; skipping and making add-on purchase on each delivery; recording each delivery's outcome; calculating subscription or refund fee based on business rules[4] \newline \\
+Distinctive policy or constraint     & \textbullet \quad Subscriptions are seasonal and only operate in spring, summer, and autumn. \item \textbullet \quad The enrolment window is the previous season (winter -> spring, spring -> summer, summer -> autumn)[4] \item \textbullet \quad A renewal gets 20\% off the allocated cost per delivery \item \textbullet \quad Plan type and frequency are fixed at enrolement[5] \item \textbullet \quad  Each season farmers grow exactly 10 types of agriculture products \item \textbullet \quad Available types of products in add-on purchase for each delivery are limited to the plan's products \newline  \\
+Management questions (at least four) & Q1. For the Spring 2026 season, how many subscriptions were sold per plan type, and what is the total refund amount (skips, failed deliveries, cancellations) of each plan and net income after all refunds? \item Q2. For the Spring 2026, per plan type, which add-on products generate the largest add-on income from successful deliveries? \item Q3. Which delivery weeks of Spring 2026 had the highest skip rates and the highest failure rates? \item Q4. For the Spring 2026 season, which products are most frequently chosen by customizable plan subscribers, and are they among the season's 6 farmer's choice products? \item Q5. For subscriptions in the Spring 2026 season that were not cancelled, what proportion of each plan type's subscribers renewed into Summer 2026, and which plan type had a renewal rate below 60\%? \newline  \\
+Excluded processes                   & No real payment processing; No delivery assignment; No farm production management beyond the given types\\
+Workflow fit and scope rationale     & \textbullet \quad Workflow fit: In the CSA workflow, customers receive weekly or biweekly deliveries of agricultural products[1]. They may subscribe for the next season, cancel subscriptions, skip deliveries, or purchase add-on products[5]. Therefore, the database design includes entities for customer, subscription, delivery, product, and add-on purchase. The remaining refund skipping time is stored and tracked because it represents a business quota that determines a customer's entitlement to fully compensated delivery skips. These entities and constraints directly support the operational workflow of CSA delivery management.\item \textbullet \quad Scope rational: The scope focuses on the subscription management and customers' quota usage. \newline   \\
+Difficulty rationale                 & The project involves membership management, subscription renewal, delivery recordings and detailed refunding rules, which satisfies the project complexity requirements while keeping the overall scope manageable. \\
 \end{xltabular}
 
-\subsection{Focus-Card Requirement and Scope}
-\label{sec:scope}
-% 下面引用的是指南附录 A.2 中 W04 的 minimum core requirement 原文（不要改）。
-% 这一要求必须完整实现，不能写成 limitation。
-\begin{quote}
-\itshape W04 Membership or subscription, minimum core requirement: ``Manage enrolment and renewal with explicit eligibility or validity rules, and record the use of defined benefits, entitlements, or quotas.''
-\end{quote}
 
-\placeholder{Explain how the design meets each part of this requirement (enrolment and renewal; eligibility or validity rules; use of benefits, entitlements or quotas) and name the business rules that implement each part.}
-
-\textbf{In scope.}
-\begin{itemize}
-  \item \placeholder{Process or rule that the database implements}
-  \item \placeholder{...}
-\end{itemize}
-
-\textbf{Out of scope.}
-% 并发处理（concurrency）和自动排程（automatic scheduling）本来就不要求，可以顺带写明。
-\begin{itemize}
-  \item \placeholder{Process that will not be implemented, and why}
-  \item \placeholder{...}
-\end{itemize}
 
 % =====================================================================
 %  Section 2  Requirements（需求：业务规则、用例、管理问题）
@@ -617,32 +595,6 @@ Difficulty rationale                 & \\
 \section{Requirements}
 \label{sec:requirements}
 
-\subsection{Enforcement Labels and Conventions}
-\label{sec:conventions}
-% 草稿 businessRules.md 开头的 "Enforcement labels" 和错误号说明放在这里。
-% 第一列已经填好，在第二列写含义；不需要的行整行删掉。
-\placeholder{One or two sentences explaining how each rule below is enforced and how test outcomes are reported.}
-
-\begin{xltabular}{\linewidth}{@{}B{3.1cm}Y@{}}
-\caption{Enforcement labels and MySQL error numbers used in this proposal}\label{tab:conventions}\\
-\toprule
-\rowcolor{TableHeadColor}
-Label or code & \textbf{Meaning} \\
-\midrule
-\endfirsthead
-\bottomrule
-\endlastfoot
-DB constraint & \\
-SQL check     & \\
-Limitation    & \\
-\midrule
-1048          & \\
-1062          & \\
-1452          & \\
-3819          & \\
-0 rows        & \\
-\end{xltabular}
-
 \subsection{Business Rules}
 \label{sec:rules}
 % 每条规则是一张"卡片"：第一行是编号和标题，下面每行左边是字段名、右边是内容。
@@ -650,115 +602,93 @@ Limitation    & \\
 % 增加一条：复制从 \begin{xltabular} 到 \end{xltabular} 的整块，改编号和标题。
 % 删除一条：删掉从 \begin{xltabular} 到 \end{xltabular} 的整块。
 % Type 一栏写类型，例如 Cardinality; Participation; Uniqueness; Value。
-\placeholder{Optional: one sentence on how the rules are organised.}
+% There are 11 business rules in total, mainly focusing on subscription management, delivery, refundability, and fee calculation. BR1 and BR2 explain the cardinality and participation between subscription and customer. BR3 elaborates on the detailed range of a subscription and the distribution of planning delivery day during a season. The subscription window for each season is defined in the BR4, which also describes the validity of a renewal. BR5 focuses on the plan type and frequency of a subscription, which determines the calculation of the subscription fee. BR6 answers questions about the types of products included in a subscription and how they are chosen. Detailed information and rules on delivery and skipping are in BR7 and BR8. BR9 is about the purchases of additional products for each delivery. Refunding rules of subscription cancelation is explained in BR10. BR11 focuses on the relationship among refund, delivery, and subscription.
 
 % ---------- BR1 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR1}{Subscription ownership}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & Every subscription is held by exactly one customer and is for exactly one season. A customer may hold zero or more subscriptions, and a season may have zero or more subscriptions. Each customer has a unique email.\\
+Type        & Cardinality, Participation\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR2 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR2}{One subscription per customer per season}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & A customer can hold at most one subscription for the same season. A cancelled subscription still counts, which means its holder can not subscribe to that season again. \\
+Type        & Uniqueness\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR3 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR3}{Season calendar and subscription status}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & A season for subscription is the spring, summer or autumn of one year. Winter is not offered as a season for subscription, but still treated as a seasonal time period for scheduling enrolment and renewal activities. Each subscribable season has 12 delivery planning days, the Monday of 12 consecutive weeks. When D is defined as the first planning delivery day, the subscription range runs from $D - 6$ to the 12th planning day $D + 77$, both included. The status of a subscription is planned before its range start, active during the range, finished after the range ends, and cancelled once the customer decides to cancel it. No other status is allowed. \\
+Type        & Value, Validity\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR4 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR4}{Enrolment window and renewal}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & A subscription can only be submitted inside the window of the season before it (the previous year's winter for spring, spring for summer, summer for autumn). A subscription is renewal if, when it is submitted, the customer holds a subscription for the previous subscribable season whose status is active or finished. A renewal gets 20\% off for its allocated cost per delivery. \\
+Type        & Eligibility\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR5 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR5}{Plan, frequency and subscription fee}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & There are two types of subscription, including farmer's choice and customizable. The frequency of delivery for each plan is also optional, including weekly or biweekly. Neither the plan type nor the frequency can be changed once the subscription is submitted. To simplify calculation, the allocated cost per delivery is 200 for farmer's choice, 240 for customizable, or 160 and 192 for a renewal. The subscription fee is the number of deliveries (12 for weekly, 6 for biweekly) multiplies the allocated cost per delivery. \\
+Type        & Value\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR6 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR6}{Product types of a plan}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & Each season has 10 distinctive product types and each belongs to that season only. 6 of them are flagged as the farmer's choice types. A farmer's choice subscription gets those 6 types and the customer does not choose them, so it has no chosen types. A customizable subscription must choose exactly 8 different types from its own season's 10 when it is submitted, and the choice is immutable once its range starts.\\
+Type        & Cardinality, Value\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR7 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR7}{Delivery schedule and status}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & Each delivery belongs to exactly one subscription and falls on one planning day of that subscription's season, identified by its week number (1 to 12). A subscription has at most one delivery per planning day. On the first day of the range, each subscription that is not cancelled gets all its deliveries with status planned: weekly on all 12 planning days, biweekly on the 1st, 3rd, 5th, 7th, 9th and 11th only. A delivery's status can be planned, skipped, success, failed or cancelled. The only allowed changes are planned to skipped by the customer, planned to success or failed, recorded on the day after the delivery day, and planned to cancelled when the subscription is cancelled before the delivery day. A failed delivery refunds its price, that is, the subscription's allocated cost per delivery plus that delivery's add-on fee. The refund is recorded when the delivery is changed to failed and does not use a refundable skip. \\
+Type        & Cardinality, Participation, Uniqueness, Value\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR8 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR8}{Skipping and refundable skips}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & A customer may skip a delivery only when its status is planned and only inside its change window, which is from the day after the subscription's previous delivery day to the day before this delivery day. For the first delivery, from 6 days before it (the first day of the range) to the day before, both included. Each subscription starts with 2 refundable skips. While at least one remains, a skip refunds the subscription's allocated cost per delivery plus that delivery's add-on fee, and uses up one refundable skip. When none remain, the delivery can still be skipped, but nothing is refunded. \\
+Type        & Validity, Quota\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR9 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR9}{Add-on purchases}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & An add-on can only be bought for a delivery whose status is planned, inside the same change window as skipping in BR8. Its product types are limited to the subscription's plan. For farmer's choice, they are the season's 6 fixed types, or the 8 types the customer chose for a customizable subscription. Each product type appears at most once in a delivery's add-ons, with a weight of at least 0.1 kg. A delivery's add-on fee is the sum of weight multiplies that product's price per kg. The price of the delivery is its allocated cost per delivery plus this fee. \\
+Type        & Value, Validity, Uniqueness\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR10 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR10}{Cancellation and refund}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & Only a planned or active subscription can be cancelled. If it is planned, which means its range has not started, the full subscription fee charged is refunded. If it is active, the refund is min(remaining refundable skips, number of planned deliveries whose delivery day is after the cancellation date) multiplies the subscription's allocated cost per delivery, plus the add-on fees on those planned deliveries. In both cases the refund is calculated first; then the remaining refundable skips are set to 0, those deliveries become cancelled, and the subscription becomes cancelled. A planned delivery on or before the cancellation date keeps waiting for its result (BR7). A finished subscription cannot be cancelled. \\
+Type        & Validity, Quota\\
 \bottomrule
 \end{xltabular}
 
 % ---------- BR11 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{BR11}{Refund records}
-Rule        & \\
-Type        & \\
-Enforcement & \\
-Test        & \\
+Rule        & Every refund is for exactly one subscription and a subscription may have zero or more refunds. A refund's type is skip, failed or cancellation. The skip or failed refund is for exactly one delivery of the same subscription and a delivery has at most one refund. The cancellation refund is for no delivery. \\
+Type        & Cardinality, Participation, Value\\
 \bottomrule
 \end{xltabular}
 
@@ -771,63 +701,36 @@ Test        & \\
 %                 \item Second step ... (C) [BR1].
 %               \end{steps} \\
 % UC2 和 UC4 各有两条主流程，所以各预留了两行 Main flow。
-\placeholder{Optional: one sentence introducing the use cases and the notation (C) create, (U) change, (R) retrieve.}
-
 % ---------- UC1 ----------
+There are four user cases, 2 focused on subscription management and 2 focused on recording and processing of delivery.
 \begin{xltabular}{\linewidth}{@{}KY@{}}
-\cardtitle{UC1}{Book a subscription for an upcoming season}
-Actor            & \\
-Supporting actor & \\
-Trigger          & \\
-Preconditions    & \\
-Main flow        & \\
-Tables affected  & \\
-Rules checked    & \\
-Failure outcome  & \\
+\cardtitle{UC1}{Book a subscription}
+Description           & When the date is inside the window for subscription of upcoming season, a customer asks to subscribes to the season. \\
+Related operations  & Creat, Retrieve \\
 \bottomrule
 \end{xltabular}
 
 % ---------- UC2 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
-\cardtitle{UC2}{Record a weekly delivery}
-Actor                      & \\
-Supporting actor           & \\
-Trigger                    & \\
-Preconditions              & \\
-Main flow (success path)   & \\
-Main flow (failure path)   & \\
-Tables affected            & \\
-Rules checked              & \\
-Failure outcome            & \\
+\cardtitle{UC2}{Record a delivery}
+Description           & On the day after a scheduled Monday delivery, the farm staff record status of a delivery on that day. \\
+Related operations  & Creat, Retrieve, Change\\
 \bottomrule
 \end{xltabular}
 
 % ---------- UC3 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{UC3}{Skip a delivery}
-Actor            & \\
-Supporting actor & \\
-Trigger          & \\
-Preconditions    & \\
-Main flow        & \\
-Tables affected  & \\
-Rules checked    & \\
-Failure outcome  & \\
+Description           & For a specific upcoming delivery, a customer who owns it asks to skip it. \\
+Related operations  & Creat, Retrieve, Change\\
 \bottomrule
 \end{xltabular}
 
 % ---------- UC4 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{UC4}{Cancel a subscription with two refund cases}
-Actor                                       & \\
-Supporting actor                            & \\
-Trigger                                     & \\
-Preconditions                               & \\
-Main flow, Case A: subscription is planned  & \\
-Main flow, Case B: subscription is active   & \\
-Tables affected                             & \\
-Rules checked                               & \\
-Failure outcome                             & \\
+Description           & A customer asks to cancel his/her subscription. \\
+Related operations  & Creat, Retrieve, Change\\
 \bottomrule
 \end{xltabular}
 
@@ -857,10 +760,10 @@ Failure outcome                             & \\
 \endfirsthead
 \bottomrule
 \endlastfoot
-UC1 & Book a subscription for an upcoming season   & & & \\
-UC2 & Record a weekly delivery                     & & & \\
-UC3 & Skip a delivery                              & & & \\
-UC4 & Cancel a subscription with two refund cases  & & & \\
+UC1 & Book a subscription for an upcoming season   & \Yes & & \Yes\\
+UC2 & Record a weekly delivery                     & \Yes & \Yes & \Yes \\
+UC3 & Skip a delivery                              & \Yes & \Yes & \Yes \\
+UC4 & Cancel a subscription with two refund cases  & \Yes & \Yes & \Yes \\
 \end{xltabular}
 
 \subsection{Management Questions}
@@ -868,55 +771,54 @@ UC4 & Cancel a subscription with two refund cases  & & & \\
 % 按指南 5.1 的示例，每个问题写 Question / Tables / Analysis / Decision supported。
 % 不要推断因果（合成数据不能说明"为什么"）。
 % 标题是根据 mgtQuestions.md 拟的简短概括，可改可删（删掉后保留空的 {} 即可）。
-\placeholder{Optional: one sentence introducing the management questions.}
 
 % ---------- MQ1 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{MQ1}{Sales, refunds and net income per plan type}
-Question           & \\
-Tables             & \\
-Analysis           & \\
-Decision supported & \\
+Question           & For the Spring 2026 season, how many subscriptions were sold per plan type, and what is the total refund amount (skips, failed deliveries, cancellations) of each plan and net income after all refunds? \\
+Tables             & season, subscription, add\_on, product, refund\\
+Analysis           & Join subscription to season and filter to season\_name = `spring' and year = 2026. For each subscription, compute its subscription fee, add-on income over its add\_on rows joined to and its refund total in seperate derived table. Group by plan\_type: subscription count = COUNT(*), total refund = SUM(refund total), net income = SUM(subscription fee + add-on income − refund total). \\
+Decision supported & Quantify how much the refund policies actually cost per plan type in a season, informing whether the number of refundable skips should be reviewed. \\
 \bottomrule
 \end{xltabular}
 
 % ---------- MQ2 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{MQ2}{Top add-on products per plan type}
-Question           & \\
-Tables             & \\
-Analysis           & \\
-Decision supported & \\
+Question           & For the Spring 2026, per plan type, which add-on products generate the largest add-on income from successful deliveries? \\
+Tables             & season, subscription, delivery, add\_on, product \\
+Analysis           & Join the subscription, season, delivery, add\_on, product, filtering the season to Spring 2026, keep only deliveries with status = `success', GROUP BY plan\_type and product\_id, and compute income as SUM(weight x price\_per\_kg) and total weight as SUM(weight). Order products by income within each plan type. \\
+Decision supported & Identify the most demanded add-on products per plan type and help to decide which products farmers should grow in larger quantities for add-on sales\\
 \bottomrule
 \end{xltabular}
 
 % ---------- MQ3 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{MQ3}{Skip and failure rates per delivery week}
-Question           & \\
-Tables             & \\
-Analysis           & \\
-Decision supported & \\
+Question           & Which delivery weeks of Spring 2026 had the highest skip rates and the highest failure rates? \\
+Tables             & season, subscription, delivery \\
+Analysis           & Join delivery to the subscription and season, filter to Spring 2026 and exclude cancelled deliveries. GROUP BY week\_no and use conditional aggregation on skips = SUM(status = `skipped'), failures = SUM(status = `failed'), attempted = SUM(status IN (`success', `failed')).  Skip rate = skips ÷ COUNT(*) of the week. Failure rate = failures ÷ attempted (NULLIF avoids division by zero). \\
+Decision supported & Informing the week with highest skipping rate helps with planning future delivery and harvest volumes. Weeks with high failure rates flag potential supply or staff problems. They do not explain why deliveries failed or why customers skipped. \\
 \bottomrule
 \end{xltabular}
 
 % ---------- MQ4 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{MQ4}{Most chosen products of the customizable plan}
-Question           & \\
-Tables             & \\
-Analysis           & \\
-Decision supported & \\
+Question           & For the Spring 2026 season, which products are most frequently chosen by customizable plan subscribers, and are they among the season's 6 farmer's choice products? \\
+Tables             & season, subscription, chosen_products, product \\
+Analysis           & Product joins the season filter to the Spring 2026. LEFT JOIN chosen\_products whose product\_id in the filtered Spring 2026 list with subscription. GROUP BY the name and is\_farmers\_choice of products, count how many subscriptions chose it with COUNT(chosen\_products.subscription\_id) and compute the rate as that count / the number of customizable subscriptions of the season. Rank the count with ORDER BY. \\
+Decision supported & Use actual customer preferences to review which 6 products are flagged as the farmer's choice box for the next season. \\
 \bottomrule
 \end{xltabular}
 
 % ---------- MQ5 ----------
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{MQ5}{Renewal rate per plan type}
-Question           & \\
-Tables             & \\
-Analysis           & \\
-Decision supported & \\
+Question           & For subscriptions in the Spring 2026 season that were not cancelled, what proportion of each plan type's subscribers renewed into Summer 2026, and which plan type had a renewal rate below 60\%?\\
+Tables             & season, subscription \\
+Analysis           & Join subscription to season and filter to Spring 2026 with status to be not `cancelled'. LEFT JOIN subscription again with season filtered to Summer 2026 on the same customer\_id, so customers who did not renew will be null. At most one match per customer because of UNIQUE (customer\_id, season\_id). GROUP BY the Spring 2026 plan\_type. Renewal rate = COUNT(summer subscription\_id) / COUNT(spring, subscription\_id), since COUNT will ignore the nulls, HAVING renewal rate < 0.60\\
+Decision supported &  Flag plan types with a renewal rate below 60\% for a review of their renewal offer or product mix before the next subscription window opens. A low rate in synthetic data flags where to look; it does not explain why customers did not renew. \\
 \bottomrule
 \end{xltabular}
 
@@ -932,11 +834,11 @@ Decision supported & \\
 \endfirsthead
 \bottomrule
 \endlastfoot
-MQ1 & & & & \\
-MQ2 & & & & \\
-MQ3 & & & & \\
-MQ4 & & & & \\
-MQ5 & & & & \\
+MQ1 & \Yes & season, subscription, add\_on, product, refund & \Yes & JOIN, GROUP BY, COALESCE, SUM, COUNT\\
+MQ2 & \Yes & season, subscription, add\_on, product, refund & \Yes & JOIN, GROUP BY, SUM\\
+MQ3 & \Yes & season, subscription, delivery & \Yes & JOIN, GROUP BY, SUM\\
+MQ4 & \Yes & season, subscription, chosen\_products, product & \Yes & JOIN, LEFT JOIN, GROUP BY, COUNT\\
+MQ5 & \Yes & season, subscription & & JOIN, LEFT JOIN, GROUP BY, COUNT\\
 \end{xltabular}
 
 % =====================================================================
@@ -953,8 +855,7 @@ MQ5 & & & & \\
 
 \subsection{ER Diagram}
 \label{sec:er-diagram}
-\placeholder{One or two sentences guiding the reader through Figure~\ref{fig:er}: the main entities and how they connect.}
-
+The subscription serves as a core entity in the relational diagram, which connects with all other entities. Delivery is a weak entity whose owner entity is subscription. There is a `belong to' relation between the subscription and the customer whose address attribute is composite. The add on relation between product and delivery has a weight attribute that indicates how much the product weighs in the add on part of delivery. In addition, there are several derived attributes in this diagram, such as fee() in subscription, start\_day() in season, and delivery\_day in delivery. 
 % 插图：\ERfigure[宽度]{文件名}{图题}{标签}
 %   宽度可省略（默认整行宽）；想缩小就写 [0.85\linewidth]。
 %   文件名要带扩展名（.pdf 或 .png），并且与上传到 Overleaf 的文件名完全一致。
@@ -967,58 +868,6 @@ MQ5 & & & & \\
 % \ERfigure{er_diagram.pdf}{ER diagram of the Farmlander Farm CSA subscription database}{fig:er}
 % \end{landscape}
 % \clearpage
-
-\subsection{Notation}
-\label{sec:notation}
-% 说明图中用的记法（例如 Chen 记法：双矩形 = 弱实体，虚线椭圆 = 派生属性 ...）。
-% 两列都留空，按你们实际用的记法填写；用不到的行删掉。
-\placeholder{State which ER notation the diagram uses.}
-
-\begin{xltabular}{\linewidth}{@{}L{4.6cm}Y@{}}
-\caption{Notation used in the ER diagram}\label{tab:notation}\\
-\toprule
-\rowcolor{TableHeadColor}
-\textbf{Notation} & \textbf{Meaning} \\
-\midrule
-\endfirsthead
-\bottomrule
-\endlastfoot
- & \\
- & \\
- & \\
- & \\
- & \\
- & \\
-\end{xltabular}
-
-\subsection{Relationships, Cardinality and Participation}
-\label{sec:relationships}
-% 每个关系一行：名称、参与的实体、基数（1:1 / 1:N / M:N）、参与度（total / partial）、
-% 对应的业务规则。这张表能让评分人快速核对图上的每个标注。
-\begin{xltabular}{\linewidth}{@{}L{2.6cm}YL{1.9cm}YL{1.7cm}@{}}
-\caption{Named relationships with their cardinality and participation}\label{tab:relationships}\\
-\toprule
-\rowcolor{TableHeadColor}
-\textbf{Relationship} & \textbf{Entities} & \textbf{Cardinality} & \textbf{Participation} & \textbf{Rules} \\
-\midrule
-\endfirsthead
-\ContinuedFrom{5}
-\toprule
-\rowcolor{TableHeadColor}
-\textbf{Relationship} & \textbf{Entities} & \textbf{Cardinality} & \textbf{Participation} & \textbf{Rules} \\
-\midrule
-\endhead
-\bottomrule
-\endlastfoot
- & & & & \\
- & & & & \\
- & & & & \\
- & & & & \\
- & & & & \\
- & & & & \\
- & & & & \\
- & & & & \\
-\end{xltabular}
 
 \subsection{Design Constructs and Justification}
 \label{sec:constructs}
@@ -1039,13 +888,10 @@ MQ5 & & & & \\
 \endhead
 \bottomrule
 \endlastfoot
-Weak entity                    & & \\
-Composite attribute            & & \\
-Derived attributes             & & \\
-M:N relationship               & & \\
-M:N relationship with attribute & & \\
-Optional relationship          & & \\
-                               & & \\
+Weak entity                    & delivery & The delivery identity cannot be uniquely identified by week\_no without the subscription\_id  \\
+Composite attribute            & customer & The address of customer can be meaningfully decomposed into street, building, and room, which have independent business significance.  \\
+Derived attributes             & subscription, season, delivery & For a season, the planning delivery day in each week is fixed to Monday. Given the first\_planning\_day and the rules on the range of a season in BR3, the start\_day and end\_day can be derived. Similarly to the season, given a week\_no and subscription\_id, the delivery\_date can also be determined. Once the subscription\_id and the weight of each add-on product are known, both the add\_on\_fee and the price can be calculated. Given the allocated\_cost and frequency of a subscription, its fee can be calculated by multiplying the number of planned deliveries by the allocated\_cost. \\
+M:N relationship with attribute & add on & Each delivery may include add-on products of different types and weights. Therefore, weight is modeled as an attribute of the add-on relationship. Since weight is only used to determine pricing and does not have an independent lifecycle, the add-on relationship does not need to be modeled as a separate entity. \\
 \end{xltabular}
 
 % =====================================================================
@@ -1061,59 +907,29 @@ Optional relationship          & & \\
 
 \subsection{Relational Schema}
 \label{sec:schema-diagram}
-\placeholder{One or two sentences introducing Figure~\ref{fig:schema} and the number of tables (and why this number is appropriate).}
+% There are 8 tables in the relational schema. The chosen\_Products relation is introduced to resolve the many-to-many relationship between subscription and product. The `add on' relation is converted to `add\_on' table to store the weight attribute. 
 
 \ERfigure{relational_schema.pdf}{Relational schema}{fig:schema}
 
-\subsection{Relations}
+
 \label{sec:relations}
 % 文字版关系模式（可选，有图也可以只保留图）。写法示例：
 %   \item \col{customer}(\pk{customer_id}, \col{name}, \col{email}, ...)
 %   \item \col{subscription}(\pk{subscription_id}, \fk{customer_id}{customer}, ...)
 % 复合主键的每一列都用 \pk{...}；既是主键又是外键的列可以写 \pk{...}\textsuperscript{FK}。
 % 下面 8 行按数据字典的顺序排列，括号里换成属性列表。
-\placeholder{Optional: state the notation, e.g.\ primary keys are underlined and foreign keys are marked FK.}
 
-\begin{itemize}
-  \item \col{customer}(\placeholder{attributes})
-  \item \col{season}(\placeholder{attributes})
-  \item \col{subscription}(\placeholder{attributes})
-  \item \col{delivery}(\placeholder{attributes})
-  \item \col{refund}(\placeholder{attributes})
-  \item \col{product}(\placeholder{attributes})
-  \item \col{chosen_products}(\placeholder{attributes})
-  \item \col{add_on}(\placeholder{attributes})
-\end{itemize}
+%\begin{itemize}
+% \item \col{customer}(\underline{customer\_id}, name, email, street, building, room)
+% \item \col{season}(\underline{season\_id}, season\_name, year, first\_planning\_day)
+% \item \col{subscription}(\underline{subscription\_id}, customer\_id, season\_id, status, plan\_type, frequency, allocated\_cost, submission\_date, cancellation\_date, remaining\_refundable\_skip)
+% \item \col{delivery}(\underline{subscription\_id}, \underline{week\_no}, status)
+% \item \col{refund}(\underline{refund\_id}, subscription\_id, week\_no, amount, type, refund\_date)
+% \item \col{product}(\underline{product\_id}, season\_id, name, is\_farmers\_choice, price\_per\_kg)
+% \item \col{chosen_products}(\underline{subscription\_id}, \underline{product\_id})
+% \item \col{add_on}(\underline{product\_id}, \underline{subscription\_id}, \underline{week\_no}, weight)
+%\end{itemize}
 
-\subsection{Mapping from the ER Model}
-\label{sec:mapping}
-% 每个 ER 构造（实体、弱实体、1:N、M:N、多值/复合/派生属性 ...）一行，
-% 写它映射成了什么（哪张表、哪个 PK/FK/UNIQUE），以及必要的说明。
-\begin{xltabular}{\linewidth}{@{}L{4.0cm}YY@{}}
-\caption{ER-to-relational mapping}\label{tab:mapping}\\
-\toprule
-\rowcolor{TableHeadColor}
-\textbf{ER construct} & \textbf{Relational result} & \textbf{Note} \\
-\midrule
-\endfirsthead
-\ContinuedFrom{3}
-\toprule
-\rowcolor{TableHeadColor}
-\textbf{ER construct} & \textbf{Relational result} & \textbf{Note} \\
-\midrule
-\endhead
-\bottomrule
-\endlastfoot
- & & \\
- & & \\
- & & \\
- & & \\
- & & \\
- & & \\
- & & \\
- & & \\
- & & \\
-\end{xltabular}
 
 % =====================================================================
 %  Section 5  Data Dictionary（数据字典）
@@ -1132,13 +948,12 @@ Optional relationship          & & \\
 \section{Data Dictionary}
 \label{sec:dd}
 
-Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\rightarrow$ \col{DATE}, timestamps $\rightarrow$ \col{DATETIME}; status/type columns $\rightarrow$ \col{VARCHAR} + \col{CHECK} (ANSI-standard, easier to extend than \col{ENUM}); every FK column has exactly the same type and signedness as the referenced PK. All foreign keys are declared \col{ON DELETE RESTRICT} (child rows must be removed first). Derived attributes from the ER diagram (marked with ()) are NOT stored: \col{subscription.fee()}, \col{delivery.delivery_date()}, \col{delivery.add_on_fee()}, \col{delivery.price()}; they are computed in SQL/application code.
 
 % ---------- 5.1 customer（6 行）----------
 \subsection{\col{customer}}
 \label{sec:dd-customer}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{customer}}\label{tab:dd-customer}\\
 \toprule
 \DDheader
@@ -1167,7 +982,7 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \subsection{\col{season}}
 \label{sec:dd-season}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{season}}\label{tab:dd-season}\\
 \toprule
 \DDheader
@@ -1194,7 +1009,7 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \subsection{\col{subscription}}
 \label{sec:dd-subscription}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{subscription}}\label{tab:dd-subscription}\\
 \toprule
 \DDheader
@@ -1223,13 +1038,13 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \end{xltabular}
 \end{WideTable}
 
-\textbf{Derived (not stored):} \col{fee()} = delivery count $\times$ \col{allocated_cost}; see Conventions above.
+\textbf{Derived:} \col{fee()} = delivery count $\times$ \col{allocated_cost}; see Conventions above.
 
 % ---------- 5.4 delivery（3 行，弱实体）----------
 \subsection{\col{delivery}}
 \label{sec:dd-delivery}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{delivery}}\label{tab:dd-delivery}\\
 \toprule
 \DDheader
@@ -1251,13 +1066,13 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \end{xltabular}
 \end{WideTable}
 
-\textbf{Derived (not stored):} \col{delivery_date()} = first planning delivery day + (\col{week_no} $-$ 1) $\times$ 7; \col{add_on_fee()} = SUM(\col{weight} $\times$ \col{price_per_kg}); \col{price()} is computed on the fly. See Conventions above.
+\textbf{Derived:} \col{delivery_date()} = first planning delivery day + (\col{week_no} $-$ 1) $\times$ 7; \col{add_on_fee()} = SUM(\col{weight} $\times$ \col{price_per_kg}); \col{price()} is computed on the fly. See Conventions above.
 
 % ---------- 5.5 refund（6 行）----------
 \subsection{\col{refund}}
 \label{sec:dd-refund}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{refund}}\label{tab:dd-refund}\\
 \toprule
 \DDheader
@@ -1286,7 +1101,7 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \subsection{\col{product}}
 \label{sec:dd-product}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{product}}\label{tab:dd-product}\\
 \toprule
 \DDheader
@@ -1314,7 +1129,7 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \subsection{\col{chosen_products}}
 \label{sec:dd-chosen-products}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{chosen_products}}\label{tab:dd-chosen-products}\\
 \toprule
 \DDheader
@@ -1341,7 +1156,7 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \subsection{\col{add_on}}
 \label{sec:dd-add-on}
 \begin{WideTable}
-\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{2.0cm}C{0.8cm}L{1.4cm}YY@{}}
+\begin{xltabular}{\linewidth}{@{}L{2.5cm}L{2.3cm}L{1.9cm}C{0.8cm}L{1.3cm}YY@{}}
 \caption{Data dictionary of \col{add_on}}\label{tab:dd-add-on}\\
 \toprule
 \DDheader
@@ -1386,31 +1201,27 @@ Conventions: money $\rightarrow$ \col{DECIMAL} (never \col{FLOAT}); dates $\righ
 \section{Functional Dependencies and Normalization}
 \label{sec:fd}
 
-\subsection{Approach}
-\label{sec:fd-approach}
-\placeholder{Explain how the FDs were derived from the business rules, how candidate keys were found (attribute closure), and the target normal form.}
-
-\subsection{Summary}
-\label{sec:fd-summary}
+% \subsection{Summary}
+% \label{sec:fd-summary}
 % 每张表一行：候选键、最终范式（例如 BCNF / 3NF）、是否分解及原因。
-\begin{xltabular}{\linewidth}{@{}L{3.0cm}YC{1.8cm}Y@{}}
-\caption{Candidate keys and normal form of each relation}\label{tab:fd-summary}\\
-\toprule
-\rowcolor{TableHeadColor}
-\textbf{Relation} & \textbf{Candidate keys} & \textbf{Normal form} & \textbf{Decomposition} \\
-\midrule
-\endfirsthead
-\bottomrule
-\endlastfoot
-\col{customer}        & & & \\
-\col{season}          & & & \\
-\col{subscription}    & & & \\
-\col{delivery}        & & & \\
-\col{refund}          & & & \\
-\col{product}         & & & \\
-\col{chosen_products} & & & \\
-\col{add_on}          & & & \\
-\end{xltabular}
+% \begin{xltabular}{\linewidth}{@{}L{3.0cm}L{6.0cm}C{1.8cm}R@{}}
+% \caption{Candidate keys and normal form of each relation}\label{tab:fd-summary}\\
+% \toprule
+% \rowcolor{TableHeadColor}
+% \textbf{Relation} & \textbf{Candidate keys} & \textbf{Normal form} & \textbf{Decomposition} \\
+% \midrule
+% \endfirsthead
+% \bottomrule
+% \endlastfoot
+% \col{customer}        & \{customer\_id\}， \newline \{eamil\} \newline & BCNF & \No \\
+% \col{season}          & \{season\_id\}, \newline \{season\_name, year\}, \newline \{first\_planning\_day\} \newline & BCNF & \No\\
+% \col{subscription}    & \{subscription\_id\}, \newline \{customer\_id, season\_id\}, \newline \{customer\_id, submission\_date\} \newline & 3NF & \No \\
+% \col{delivery}        & \{subscription\_id, week\_no\} \newline & BCNF & \No \\
+% \col{refund}          & \{refund\_id\}, \newline \{subscription\_id, type, refund\_date\} \newline& BCNF & \No \\
+% \col{product}         & \{product\_id\}, \newline \{season\_id, name\} \newline & BCNF & \No \\
+% \col{chosen_products} & \{subscription\_id, product\_id\} \newline & BCNF & \No \\
+% \col{add_on}          & \{subscription\_id, week\_no, product\_id\} \newline & BCNF & \No \\
+% \end{xltabular}
 
 \subsection{Analysis per Relation}
 \label{sec:fd-detail}
@@ -1436,7 +1247,7 @@ Candidate keys & \begin{points}
   \item \col{customer_id}
   \item \col{email}
 \end{points} \\
-Normal form & Satisfies BCNF (and therefore 3NF), because the left-hand side of every non-trivial functional dependency (\col{customer_id} or \col{email}) is a candidate key, and hence a super key. The address (\col{street}, \col{building}, \col{room}) and \col{name} do not determine any other attribute, since several customers may share the same address or name. \\
+Normal form & Satisfies BCNF, because the left-hand side of every non-trivial functional dependency \{\col{customer_id} or \col{email}\} is a candidate key, and hence a super key. The address \{\col{street}, \col{building}, \col{room}\} and \col{name} do not determine any other attribute, since several customers may share the same address or name. \\
 Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
 \bottomrule
 \end{xltabular}
@@ -1445,14 +1256,14 @@ Lossless join and dependency preservation & Lossless: No decomposition needed, n
 \begin{xltabular}{\linewidth}{@{}KY@{}}
 \cardtitle{\col{season}}{}
 Functional dependencies & \begin{points}
-  \item \fd{season_id}{season_name, year, first_planning_day} (primary key)
-  \item \fd{season_name, year}{season_id, first_planning_day} (CK1)
-  \item \fd{first_planning_day}{season_id, season_name, year} (CK2)
+  \item \fd{season_id}{season_name, year, first_planning_day}
+  \item \fd{season_name, year}{season_id, first_planning_day}
+  \item \fd{first_planning_day}{season_id, season_name, year}
 \end{points} \\
 Candidate keys & \begin{points}
-  \item \col{season_id} (\closure{season_id} = all attributes; chosen as primary key)
-  \item \col{season_name, year} (\closure{season_name, year} = all attributes)
-  \item \col{first_planning_day} (\closure{first_planning_day} = all attributes)
+  \item \col{season_id} %(\closure{season_id} = all attributes; chosen as primary key)
+  \item \col{season_name, year} %(\closure{season_name, year} = all attributes)
+  \item \col{first_planning_day} %(\closure{first_planning_day} = all attributes)
 \end{points} \\
 Normal form & Every determinant (\col{season_id} / \{\col{season_name, year}\} / \col{first_planning_day}) is itself a candidate key, hence a superkey. \col{season} is in BCNF. \\
 Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
@@ -1513,7 +1324,7 @@ Candidate keys & \begin{points}
   \item \col{refund_id}
   \item \col{subscription_id, type, refund_date} (for each subscription, there would be only one refund of specific type on a specific refund date)
 \end{points} \\
-Normal form & Satisfies BCNF (and therefore 3NF), because the left-hand side of every non-trivial functional dependency is a super key: \col{refund_id} is a candidate key, and \{\col{subscription_id, type, refund_date}\} is also a candidate key. The second candidate key holds because the skipping windows of different deliveries do not overlap and a delivery can be skipped only once (at most one skip refund per day), a failed refund is issued on the day after its unique delivery day (at most one failed refund per day), and a subscription can be cancelled at most once (at most one cancellation refund). In the dependency \fd{subscription_id, week_no}{refund_id}, the subscription and \col{week_no} are the super key of the refund, which can not be primary key because the \col{week_no} can be null. \\
+Normal form & Satisfies BCNF, because the left-hand side of every non-trivial functional dependency is a super key: \col{refund_id} is a candidate key, and \{\col{subscription_id, type, refund_date}\} is also a candidate key. The second candidate key holds because the skipping windows of different deliveries do not overlap and a delivery can be skipped only once, a failed refund is issued on the day after its unique delivery day, and a subscription can be cancelled at most once. In the dependency \fd{subscription_id, week_no}{refund_id}, the subscription and \col{week_no} are the super key of the refund, which can not be primary key because the \col{week_no} can be null. \\
 Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
 \bottomrule
 \end{xltabular}
@@ -1541,7 +1352,7 @@ Functional dependencies & Only trivial dependencies. \\
 Candidate keys & \begin{points}
   \item \col{subscription_id, product_id}
 \end{points} \\
-Normal form & Satisfies BCNF (and therefore 3NF), because the table only has trivial functional dependencies. Every attribute belongs to the only candidate key \{\col{subscription_id, product_id}\}, so there is no non-trivial functional dependency whose left-hand side is not a super key. \\
+Normal form & Satisfies BCNF, because the table only has trivial functional dependencies. Every attribute belongs to the only candidate key \{\col{subscription_id, product_id}\}, so there is no non-trivial functional dependency whose left-hand side is not a super key. \\
 Lossless join and dependency preservation & Lossless: No decomposition needed, not applicable.\newline Preserving: No decomposition needed, not applicable. \\
 \bottomrule
 \end{xltabular}
@@ -1566,30 +1377,19 @@ Lossless join and dependency preservation & Lossless: No decomposition needed, n
 \bottomrule
 \end{xltabular}
 
-\subsection{Design-Rationale Notes}
-\label{sec:fd-notes}
-% normalization.md 末尾的 "Design-rationale notes" 放在这里（例如为什么快照属性
-% 不构成传递依赖、派生属性为什么不存、跨行规则为什么不是 FD）。
-\placeholder{Independent design decisions that affect the dependency analysis.}
 
 % =====================================================================
 %  Section 7  Traceability Matrix（可追溯矩阵）
-% ---------------------------------------------------------------------
-%  指南〔5.1〕：一张紧凑的矩阵，把主要需求连接到 ER 构造、关系/约束、
-%    执行方式（DB constraint / SQL check / Limitation）和计划测试。
-%  建议篇幅：约 1 页。
-%  填写说明：
-%    * 每行 5 列，所以有 4 个 &。
-%    * 每条 BR 都必须有一行，并且都要有计划测试。
-%    * 测试编号沿用 Stage 2 的命名：POS01（正常）、N01（预期失败）、
-%      TXC01（事务提交）、TXR01（事务回滚）。
-%    * 想横向排版（列更宽）：在 \begin{WideTable} 前加一行 \begin{landscape}，
-%      在 \end{WideTable} 后加一行 \end{landscape}。
 % =====================================================================
 \section{Traceability Matrix}
 \label{sec:traceability}
 
-\placeholder{One or two sentences explaining how to read the matrix and the test-ID convention.}
+Table~\ref{tab:traceability} links every requirement to its ER construct,
+relations and constraints, enforcement and planned Stage 2 tests.
+Queries Q01--Q05 are checked against hand-computed results on the seed data,
+and all tests use a fixed reference date. Every rule enforced only by a SQL
+check has one limitation: a direct statement that bypasses our operations is
+not blocked.
 
 \begin{WideTable}
 \begin{xltabular}{\linewidth}{@{}L{1.0cm}YYL{2.3cm}Y@{}}
@@ -1609,39 +1409,57 @@ Lossless join and dependency preservation & Lossless: No decomposition needed, n
 \bottomrule
 \endlastfoot
 \multicolumn{5}{@{}l}{\textit{Business rules}} \\
-BR1  & & & & \\
-BR2  & & & & \\
-BR3  & & & & \\
-BR4  & & & & \\
-BR5  & & & & \\
-BR6  & & & & \\
-BR7  & & & & \\
-BR8  & & & & \\
-BR9  & & & & \\
-BR10 & & & & \\
-BR11 & & & & \\
+BR1  & \textit{belong to}: subscription 1...1, customer 0...*, total for subscription; \textit{schedule}: subscription 1...1, season 0...*; customer.email \{CK1\} & subscription.customer\_id, season\_id NOT NULL FK; uq\_customer\_email & DB constraint &
+  A subscription with a missing customer or season and a duplicate email are rejected, and a valid subscription is accepted. \\
+BR2  & Key \{customer, season\} of subscription (Additional Information) & UNIQUE (customer\_id, season\_id) & DB constraint &
+  A second subscription for the same customer and season is rejected, but one for the next season is accepted. \\
+BR3  & season \{CK1\} (season\_name, year), \{CK2\} first\_planning\_day; derived start\_day(), end\_day(); subscription.status & season: two UNIQUE, CHECK season\_name, CHECK DAYOFWEEK $= 2$; subscription: CHECK status & DB constraint; SQL check (status UPDATE at the reference date); Limitation (no scheduler) &
+  Invalid season data and status values are rejected, and the status changes exactly on the start and end days. \\
+BR4  & \textit{schedule}; subscription.submission\_date, allocated\_cost; renewal read from the customer's other subscription & Enrolment INSERT ... SELECT tests the window and the previous-season status & SQL check; Limitation &
+  A submission outside the enrolment window writes no row, and renewing and new customers get the correct cost. \\
+BR5  & subscription.plan\_type, frequency, allocated\_cost; derived fee() & CHECK plan\_type, CHECK frequency, ck\_subscription\_cost & DB constraint; Limitation (direct UPDATE) &
+  Undefined plan types or frequencies and wrong costs are rejected, and each plan type with its correct cost is accepted . \\
+BR6  & \textit{grow}: season 10...10, product 1...1; \textit{choose} M:N: subscription 0...8, product 0...*; product.is\_farmers\_choice & product.season\_id NOT NULL FK; UNIQUE (season\_id, name); chosen\_products PK; count $=8$, same season, change before range & DB constraint; SQL check; Limitation (10 and 6 by seed data) &
+  Duplicate product names, a wrong number of products, products from another season and late changes are rejected, and a valid choice of 8 products commits. \\
+BR7  & Weak entity delivery; identifying \textit{have}: subscription 0...12, delivery 1...1; partial key week\_no; derived delivery\_date(), add\_on\_fee(), price() & delivery PK (subscription\_id, week\_no), FK; CHECK week\_no, status; generation INSERT ... SELECT; UPDATE ... WHERE status $=$ planned; failed and refund in one transaction & DB constraint; SQL check &
+  Deliveries are generated correctly, invalid weeks and invalid failures are rejected, and a failed status and its refund commit or roll back together. \\
+BR8  & subscription.\allowbreak remaining\_\allowbreak refundable\_\allowbreak skip; delivery.status; \textit{compensate} & CHECK BETWEEN 0 AND 2; skip transaction (status, window, refund, count) & DB constraint; SQL check &
+  Late skips and counter values outside 0--2 are rejected, and a skip updates the status, refund and counter together. \\
+BR9  & \textit{add on} M:N: delivery 0...8, product 0...*; attribute weight & add\_on PK, composite FK, FK product; CHECK weight; guarded INSERT ... SELECT & DB constraint; SQL check &
+  Non-positive weights, duplicate add-ons and add-ons to non-planned deliveries are rejected, and a valid add-on is priced correctly. \\
+BR10 & subscription.status, cancellation\_date; \textit{refunded via}; Additional Information note 3 & Ordered cancellation transaction; UPDATE ... WHERE status IN (planned, active) & SQL check &
+  Cancellation works before and during the season with the correct refund, a repeated cancellation writes nothing, and a failed step rolls back everything . \\
+BR11 & refund; \textit{refunded via}: refund 1...1, subscription 0...*; \textit{compensate} 1:1 optional; Additional Information notes 1--3 & refund.subscription\_id NOT NULL FK; composite FK to delivery; UNIQUE (subscription\_id, week\_no); CHECK type; ck\_refund\_link & DB constraint &
+  Refunds with an undefined type, a wrong delivery link, a duplicate delivery or a non-existent delivery are rejected. \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Use cases}} \\
-UC1  & & & & \\
-UC2  & & & & \\
-UC3  & & & & \\
-UC4  & & & & \\
+UC1  & \textit{belong to}, \textit{schedule}, \textit{choose} & subscription, chosen\_products, season, product & Transaction (BR4, BR6 checks) &
+  A full enrolment commits and an invalid one writes nothing. \\
+UC2  & \textit{have}, \textit{add on}, \textit{compensate}, \textit{refunded via} & delivery, add\_on, product, refund & Transaction (guarded UPDATE + INSERT) &
+  A failed delivery and its refund are saved together or not at all . \\
+UC3  & delivery, \textit{compensate}, remaining\_refundable\_skip & delivery, subscription, add\_on, refund & Transaction &
+  A skip is accepted only before the deadline and refunded only while the counter allows it. \\
+UC4  & subscription, \textit{have}, \textit{refunded via} & subscription, delivery, add\_on, refund & Transaction (ordered steps) &
+  A cancellation commits once with the correct refund and rolls back fully on error. \\
 \midrule
 \multicolumn{5}{@{}l}{\textit{Management questions}} \\
-MQ1  & & & & \\
-MQ2  & & & & \\
-MQ3  & & & & \\
-MQ4  & & & & \\
-MQ5  & & & & \\
+MQ1  & \textit{schedule}, \textit{refunded via}, \textit{add on} & season, subscription, add\_on, product, refund & Query Q01 &
+  Q01 matches the hand-computed net income for both plan types. \\
+MQ2  & \textit{have}, \textit{add on} & season, subscription, delivery, add\_on, product & Query Q02 &
+  Q02 excludes add-ons on skipped and failed deliveries. \\
+MQ3  & \textit{have} & season, subscription, delivery & Query Q03 &
+  Q03 gives NULL for a week with only skips and ignores cancelled deliveries. \\
+MQ4  & \textit{grow}, \textit{choose} & season, product, chosen\_products, subscription & Query Q04 &
+  Q04 lists a product chosen by nobody with 0. \\
+MQ5  & \textit{schedule}, \textit{belong to} & season, subscription (self-join) & Query Q05 &
+  Q05 returns only the plan type below 60\%. \\
 \end{xltabular}
 \end{WideTable}
-
 % =====================================================================
 %  Section 8  Work Plan and Implementation Risks（分工计划与风险）
 % ---------------------------------------------------------------------
 %  指南〔5.1, 3.3〕：分工计划 + 主要实现风险。Stage 2 的 contribution.pdf 要与这里对应。
 %  建议篇幅：约 0.5 页。
-%  任务名已按指南的交付项预填，可增删；Lead / Reviewer 填成员姓名，Target date 填日期。
 % =====================================================================
 \section{Work Plan and Risks}
 \label{sec:plan}
@@ -1664,26 +1482,31 @@ MQ5  & & & & \\
 \bottomrule
 \endlastfoot
 \multicolumn{4}{@{}l}{\textit{Stage 1}} \\
-Scenario fingerprint and scope                             & & & \\
-Business rules, use cases and management questions         & & & \\
-ER diagram                                                 & & & \\
-Relational mapping and data dictionary                     & & & \\
-Functional dependencies and normalization                  & & & \\
-Traceability matrix                                        & & & \\
-Proposal assembly, metadata and AI declaration             & & & \\
+Scenario fingerprint and scope                             & SHI Jingxuan  & CHEN Guanda & 12 Oct 2026 \\
+Business rules, use cases and management questions         & CHEN Guanda  & SHI Jingxuan & 16 Oct 2026 \\
+ER diagram                                                 & CHEN Guanda & SHI Jingxuan & 19 Oct 2026 \\
+Relational mapping and data dictionary                     & SHI Jingxuan & CHEN Guanda  & 21 Oct 2026 \\
+Functional dependencies and normalization                  & CHEN Guanda  & SHI Jingxuan & 23 Oct 2026 \\
+Traceability matrix                                        & Both         & --           & 24 Oct 2026 \\
+Proposal assembly, metadata and AI declaration             & CHEN Guanda  & SHI Jingxuan & 26 Oct 2026 \\
 \midrule
 \multicolumn{4}{@{}l}{\textit{Stage 2 (planned)}} \\
-Schema, constraints and index                              & & & \\
-Synthetic seed data and business queries (Q01--Q08)        & & & \\
-View, transaction and tests                                & & & \\
-README, report and presentation                            & & & \\
+Schema, constraints and index                              & SHI Jingxuan & CHEN Guanda  & 6 Nov 2026 \\
+Synthetic seed data and business queries (Q01--Q08)        & CHEN Guanda  & SHI Jingxuan & 13 Nov 2026 \\
+View, transaction and tests (POS, N, TXC, TXR)             & SHI Jingxuan & CHEN Guanda  & 18 Nov 2026 \\
+README, report and presentation                            & Both         & --           & 23 Nov 2026 \\
 \end{xltabular}
 
-\placeholder{How the team reviews each other's work so that every member can explain the whole design.}
+Every artefact has a lead and a reviewer from the other member. The reviewer
+checks it against the business rules and the traceability matrix, and records
+the result in the meeting notes and in the commit history of our private Git
+repository. Before each submission both members run all prototype scripts on
+MySQL 8.4.11, and each member explains two randomly chosen rules end to end
+(ER construct, table, constraint and test) to the other, so that either
+member can present and modify any part of the design.
 
 \subsection{Implementation Risks}
 \label{sec:risks}
-% 每个风险一行：风险是什么、可能造成的影响、应对办法。行数不够就复制一行。
 \begin{xltabular}{\linewidth}{@{}YYY@{}}
 \caption{Main implementation risks and mitigations}\label{tab:risks}\\
 \toprule
@@ -1691,36 +1514,55 @@ README, report and presentation                            & & & \\
 \textbf{Risk} & \textbf{Impact} & \textbf{Mitigation} \\
 \midrule
 \endfirsthead
+\ContinuedFrom{3}
+\toprule
+\rowcolor{TableHeadColor}
+\textbf{Risk} & \textbf{Impact} & \textbf{Mitigation} \\
+\midrule
+\endhead
 \bottomrule
 \endlastfoot
- & & \\
- & & \\
- & & \\
+Cross-row and cross-table rules (BR4, BR6--BR10) cannot be CHECK constraints & A direct INSERT or UPDATE outside our operations can break a rule & All changes go through the conditional statements of UC1--UC4 inside transactions; the gap is stated as a limitation; every SQL check has a ``0 rows'' or rollback test. \\
+Date-dependent rules (windows, status, delivery days) & Results depend on the day the scripts run and cannot be reproduced & No \texttt{CURDATE()} or \texttt{NOW()}; every script sets a fixed reference date variable (e.g.\ \texttt{@ref\_date = \textquotesingle 2026-04-20\textquotesingle}) and compares with it. \\
+Status is not updated automatically & A stale status gives a wrong renewal price (BR4) or the wrong cancellation case (BR10) & A status-update script for the reference date runs before every operation and demo; boundary test POS03. \\
+Errors in refund amounts & Wrong net income in MQ1 and wrong refund tests & One shared expression for the price (allocated cost + add-on fee); hand-computed expected values in TXC02--TXC04 and POS15. \\
+DDL failures: overlapping composite FKs, CHECK on an FK column, FK type mismatch & The Stage 2 schema does not load & Prototype DDL on MySQL 8.4.11 now; identical FK types; no referential actions; errors recorded in the meeting notes. \\
+Seed data does not cover edge cases & HAVING, NULL handling and boundary tests show nothing & Seed data are derived from the test list: one plan type above and one below 60\%, a week with only skips, a product chosen by nobody, renewal and non-renewal, a cancelled subscription. \\
+Two-person team & One member cannot explain a part in the presentation & Lead/reviewer pairs, weekly walk-through, both members run every script. \\
 \end{xltabular}
 
 % =====================================================================
 %  References（参考文献，不计入 8-12 页）
 % ---------------------------------------------------------------------
-%  写法：每条资料一个 \bibitem{代号}；正文中用 \cite{代号} 引用，PDF 中显示为 [1]。
-%  网址用 \url{...} 包起来（网址里的 _ % # 不需要转义）。
-%  如果没有引用任何外部资料，可以删除从 \clearpage 到 \end{thebibliography} 的整段。
-% =====================================================================
 \clearpage
 \phantomsection
 \addcontentsline{toc}{section}{References}
-\begin{thebibliography}{9}
-  \bibitem{ref-example}
-    \placeholder{Author or organisation. \emph{Title of the page or document}. URL. Accessed DD Month 2026.}
-  % 示例（去掉 % 后使用）：
-  % \bibitem{brimwood}
-  %   Brimwood Farm. \emph{Community Supported Agriculture (CSA)}.
-  %   \url{https://www.brimwoodfarm.com/csa}. Accessed 10 October 2026.
-\end{thebibliography}
+\begin{thebibliography}{}
+  \bibitem
+    Brimwood Farm. (n.d.). \emph{Join the Brimwood Farm CSA}.
+    Retrieved October 20, 2026, from \url{https://www.brimwoodfarm.com/csa}
 
+  \bibitem
+    Garcia, W. (2020, October 2). How to use CHECK constraint in MySQL 8.
+    \emph{Percona Blog}.
+    \url{https://www.percona.com/blog/how-to-use-check-constraint-in-mysql-8/}
+
+  \bibitem
+    JGraph Ltd.\ (n.d.). \emph{draw.io} [Computer software].
+    \url{https://app.diagrams.net}
+
+  \bibitem
+    J.R. Organics Farm. (n.d.). \emph{CSA member handbook}.
+    Retrieved October 20, 2026, from \url{https://www.jrorganicsfarm.com/handbook}
+
+
+  \bibitem
+    Red Truck Farm. (n.d.). \emph{Community supported agriculture}.
+    Retrieved October 20, 2026, from
+    \url{https://amber-baker-83an.squarespace.com/community-supported-agriculture}
+\end{thebibliography}
 % =====================================================================
 %  Appendix（附录，可选，不计入页数）
-% ---------------------------------------------------------------------
-%  用法：选中下面 4 行，按 Ctrl+/ 去掉 %。附录的小节编号会自动变成 A、B ...
 % =====================================================================
 % \clearpage
 % \appendix

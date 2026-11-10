@@ -1,0 +1,4 @@
+[sqlfluff]
+dialect = mysql
+# Skip layout, capitalisation, and other lint rules. Report parse errors only.
+ignore = linting

@@ -1,0 +1,42 @@
+﻿TABLE_NAME,CONSTRAINT_TYPE,CONSTRAINT_NAME
+add_on,CHECK,ck_add_on_weight
+add_on,FOREIGN KEY,fk_add_on_delivery
+add_on,FOREIGN KEY,fk_add_on_product
+add_on,PRIMARY KEY,PRIMARY
+chosen_products,FOREIGN KEY,fk_chosen_products_product
+chosen_products,FOREIGN KEY,fk_chosen_products_subscription
+chosen_products,PRIMARY KEY,PRIMARY
+customer,PRIMARY KEY,PRIMARY
+customer,UNIQUE,uq_customer_email
+delivery,CHECK,ck_delivery_status
+delivery,CHECK,ck_delivery_week_no
+delivery,FOREIGN KEY,fk_delivery_subscription
+delivery,PRIMARY KEY,PRIMARY
+product,CHECK,ck_product_is_farmers_choice
+product,CHECK,ck_product_price_per_kg
+product,FOREIGN KEY,fk_product_season
+product,PRIMARY KEY,PRIMARY
+product,UNIQUE,uq_product_season_name
+refund,CHECK,ck_refund_amount
+refund,CHECK,ck_refund_type
+refund,FOREIGN KEY,fk_refund_delivery
+refund,FOREIGN KEY,fk_refund_subscription
+refund,PRIMARY KEY,PRIMARY
+refund,UNIQUE,uq_refund_subscription_week_no
+season,CHECK,ck_season_planning_day_monday
+season,CHECK,ck_season_season_name
+season,CHECK,ck_season_year
+season,PRIMARY KEY,PRIMARY
+season,UNIQUE,uq_season_first_planning_day
+season,UNIQUE,uq_season_name_year
+subscription,CHECK,ck_subscription_allocated_cost
+subscription,CHECK,ck_subscription_cancellation
+subscription,CHECK,ck_subscription_cancellation_date
+subscription,CHECK,ck_subscription_frequency
+subscription,CHECK,ck_subscription_plan_type
+subscription,CHECK,ck_subscription_remaining_skip
+subscription,CHECK,ck_subscription_status
+subscription,FOREIGN KEY,fk_subscription_customer
+subscription,FOREIGN KEY,fk_subscription_season
+subscription,PRIMARY KEY,PRIMARY
+subscription,UNIQUE,uq_subscription_customer_season

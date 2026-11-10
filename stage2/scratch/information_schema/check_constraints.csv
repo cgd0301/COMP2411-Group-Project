@@ -1,0 +1,18 @@
+﻿CONSTRAINT_NAME,CHECK_CLAUSE
+ck_season_season_name,"(`season_name` in (_utf8mb4\'spring\',_utf8mb4\'summer\',_utf8mb4\'autumn\'))"
+ck_season_planning_day_monday,(dayofweek(`first_planning_day`) = 2)
+ck_season_year,(year(`first_planning_day`) = `year`)
+ck_subscription_status,"(`status` in (_utf8mb4\'planned\',_utf8mb4\'active\',_utf8mb4\'finished\',_utf8mb4\'cancelled\'))"
+ck_subscription_plan_type,"(`plan_type` in (_utf8mb4\'farmer\\\'s choice\',_utf8mb4\'customizable\'))"
+ck_subscription_frequency,"(`frequency` in (_utf8mb4\'weekly\',_utf8mb4\'biweekly\'))"
+ck_subscription_allocated_cost,"(((`plan_type` = _utf8mb4\'farmer\\\'s choice\') and (`allocated_cost` in (200.00,160.00))) or ((`plan_type` = _utf8mb4\'customizable\') and (`allocated_cost` in (240,192))))"
+ck_subscription_remaining_skip,(`remaining_refundable_skip` between 0 and 2)
+ck_subscription_cancellation,(((`status` = _utf8mb4\'cancelled\') and (`cancellation_date` is not null)) or ((`status` <> _utf8mb4\'cancelled\') and (`cancellation_date` is null)))
+ck_subscription_cancellation_date,((`cancellation_date` is null) or (`cancellation_date` >= `submission_date`))
+ck_product_price_per_kg,(`price_per_kg` >= 0)
+ck_product_is_farmers_choice,"(`is_farmers_choice` in (0,1))"
+ck_delivery_week_no,(`week_no` between 1 and 12)
+ck_delivery_status,"(`status` in (_utf8mb4\'planned\',_utf8mb4\'skipped\',_utf8mb4\'success\',_utf8mb4\'failed\',_utf8mb4\'cancelled\'))"
+ck_refund_amount,(`amount` > 0)
+ck_refund_type,"(((`type` in (_utf8mb4\'skipped\',_utf8mb4\'failed\')) and (`week_no` is not null)) or ((`type` = _utf8mb4\'cancelled\') and (`week_no` is null)))"
+ck_add_on_weight,(`weight` >= 0.10)

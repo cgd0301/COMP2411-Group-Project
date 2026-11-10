@@ -1,0 +1,41 @@
+﻿TABLE_NAME,COLUMN_NAME,COLUMN_TYPE,IS_NULLABLE,COLUMN_DEFAULT,COLLATION_NAME,EXTRA,COLUMN_KEY
+add_on,subscription_id,int unsigned,NO,NULL,NULL,,PRI
+add_on,week_no,tinyint,NO,NULL,NULL,,PRI
+add_on,product_id,int unsigned,NO,NULL,NULL,,PRI
+add_on,weight,"decimal(5,2)",NO,NULL,NULL,,
+chosen_products,subscription_id,int unsigned,NO,NULL,NULL,,PRI
+chosen_products,product_id,int unsigned,NO,NULL,NULL,,PRI
+customer,customer_id,int unsigned,NO,NULL,NULL,auto_increment,PRI
+customer,name,varchar(100),NO,NULL,utf8mb4_0900_ai_ci,,
+customer,email,varchar(255),NO,NULL,utf8mb4_0900_ai_ci,,UNI
+customer,street,varchar(255),NO,NULL,utf8mb4_0900_ai_ci,,
+customer,building,varchar(50),NO,NULL,utf8mb4_0900_ai_ci,,
+customer,room,varchar(20),NO,NULL,utf8mb4_0900_ai_ci,,
+delivery,subscription_id,int unsigned,NO,NULL,NULL,,PRI
+delivery,week_no,tinyint,NO,NULL,NULL,,PRI
+delivery,status,varchar(10),NO,planned,utf8mb4_bin,,
+product,product_id,int unsigned,NO,NULL,NULL,auto_increment,PRI
+product,season_id,smallint unsigned,NO,NULL,NULL,,MUL
+product,name,varchar(100),NO,NULL,utf8mb4_0900_ai_ci,,
+product,is_farmers_choice,tinyint(1),NO,0,NULL,,
+product,price_per_kg,"decimal(6,2)",NO,NULL,NULL,,
+refund,refund_id,int unsigned,NO,NULL,NULL,auto_increment,PRI
+refund,subscription_id,int unsigned,NO,NULL,NULL,,MUL
+refund,amount,"decimal(8,2)",NO,NULL,NULL,,
+refund,type,varchar(12),NO,NULL,utf8mb4_bin,,
+refund,refund_date,date,NO,NULL,NULL,,
+refund,week_no,tinyint,YES,NULL,NULL,,
+season,season_id,smallint unsigned,NO,NULL,NULL,auto_increment,PRI
+season,season_name,varchar(10),NO,NULL,utf8mb4_bin,,MUL
+season,year,smallint unsigned,NO,NULL,NULL,,
+season,first_planning_day,date,NO,NULL,NULL,,UNI
+subscription,subscription_id,int unsigned,NO,NULL,NULL,auto_increment,PRI
+subscription,customer_id,int unsigned,NO,NULL,NULL,,MUL
+subscription,season_id,smallint unsigned,NO,NULL,NULL,,MUL
+subscription,status,varchar(10),NO,planned,utf8mb4_bin,,
+subscription,plan_type,varchar(20),NO,NULL,utf8mb4_bin,,
+subscription,frequency,varchar(10),NO,NULL,utf8mb4_bin,,
+subscription,allocated_cost,"decimal(8,2)",NO,NULL,NULL,,
+subscription,submission_date,date,NO,NULL,NULL,,
+subscription,cancellation_date,date,YES,NULL,NULL,,
+subscription,remaining_refundable_skip,tinyint,NO,2,NULL,,
