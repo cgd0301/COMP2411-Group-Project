@@ -2,8 +2,10 @@
 
 Conventions: money -> DECIMAL (never FLOAT); dates -> DATE, timestamps -> DATETIME;
 status/type columns -> VARCHAR + CHECK (ANSI-standard, easier to extend than ENUM);
+value-list columns use COLLATE utf8mb4_bin (CL05): season_name, subscription status,
+plan_type and frequency, delivery status, refund type; email keeps the server collation;
 every FK column has exactly the same type and signedness as the referenced PK.
-All foreign keys are declared ON DELETE RESTRICT (child rows must be removed first).
+No foreign key writes ON DELETE or ON UPDATE. InnoDB's default is RESTRICT, so a referenced parent row cannot be changed while a child row exists.
 Derived attributes from the ER diagram (marked with ()) are NOT stored: subscription.fee(),
 delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are computed in SQL/application code.
 
@@ -21,9 +23,9 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |
 |---|---|---|---|---|---|---|
 | season_id | SMALLINT UNSIGNED AUTO_INCREMENT | PK | NO | — | — | Surrogate identifier |
-| season_name | VARCHAR(10) | part of CK1 | NO | — | IN ('spring','summer','autumn') | Season within a year |
-| year | SMALLINT UNSIGNED | part of CK1 | NO | — | — | Calendar year |
-| first_planning_day | DATE | UNIQUE (CK2), CHECK (DAYOFWEEK(first_planning_day) = 2) | NO | — | — | Anchor date; start_day() = -6, end_day() = +77 (derived, not stored) |
+| season_name | VARCHAR(10) COLLATE utf8mb4_bin | part of CK1 | NO | — | IN ('spring','summer','autumn'); 'Summer' is rejected | Season within a year |
+| year | SMALLINT UNSIGNED | part of CK1 | NO | — | CHECK (ck_season_year): YEAR(first_planning_day) = year | Calendar year of the first planning day |
+| first_planning_day | DATE | UNIQUE (CK2), CHECK (DAYOFWEEK(first_planning_day) = 2) | NO | — | ck_season_year, with year | Anchor date; start_day() = -6, end_day() = +77 (derived, not stored) |
 
 ## 3. subscription
 | Column | MySQL type | Key | Null | Default | Constraint / domain | Description |
@@ -31,12 +33,12 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | subscription_id | INT UNSIGNED AUTO_INCREMENT | PK | NO | — | — | Surrogate identifier |
 | customer_id | INT UNSIGNED | FK→customer; part of CK | NO | — | UNIQUE(customer_id, season_id) | Holder (BR1: at most 1 per customer per season; cancelled still occupies the slot) |
 | season_id | SMALLINT UNSIGNED | FK→season; part of CK | NO | — | — | Season subscribed |
-| status | VARCHAR(10) | — | NO | 'planned' | CHECK IN ('planned','active','finished','cancelled') | Lifecycle state |
-| plan_type | VARCHAR(20) | — | NO | — | CHECK IN ('farmer''s choice','customizable') | Chosen at enrolment, immutable afterwards |
-| frequency | VARCHAR(10) | — | NO | — | CHECK IN ('weekly','biweekly') | Chosen at enrolment, immutable afterwards |
+| status | VARCHAR(10) COLLATE utf8mb4_bin | — | NO | 'planned' | CHECK IN ('planned','active','finished','cancelled'); ck_subscription_cancellation with cancellation_date | Lifecycle state |
+| plan_type | VARCHAR(20) COLLATE utf8mb4_bin | — | NO | — | CHECK IN ('farmer''s choice','customizable'); 'Customizable' is rejected | Chosen at enrolment, immutable afterwards |
+| frequency | VARCHAR(10) COLLATE utf8mb4_bin | — | NO | — | CHECK IN ('weekly','biweekly'); 'Weekly' is rejected | Chosen at enrolment, immutable afterwards |
 | allocated_cost | DECIMAL(8,2) | — | NO | — | CHECK matches plan_type: IN (200, 160) for 'farmer''s choice', IN (240, 192) for 'customizable' | Single-delivery price snapshot incl. 20% renewal discount (stored to lock price) |
 | submission_date | DATE | — | NO | — | — | Enrolment/renewal date |
-| cancellation_date | DATE | — | YES | NULL | — | NULL = not cancelled (legitimate missing value) |
+| cancellation_date | DATE | — | YES | NULL | ck_subscription_cancellation: set exactly when status is 'cancelled'; ck_subscription_cancellation_date: NULL or >= submission_date | NULL = not cancelled (legitimate missing value) |
 | remaining_refundable_skip | TINYINT | — | NO | 2 | CHECK BETWEEN 0 AND 2 | Refundable skip quota, consumed by skip refunds |
 
 **Derived (not stored):** fee() = delivery count x allocated_cost; see Conventions above.
@@ -46,7 +48,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 |---|---|---|---|---|---|---|
 | subscription_id | INT UNSIGNED | PK part 1; FK→subscription | NO | — | — | Owner entity PK (identifying relationship) |
 | week_no | TINYINT | PK part 2 (partial key) | NO | — | CHECK (BETWEEN 1 AND 12) | Week within the season |
-| status | VARCHAR(10) | — | NO | 'planned' | CHECK IN ('planned','skipped','success','failed','cancelled') | Delivery state machine; transitions guarded by UPDATE in transactions |
+| status | VARCHAR(10) COLLATE utf8mb4_bin | — | NO | 'planned' | CHECK IN ('planned','skipped','success','failed','cancelled'); 'SUCCESS' is rejected | Delivery state machine; transitions guarded by UPDATE in transactions |
 
 **Derived (not stored):** delivery_date() = first planning delivery day + (week_no-1) x 7; add_on_fee() = SUM(weight x price_per_kg); price() is computed on the fly. See Conventions above.
 
@@ -56,7 +58,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | refund_id | INT UNSIGNED AUTO_INCREMENT | PK | NO | — | — | Surrogate identifier |
 | subscription_id | INT UNSIGNED | FK→subscription | NO | — | — | The subscription refunded |
 | amount | DECIMAL(8,2) | — | NO | — | CHECK (> 0) | Computed at discounted allocated cost (anti-arbitrage) |
-| type | VARCHAR(12) | — | NO | — | CHECK IN ('skipped','failed','cancelled') | 'skipped' consumes quota; 'failed' does not; 'cancelled' ties to no delivery |
+| type | VARCHAR(12) COLLATE utf8mb4_bin | — | NO | — | CHECK IN ('skipped','failed','cancelled'); 'Skipped' is rejected; week_no required except for 'cancelled' | 'skipped' consumes quota; 'failed' does not; 'cancelled' ties to no delivery |
 | refund_date | DATE | — | NO | — | — | When the refund was issued |
 | week_no | TINYINT | Make up the composite foreign key with subscription_id referencing delivery(subscription_id, week_no); UNIQUE(subscription_id, week_no) | YES | NULL | CHECK: If type is skipped or failed, it should be non null; if type is cancelled, it must be null | Null indicates cancellation, which does not refer to any delivery; When it is non null, the composite foreign key gurantees the refund and delivery belong to the same subscription. |
 
@@ -66,7 +68,7 @@ delivery.delivery_date(), delivery.add_on_fee(), delivery.price(); they are comp
 | product_id | INT UNSIGNED AUTO_INCREMENT | PK | NO | — | — | Surrogate identifier |
 | season_id | SMALLINT UNSIGNED | FK→season | NO | — | UNIQUE(season_id, name) | The season it is grown in (exactly 10 products per season; cross-row rule -> in-transaction check) |
 | name | VARCHAR(100) | — | NO | — | UNIQUE(season_id, name) | Product name |
-| is_farmers_choice | TINYINT(1) | — | NO | 0 | — | 1 = one of the 6 fixed farmer's-choice items |
+| is_farmers_choice | TINYINT(1) | — | NO | 0 | CHECK (ck_product_is_farmers_choice) IN (0, 1) | 1 = one of the 6 fixed farmer's-choice items |
 | price_per_kg | DECIMAL(6,2) | — | NO | — | CHECK (>= 0) | Unit price for add-on charging |
 
 ## 7. chosen_products (M:N junction)

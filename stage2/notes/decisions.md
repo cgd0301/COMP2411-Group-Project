@@ -30,10 +30,11 @@ This file records conventions that do not change the Stage 1 design but affect h
 | D14 | Development environment check                                               | Open   |            | ✅   | ☐   |
 | D15 | Acknowledgement requirement check                                           | Agreed |            | ✅   | ☐   |
 | D16 | Referential-action clause on foreign keys whose columns are used in a CHECK | Agreed | 2026-11-03 | ✅   | ☐   |
-| D17 | Case sensitivity of status and type values                                  | Open   |            | ☐    | ☐   |
+| D17 | Case sensitivity of status and type values                                  | Agreed | 2026-11-09 | ✅   | ☐   |
 | D18 | Signed and unsigned columns, and the values used in negative tests          | Agreed | 2026-11-04 | ✅    | ☐   |
 | D19 | Apostrophes in string literals                                              | Open   |            | ☐    | ☐   |
 | D20 | No refund row for a zero refund                                             | Agreed | 2026-11-03 | ☐    | ☐   |
+| D21 | Candidate keys not enforced by UNIQUE                                       | Agreed | 2026-11-09 | ✅   | ☐   |
 
 ---
 
@@ -204,10 +205,10 @@ This file records conventions that do not change the Stage 1 design but affect h
 ## D17 Case sensitivity of status and type values (roadmap 1.2, question 2)
 
 - **Question:** With the default collation `utf8mb4_0900_ai_ci`, `'PLANNED'` passes `CHECK (status IN ('planned', …))` and is stored in upper case. Accept this and list it as a limitation, or declare these columns with `COLLATE utf8mb4_bin` (case-sensitive comparison)? If the column definitions change, also add a change-log entry.
-- **Decision:**
-- **Rationale:**
+- **Decision:** The value-list columns use `COLLATE utf8mb4_bin`: `season.season_name`, `subscription.status`, `subscription.plan_type`, `subscription.frequency`, `delivery.status` and `refund.type`. `customer.email` keeps the server collation, so email uniqueness stays case-insensitive. Recorded as CL05.
+- **Rationale:** Under the default case-insensitive collation, `'PLANNED'` passes `CHECK (status IN ('planned', …))` and is stored in upper case.
 - **Applies to:** `sql/01_schema.sql`, README `# Limitations`.
-- **Status:** Open.
+- **Status:** Agreed, 2026-11-09.
 
 ## D18 Signed and unsigned columns, and the values used in negative tests (roadmap 1.2, question 5)
 
@@ -222,7 +223,7 @@ This file records conventions that do not change the Stage 1 design but affect h
 - **Proposed decision:** Inside a string literal, a single quote is written as two single quotes, for example `'farmer''s choice'` (the `plan_type` value in the data dictionary); backslash escapes are not used.
 - **Rationale:**
 - **Applies to:** all SQL files.
-- **Status:** Open.
+- **Status:** Agreed.
 
 ## D20 No refund row for a zero refund
 
@@ -230,6 +231,13 @@ This file records conventions that do not change the Stage 1 design but affect h
 - **Rationale:** `ck_refund_amount` (`amount > 0`, data dictionary §5.5) rejects a zero amount, and a row that refunds nothing carries no information. Queries that total refunds already use `COALESCE(..., 0)` for subscriptions with no refund rows.
 - **Applies to:** skip and cancellation operations (BR8, BR10), their tests, README `# Tests`.
 - **Status:** Agreed, 2026-11-03.
+
+## D21 Candidate keys not enforced by UNIQUE
+
+- **Decision:** Do not add `UNIQUE (customer_id, submission_date)` on `subscription` or `UNIQUE (subscription_id, type, refund_date)` on `refund`. The report keeps both candidate keys and states that the database does not enforce them by itself.
+- **Rationale:** `{customer_id, submission_date}` follows from one open enrolment window (D03) together with BR2. `{subscription_id, type, refund_date}` follows from non-overlapping skip windows, one failed refund on the day after its delivery, and at most one cancellation. A direct INSERT can bypass both, which stays a documented limitation.
+- **Applies to:** report normalization section, README `# Limitations`.
+- **Status:** Agreed, 2026-11-09.
 
 ---
 

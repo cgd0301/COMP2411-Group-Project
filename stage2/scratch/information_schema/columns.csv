@@ -1,0 +1,41 @@
+﻿TABLE_NAME,COLUMN_NAME,COLUMN_TYPE,IS_NULLABLE,COLUMN_DEFAULT
+add_on,subscription_id,int unsigned,NO,NULL
+add_on,week_no,tinyint,NO,NULL
+add_on,product_id,int unsigned,NO,NULL
+add_on,weight,"decimal(5,2)",NO,NULL
+chosen_products,subscription_id,int unsigned,NO,NULL
+chosen_products,product_id,int unsigned,NO,NULL
+customer,customer_id,int unsigned,NO,NULL
+customer,name,varchar(100),NO,NULL
+customer,email,varchar(255),NO,NULL
+customer,street,varchar(255),NO,NULL
+customer,building,varchar(50),NO,NULL
+customer,room,varchar(20),NO,NULL
+delivery,subscription_id,int unsigned,NO,NULL
+delivery,week_no,tinyint,NO,NULL
+delivery,status,varchar(10),NO,planned
+product,product_id,int unsigned,NO,NULL
+product,season_id,smallint unsigned,NO,NULL
+product,name,varchar(100),NO,NULL
+product,is_farmers_choice,tinyint(1),NO,0
+product,price_per_kg,"decimal(6,2)",NO,NULL
+refund,refund_id,int unsigned,NO,NULL
+refund,subscription_id,int unsigned,NO,NULL
+refund,amount,"decimal(8,2)",NO,NULL
+refund,type,varchar(12),NO,NULL
+refund,refund_date,date,NO,NULL
+refund,week_no,tinyint,YES,NULL
+season,season_id,smallint unsigned,NO,NULL
+season,season_name,varchar(10),NO,NULL
+season,year,smallint unsigned,NO,NULL
+season,first_planning_day,date,NO,NULL
+subscription,subscription_id,int unsigned,NO,NULL
+subscription,customer_id,int unsigned,NO,NULL
+subscription,season_id,smallint unsigned,NO,NULL
+subscription,status,varchar(10),NO,planned
+subscription,plan_type,varchar(20),NO,NULL
+subscription,frequency,varchar(10),NO,NULL
+subscription,allocated_cost,"decimal(8,2)",NO,NULL
+subscription,submission_date,date,NO,NULL
+subscription,cancellation_date,date,YES,NULL
+subscription,remaining_refundable_skip,tinyint,NO,2

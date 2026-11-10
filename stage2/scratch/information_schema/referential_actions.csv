@@ -1,0 +1,11 @@
+﻿CONSTRAINT_NAME,TABLE_NAME,UPDATE_RULE,DELETE_RULE
+fk_add_on_delivery,add_on,NO ACTION,NO ACTION
+fk_add_on_product,add_on,NO ACTION,NO ACTION
+fk_chosen_products_product,chosen_products,NO ACTION,NO ACTION
+fk_chosen_products_subscription,chosen_products,NO ACTION,NO ACTION
+fk_delivery_subscription,delivery,NO ACTION,NO ACTION
+fk_product_season,product,NO ACTION,NO ACTION
+fk_refund_delivery,refund,NO ACTION,NO ACTION
+fk_refund_subscription,refund,NO ACTION,NO ACTION
+fk_subscription_customer,subscription,NO ACTION,NO ACTION
+fk_subscription_season,subscription,NO ACTION,NO ACTION

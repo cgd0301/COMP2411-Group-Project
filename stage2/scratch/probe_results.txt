@@ -1,0 +1,158 @@
+schema_statements=16 schema_errors=0
+schema_warnings=Level	Code	Message
+Error	1064	You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '$$' at line 1
+probe_statements=153
+001	OK	INSERT INTO customer (customer_id, name, email, street, building, room) VALUES (1, 'Probe Customer_1', 'probe@
+002	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1' for key 'customer.PRIMARY'	INSERT INTO customer (customer_id, name, email, street, building, room) VALUES (1, 'Probe Customer_2', 'probe@
+003	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry 'probe@example_1.com' for key 'customer.uq_customer_email'	INSERT INTO customer (customer_id, name, email, street, building, room) VALUES (2, 'Probe Customer_2', 'probe@
+004	OK	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (1, 'summer', 2026, '2026-06-01')
+005	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1' for key 'season.PRIMARY'	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (1, 'autumn', 2026, '2026-11-02')
+006	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry 'summer-2026' for key 'season.uq_season_name_year'	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (2, 'summer', 2026, '2026-06-08')
+007	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '2026-06-01' for key 'season.uq_season_first_planning_day'	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (2, 'autumn', 2026, '2026-06-01')
+008	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_season_season_name' is violated.	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (2, 'winter', 2026, '2026-11-02')
+009	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_season_planning_day_monday' is violated.	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (2, 'spring', 2027, '2027-03-02')
+010	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_season_year' is violated.	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (2, 'spring', 2027, '2026-06-08')
+011	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_season_season_name' is violated.	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (2, 'Summer', 2027, '2026-06-08')
+012	OK	DELETE FROM add_on
+013	OK	DELETE FROM refund
+014	OK	DELETE FROM chosen_products
+015	OK	DELETE FROM delivery
+016	OK	DELETE FROM product
+017	OK	DELETE FROM subscription
+018	OK	DELETE FROM customer
+019	OK	DELETE FROM season
+020	OK	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (1, 'summer', 2026, '2026-06-01')
+021	OK	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (1, 1, 'Probe Produc
+022	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1' for key 'product.PRIMARY'	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (1, 1, 'Probe Produc
+023	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`product`, CONSTRAINT `fk_product_season` FOREIGN KEY (`season_id`) REFERENCES `season` (`season_id`))	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (2, 9999, 'Probe Pro
+024	ERR ?	ERROR 1048 (23000) at line 1: Column 'season_id' cannot be null	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (2, NULL, 'Probe Pro
+025	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1-Probe Product_1' for key 'product.uq_product_season_name'	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (2, 1, 'Probe Produc
+026	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_product_price_per_kg' is violated.	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (2, 1, 'Probe Produc
+027	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_product_is_farmers_choice' is violated.	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (2, 1, 'Probe Produc
+028	OK	DELETE FROM add_on
+029	OK	DELETE FROM refund
+030	OK	DELETE FROM chosen_products
+031	OK	DELETE FROM delivery
+032	OK	DELETE FROM product
+033	OK	DELETE FROM subscription
+034	OK	DELETE FROM customer
+035	OK	DELETE FROM season
+036	OK	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (1, 'summer', 2026, '2026-06-01')
+037	OK	INSERT INTO customer (customer_id, name, email, street, building, room) VALUES (1, 'Probe Name', 'probe@exampl
+038	OK	INSERT INTO subscription ( subscription_id, customer_id, season_id, plan_type, frequency, allocated_cost, subm
+039	OK	INSERT INTO delivery (subscription_id, week_no, status) VALUES (1, 1, 'success')
+040	OK	INSERT INTO delivery (subscription_id, week_no, status) VALUES (1, 2, 'skipped')
+041	OK	INSERT INTO delivery (subscription_id, week_no, status) VALUES (1, 3, 'planned')
+042	OK	INSERT INTO customer (customer_id, name, email, street, building, room) VALUES (2, 'Probe Name', 'probe@exampl
+043	OK	INSERT INTO subscription ( subscription_id, customer_id, season_id, status, plan_type, frequency, allocated_co
+044	OK	INSERT INTO delivery (subscription_id, week_no, status) VALUES (2, 1, 'cancelled')
+045	OK	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (1, 1, 2, 200.00, '
+046	OK	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (3, 2, NULL, 2400.0
+047	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1' for key 'refund.PRIMARY'	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (1, 2, NULL, 2400.0
+048	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`refund`, CONSTRAINT `fk_refund_subscription` FOREIGN KEY (`subscription_id`) REFERENCES `subscription` (`subscription_id`))	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 9999, NULL, 240
+049	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`refund`, CONSTRAINT `fk_refund_delivery` FOREIGN KEY (`subscription_id`, `week_no`) REFERENCES `delivery` (`subscription_id`, `week_no`))	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 1, 4, 2400.00, 
+050	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`refund`, CONSTRAINT `fk_refund_delivery` FOREIGN KEY (`subscription_id`, `week_no`) REFERENCES `delivery` (`subscription_id`, `week_no`))	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 2, 2, 2400.00, 
+051	ERR ?	ERROR 1048 (23000) at line 1: Column 'subscription_id' cannot be null	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, NULL, NULL, 240
+052	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1-2' for key 'refund.uq_refund_subscription_week_no'	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 1, 2, 200.00, '
+053	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_refund_amount' is violated.	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 2, NULL, 0.00, 
+054	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_refund_amount' is violated.	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 2, NULL, -1.00,
+055	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_refund_type' is violated.	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 2, NULL, 2400.0
+056	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_refund_type' is violated.	INSERT INTO refund (refund_id, subscription_id, week_no, amount, type, refund_date) VALUES (2, 1, 1, 200.00, '
+057	OK	DELETE FROM add_on
+058	OK	DELETE FROM refund
+059	OK	DELETE FROM chosen_products
+060	OK	DELETE FROM delivery
+061	OK	DELETE FROM subscription
+062	OK	INSERT INTO customer (customer_id, name, email, street, building, room) VALUES (3, 'Probe Name', 'probe@exampl
+063	OK	INSERT INTO season (season_id, season_name, year, first_planning_day) VALUES (2, 'autumn', 2026, '2026-09-07')
+064	OK	INSERT INTO product (product_id, season_id, name, is_farmers_choice, price_per_kg) VALUES (1, 1, 'Probe Produc
+065	OK	INSERT INTO subscription (subscription_id, customer_id, season_id, plan_type, frequency, allocated_cost, submi
+066	OK	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, 1), (2, 2), (2, 3), (2, 4), (2, 7), (2, 8
+067	OK	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 1), (1, 2), (1, 3), (2, 1), (2, 3), (2, 5)
+068	OK	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+069	OK | status	remaining_refundable_skip	cancellation_date / planned	2	NULL	SELECT status, remaining_refundable_skip, cancellation_date FROM subscription WHERE customer_id = 2 AND season
+070	OK	UPDATE subscription SET status = 'cancelled', cancellation_date = '2026-02-01' WHERE subscription_id = 1
+071	OK	UPDATE subscription SET remaining_refundable_skip = 0 WHERE subscription_id = 1
+072	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`subscription`, CONSTRAINT `fk_subscription_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`))	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+073	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`subscription`, CONSTRAINT `fk_subscription_season` FOREIGN KEY (`season_id`) REFERENCES `season` (`season_id`))	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+074	ERR ?	ERROR 1048 (23000) at line 1: Column 'customer_id' cannot be null	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+075	ERR ?	ERROR 1048 (23000) at line 1: Column 'season_id' cannot be null	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+076	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1-1' for key 'subscription.uq_subscription_customer_season'	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+077	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_status' is violated.	UPDATE subscription SET status = 'paused' WHERE subscription_id = 2
+078	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_frequency' is violated.	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+079	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_allocated_cost' is violated.	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+080	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_allocated_cost' is violated.	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+081	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_allocated_cost' is violated.	INSERT INTO subscription (customer_id, season_id, plan_type, frequency, allocated_cost, submission_date) VALUE
+082	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_remaining_skip' is violated.	UPDATE subscription SET remaining_refundable_skip = 3 WHERE subscription_id = 1
+083	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_remaining_skip' is violated.	UPDATE subscription SET remaining_refundable_skip = remaining_refundable_skip - 1 WHERE subscription_id = 1
+084	ERR ?	ERROR 1406 (22001) at line 1: Data too long for column 'status' at row 1	UPDATE subscription SET status = 'cancelled_x' WHERE subscription_id = 2
+085	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_cancellation' is violated.	UPDATE subscription SET status = 'cancelled', cancellation_date = NULL WHERE subscription_id = 2
+086	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_cancellation' is violated.	UPDATE subscription SET cancellation_date = '2026-02-01' WHERE subscription_id = 2
+087	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_cancellation_date' is violated.	UPDATE subscription SET status = 'cancelled', cancellation_date = '2026-01-01' WHERE subscription_id = 2
+088	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_status' is violated.	UPDATE subscription SET status = 'PLANNED' WHERE subscription_id = 2
+089	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_allocated_cost' is violated.	UPDATE subscription SET plan_type = 'Customizable' WHERE subscription_id = 2
+090	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_subscription_frequency' is violated.	UPDATE subscription SET frequency = 'Weekly' WHERE subscription_id = 2
+091	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_delivery_status' is violated.	UPDATE delivery SET status = 'SUCCESS' WHERE subscription_id = 1 AND week_no = 1
+092	ERR ?	ERROR 1451 (23000) at line 1: Cannot delete or update a parent row: a foreign key constraint fails (`comp2411_g085_scratch`.`subscription`, CONSTRAINT `fk_subscription_customer` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`))	DELETE FROM customer WHERE customer_id = 1
+093	OK	DELETE FROM add_on
+094	OK	DELETE FROM refund
+095	OK	DELETE FROM chosen_products
+096	OK	DELETE FROM delivery
+097	OK	DELETE FROM subscription
+098	OK	INSERT INTO subscription (subscription_id, customer_id, season_id, plan_type, frequency, allocated_cost, submi
+099	OK	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, 1), (2, 2), (2, 3), (2, 4), (2, 7), (2, 8
+100	OK	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 1), (1, 2), (1, 3), (2, 1), (2, 3), (2, 5)
+101	OK	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, 5)
+102	OK	DELETE FROM chosen_products WHERE subscription_id = 2 AND product_id = 5
+103	OK | COUNT(*) / 8	SELECT COUNT(*) FROM chosen_products WHERE subscription_id = 2
+104	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '2-1' for key 'chosen_products.PRIMARY'	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, 1)
+105	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`chosen_products`, CONSTRAINT `fk_chosen_products_subscription` FOREIGN KEY (`subscription_id`) REFERENCES `subscription` (`subscription_id`))	INSERT INTO chosen_products (subscription_id, product_id) VALUES (9999, 1)
+106	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`chosen_products`, CONSTRAINT `fk_chosen_products_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`))	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, 9999)
+107	ERR ?	ERROR 1048 (23000) at line 1: Column 'product_id' cannot be null	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, NULL)
+108	ERR ?	ERROR 1451 (23000) at line 1: Cannot delete or update a parent row: a foreign key constraint fails (`comp2411_g085_scratch`.`chosen_products`, CONSTRAINT `fk_chosen_products_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`))	DELETE FROM product WHERE product_id = 1
+109	OK	DELETE FROM add_on
+110	OK	DELETE FROM refund
+111	OK	DELETE FROM chosen_products
+112	OK	DELETE FROM delivery
+113	OK	DELETE FROM subscription
+114	OK	INSERT INTO subscription (subscription_id, customer_id, season_id, plan_type, frequency, allocated_cost, submi
+115	OK	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, 1), (2, 2), (2, 3), (2, 4), (2, 7), (2, 8
+116	OK	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 1), (1, 2), (1, 3), (2, 1), (2, 3), (2, 5)
+117	OK	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 12)
+118	OK | status / planned	SELECT status FROM delivery WHERE subscription_id = 1 AND week_no = 12
+119	OK	DELETE FROM delivery WHERE subscription_id = 1 AND week_no = 12
+120	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1-1' for key 'delivery.PRIMARY'	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 1)
+121	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`delivery`, CONSTRAINT `fk_delivery_subscription` FOREIGN KEY (`subscription_id`) REFERENCES `subscription` (`subscription_id`))	INSERT INTO delivery (subscription_id, week_no) VALUES (9999, 1)
+122	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_delivery_week_no' is violated.	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 13)
+123	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_delivery_week_no' is violated.	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 0)
+124	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_delivery_week_no' is violated.	INSERT INTO delivery (subscription_id, week_no) VALUES (1, -1)
+125	ERR ?	ERROR 1264 (22003) at line 1: Out of range value for column 'week_no' at row 1	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 128)
+126	ERR ?	ERROR 1048 (23000) at line 1: Column 'week_no' cannot be null	INSERT INTO delivery (subscription_id, week_no) VALUES (1, NULL)
+127	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_delivery_status' is violated.	UPDATE delivery SET status = 'delivered' WHERE subscription_id = 1 AND week_no = 1
+128	ERR ?	ERROR 1451 (23000) at line 1: Cannot delete or update a parent row: a foreign key constraint fails (`comp2411_g085_scratch`.`delivery`, CONSTRAINT `fk_delivery_subscription` FOREIGN KEY (`subscription_id`) REFERENCES `subscription` (`subscription_id`))	DELETE FROM subscription WHERE subscription_id = 1
+129	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_delivery_week_no' is violated.	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 4), (1, 13)
+130	OK	DELETE FROM add_on
+131	OK	DELETE FROM refund
+132	OK	DELETE FROM chosen_products
+133	OK	DELETE FROM delivery
+134	OK	DELETE FROM subscription
+135	OK	INSERT INTO subscription (subscription_id, customer_id, season_id, plan_type, frequency, allocated_cost, submi
+136	OK	INSERT INTO chosen_products (subscription_id, product_id) VALUES (2, 1), (2, 2), (2, 3), (2, 4), (2, 7), (2, 8
+137	OK	INSERT INTO delivery (subscription_id, week_no) VALUES (1, 1), (1, 2), (1, 3), (2, 1), (2, 3), (2, 5)
+138	OK	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 1, 1, 1.50)
+139	OK | add_on_fee / 48.0000	SELECT a.weight * p.price_per_kg AS add_on_fee FROM add_on a JOIN product p ON p.product_id = a.product_id WHE
+140	OK	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 2, 2, 0.10)
+141	OK	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 2, 3, 0.095)
+142	OK | Level	Code	Message / Error	1064	You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '$$' at line 1	SHOW WARNINGS
+143	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1-1-1' for key 'add_on.PRIMARY'	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 1, 1, 2.00)
+144	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`add_on`, CONSTRAINT `fk_add_on_delivery` FOREIGN KEY (`subscription_id`, `week_no`) REFERENCES `delivery` (`subscription_id`, `week_no`))	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (2, 2, 1, 1.00)
+145	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`add_on`, CONSTRAINT `fk_add_on_delivery` FOREIGN KEY (`subscription_id`, `week_no`) REFERENCES `delivery` (`subscription_id`, `week_no`))	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 13, 1, 1.00)
+146	ERR ?	ERROR 1452 (23000) at line 1: Cannot add or update a child row: a foreign key constraint fails (`comp2411_g085_scratch`.`add_on`, CONSTRAINT `fk_add_on_product` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`))	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 2, 9999, 1.00)
+147	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_add_on_weight' is violated.	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 2, 4, 0.05)
+148	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_add_on_weight' is violated.	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 2, 4, 0.094)
+149	ERR ?	ERROR 3819 (HY000) at line 1: Check constraint 'ck_add_on_weight' is violated.	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 3, 1, -1.00)
+150	ERR ?	ERROR 1264 (22003) at line 1: Out of range value for column 'weight' at row 1	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 3, 1, 1000.00)
+151	ERR ?	ERROR 1048 (23000) at line 1: Column 'weight' cannot be null	INSERT INTO add_on (subscription_id, week_no, product_id, weight) VALUES (1, 3, 1, NULL)
+152	ERR ?	ERROR 1451 (23000) at line 1: Cannot delete or update a parent row: a foreign key constraint fails (`comp2411_g085_scratch`.`add_on`, CONSTRAINT `fk_add_on_delivery` FOREIGN KEY (`subscription_id`, `week_no`) REFERENCES `delivery` (`subscription_id`, `week_no`))	DELETE FROM delivery WHERE subscription_id = 1 AND week_no = 1
+153	ERR ?	ERROR 1451 (23000) at line 1: Cannot delete or update a parent row: a foreign key constraint fails (`comp2411_g085_scratch`.`add_on`, CONSTRAINT `fk_add_on_delivery` FOREIGN KEY (`subscription_id`, `week_no`) REFERENCES `delivery` (`subscription_id`, `week_no`))	UPDATE delivery SET week_no = 4 WHERE subscription_id = 1 AND week_no = 1
+EXTRA subscription PK	ERR ?	ERROR 1062 (23000) at line 1: Duplicate entry '1' for key 'subscription.PRIMARY'
