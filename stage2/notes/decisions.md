@@ -41,7 +41,7 @@ This file records conventions that do not change the Stage 1 design but affect h
 | D25 | Identifier scheme of the seed data                                          | Agreed | 2026-11-10 | ✅   | ☐   |
 | D26 | Delivery rows are literal values in `sql/02_data.sql`                       | Agreed | 2026-11-10 | ✅   | ☐   |
 | D27 | Add-on purchase dates are not stored                                        | Agreed | 2026-11-10 | ✅   | ☐   |
-| D28 | Seed baseline frozen as `seed-v1`                                           | Agreed | 2026-11-12 | ✅   | ☐   |
+| D36 | Seed baseline frozen as `seed-v1`                                           | Agreed | 2026-11-12 | ✅   | ☐   |
 
 ---
 
@@ -302,8 +302,9 @@ This file records conventions that do not change the Stage 1 design but affect h
 - **Applies to:** README `# Limitations`, `stage2/scratch/seed_checks.sql` (I14 checks the plan and the delivery, not the window).
 - **Status:** Agreed, 2026-11-10.
 
-## D28 Seed baseline frozen as `seed-v1`
+## D36 Seed baseline frozen as `seed-v1`
 
+- **Numbering:** D28–D35 are reserved for SHI's Phase 3 entries, so this entry is D36.
 - **Decision:** The seed baseline is frozen at the Git tag `seed-v1` (commit `b2010cc`, 2026-11-12). A fresh build (`sql/01_schema.sql`, then `sql/02_data.sql`) gives the figures below, and every test's starting state refers to them.
 
   | Table | season | product | customer | subscription | chosen_products | delivery | add_on | refund |
