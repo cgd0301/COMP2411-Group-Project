@@ -35,6 +35,12 @@ This file records conventions that do not change the Stage 1 design but affect h
 | D19 | Apostrophes in string literals                                              | Open   |            | ☐    | ☐   |
 | D20 | No refund row for a zero refund                                             | Agreed | 2026-11-03 | ☐    | ☐   |
 | D21 | Candidate keys not enforced by UNIQUE                                       | Agreed | 2026-11-09 | ✅   | ☐   |
+| D22 | Submission dates of Autumn 2025 subscriptions                               | Agreed | 2026-11-10 | ✅   | ☐   |
+| D23 | Autumn 2025 subscriptions are all at full price                             | Agreed | 2026-11-10 | ✅   | ☐   |
+| D24 | Renewal is decided on the submission date                                   | Agreed | 2026-11-10 | ✅   | ☐   |
+| D25 | Identifier scheme of the seed data                                          | Agreed | 2026-11-10 | ✅   | ☐   |
+| D26 | Delivery rows are literal values in `sql/02_data.sql`                       | Agreed | 2026-11-10 | ✅   | ☐   |
+| D27 | Add-on purchase dates are not stored                                        | Agreed | 2026-11-10 | ✅   | ☐   |
 
 ---
 
@@ -238,6 +244,61 @@ This file records conventions that do not change the Stage 1 design but affect h
 - **Rationale:** `{customer_id, submission_date}` follows from one open enrolment window (D03) together with BR2. `{subscription_id, type, refund_date}` follows from non-overlapping skip windows, one failed refund on the day after its delivery, and at most one cancellation. A direct INSERT can bypass both, which stays a documented limitation.
 - **Applies to:** report normalization section, README `# Limitations`.
 - **Status:** Agreed, 2026-11-09.
+
+## D22 Submission dates of Autumn 2025 subscriptions
+
+- **Decision:** Every Autumn 2025 subscription has a `submission_date` between 2025-05-27 and 2025-08-18, both included. This is the range Summer 2025 would have under BR3 with its first planning day on Monday 2025-06-02, the first Monday of June, as for Summer 2026 (D01). Summer 2025 itself is not stored.
+- **Rationale:** Under BR4, the enrolment window for an autumn season is the summer range of the same year. Without a Summer 2025 row, the window has to be fixed by this convention. The range ends before the Autumn 2025 range starts (2025-09-02), so D03 still holds.
+- **Note:** Autumn 2025 rows are inserted directly by `sql/02_data.sql`, not by the enrolment operation (UC1). The window check of BR4 is therefore not run on them, and the seed check for submission dates (I02) uses the range above for this season.
+- **Applies to:** `sql/02_data.sql`, `stage2/scratch/seed_checks.sql`, README `# Queries`.
+- **Status:** Agreed, 2026-11-10.
+
+## D23 Autumn 2025 subscriptions are all at full price
+
+- **Decision:** Every Autumn 2025 subscription has the full allocated cost: 200.00 for `'farmer''s choice'` and 240.00 for `'customizable'`. None is a renewal.
+- **Rationale:** Under BR4, an autumn subscription is a renewal only if the customer holds an active or finished subscription for the summer of the same year. Summer 2025 is not stored, so no Autumn 2025 subscription can be shown to be a renewal from the data. Autumn 2025 subscriptions can still make Spring 2026 subscriptions renewals (D02).
+- **Applies to:** `sql/02_data.sql`, `stage2/scratch/seed_checks.sql` (the renewal-price check, I03, treats every Autumn 2025 subscription as new).
+- **Status:** Agreed, 2026-11-10.
+
+## D24 Renewal is decided on the submission date
+
+- **Decision:** Whether a subscription is a renewal, and so whether it gets the 20% discount (160.00 or 192.00), is decided once, on its submission date. The previous-season subscription counts if it is active or finished on that date. Cancelling it later does not change the renewal's allocated cost, and no extra charge or refund follows.
+- **Rationale:** BR4 already defines a renewal by the previous subscription's status "when it is submitted", and `allocated_cost` is a price snapshot (data dictionary §5.3). This entry states how that wording is applied when the previous subscription is cancelled after the renewal is submitted. It is not a design change, so it has no change-log entry.
+- **Consequence for the seed checks:** The renewal-price check (I03) cannot use the current `status`, which may now be `'cancelled'`. Because the enrolment window of a season lies inside or after the range of its previous subscribable season (BR4), a previous-season subscription that exists is active or finished on the submission date unless it was already cancelled. A subscription is therefore a renewal exactly when the same customer has a subscription for the previous subscribable season whose `cancellation_date` is NULL or later than this subscription's `submission_date`.
+- **Same-day case:** If the previous subscription is cancelled on the renewal's submission date, the result depends on which operation runs first. The seed data never put both on the same day.
+- **Example in the seed data:** C15 submits Autumn 2026 subscription 403 on 2026-06-05, while Summer 2026 subscription 307 is active, so 403 costs 160.00. C15 then cancels 307 on 2026-06-24, and 403 stays at 160.00 (`stage2/notes/seed_cast.md`, coverage #13).
+- **Applies to:** `sql/02_data.sql`, `stage2/scratch/seed_checks.sql`, enrolment operation (UC1), report BR4 discussion.
+- **Status:** Agreed, 2026-11-10.
+
+## D25 Identifier scheme of the seed data
+
+- **Decision:** `sql/02_data.sql` writes every identifier explicitly:
+
+  | Table | Identifiers |
+  | --- | --- |
+  | `season` | 1 = Autumn 2025, 2 = Spring 2026, 3 = Summer 2026, 4 = Autumn 2026 |
+  | `product` | 1–10 Autumn 2025, 11–20 Spring 2026, 21–30 Summer 2026, 31–40 Autumn 2026; within each block the 6 farmer's choice types come first |
+  | `customer` | `customer_id` = cast number (C01 = 1, …, C15 = 15) |
+  | `subscription` | 101– Autumn 2025, 201– Spring 2026, 301– Summer 2026, 401– Autumn 2026 |
+  | `refund` | 1–15 in `refund_date` order |
+
+- **Rationale:** The season of a subscription or product can be read from its identifier, so test results and query outputs are easy to check against `seed_cast.md`. Because the identifiers are explicit, AUTO_INCREMENT continues from the largest one; tests and operations must read a new row's identifier with `LAST_INSERT_ID()` instead of assuming it.
+- **Applies to:** `sql/02_data.sql`, `stage2/notes/seed_plan.xlsx`, `tests/`.
+- **Status:** Agreed, 2026-11-10.
+
+## D26 Delivery rows are literal values in `sql/02_data.sql`
+
+- **Decision:** All 198 delivery rows are written as literal `INSERT ... VALUES` tuples, generated with the rest of the file from `stage2/notes/seed_plan.xlsx` by `stage2/scratch/export_seed_sql.ps1`. The seed file contains no `INSERT ... SELECT` and no `UPDATE`. The BR7 rule that generates a subscription's deliveries on the first day of its range is implemented once, as a Phase 3 operation, and tested there.
+- **Rationale:** Literal rows can be reviewed directly against `seed_timelines.md`, and the seed data do not depend on operation code that is still to be written. The workbook derives each status by the same rule as BR7 (exceptions first, then cancelled after the cancellation date, then success up to 2026-07-05, otherwise planned), and its checks confirm the distribution 134 / 9 / 2 / 26 / 27. Since 2026-11-12, when 302 wk5 became a skip without refund for Q08 (`seed_cast.md` coverage #23), the distribution is 133 / 10 / 2 / 26 / 27.
+- **Applies to:** `sql/02_data.sql`, Phase 3 operations, README `# Build`.
+- **Status:** Agreed, 2026-11-10.
+
+## D27 Add-on purchase dates are not stored
+
+- **Decision:** `add_on` has no purchase date, so the database cannot show that an add-on was bought inside its change window (BR9). In the seed data, every add-on's purchase date is recorded in `seed_timelines.md` and checked there against the window. In later operations, the window is enforced by the add-on INSERT ... SELECT at purchase time.
+- **Rationale:** The data dictionary (§5.8) defines no date on `add_on`, and adding one would be a design change for a value no query or rule reads after the purchase.
+- **Applies to:** README `# Limitations`, `stage2/scratch/seed_checks.sql` (I14 checks the plan and the delivery, not the window).
+- **Status:** Agreed, 2026-11-10.
 
 ---
 
