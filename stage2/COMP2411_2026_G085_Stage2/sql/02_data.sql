@@ -99,7 +99,7 @@ INSERT INTO subscription (subscription_id, customer_id, season_id, status, plan_
     (210, 10, 2, 'finished', 'customizable', 'biweekly', 192.00, '2026-01-08', NULL, 2),               -- C10: renewal of 104; plain
     (211, 11, 2, 'finished', 'customizable', 'biweekly', 240.00, '2026-02-10', NULL, 2),               -- C11: new; wk1 add-on, wk5 failed
     (301, 1, 3, 'active', 'farmer''s choice', 'weekly', 160.00, '2026-04-20', NULL, 2),                -- C01: renewal of 201; wk6 add-on (UC2 fixture)
-    (302, 2, 3, 'active', 'farmer''s choice', 'weekly', 160.00, '2026-05-01', NULL, 0),                -- C02: renewal of 202; skips wk2 and wk4, 0 refundable skips left
+    (302, 2, 3, 'active', 'farmer''s choice', 'weekly', 160.00, '2026-05-01', NULL, 0),                -- C02: renewal of 202; skips wk2 and wk4 (refunded) and wk5 (no refund), 0 refundable skips left
     (303, 5, 3, 'active', 'farmer''s choice', 'weekly', 200.00, '2026-04-10', NULL, 2),                -- C05: new, 205 was cancelled before this submission (D24); plain
     (304, 8, 3, 'active', 'farmer''s choice', 'biweekly', 160.00, '2026-04-15', NULL, 2),              -- C08: renewal of 208; wk7 add-on (UC4 case B fixture)
     (305, 10, 3, 'active', 'customizable', 'biweekly', 192.00, '2026-04-28', NULL, 1),                 -- C10: renewal of 210; wk3 skip, 1 refundable skip left
@@ -345,12 +345,12 @@ INSERT INTO delivery (subscription_id, week_no, status) VALUES
     (301, 10, 'planned'),
     (301, 11, 'planned'),
     (301, 12, 'planned'),
-    -- subscription 302: C02: renewal of 202; skips wk2 and wk4, 0 refundable skips left
+    -- subscription 302: C02: renewal of 202; skips wk2 and wk4 (refunded) and wk5 (no refund), 0 refundable skips left
     (302, 1, 'success'),
     (302, 2, 'skipped'),
     (302, 3, 'success'),
     (302, 4, 'skipped'),
-    (302, 5, 'success'),
+    (302, 5, 'skipped'),
     (302, 6, 'planned'),
     (302, 7, 'planned'),
     (302, 8, 'planned'),

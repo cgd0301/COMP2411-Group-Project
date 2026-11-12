@@ -13,7 +13,7 @@ Internal working file: do not put it in the submission ZIP. The dated events of 
 | 客户 | 设定 | 订阅轨迹 | 覆盖 |
 |---|---|---|---|
 | C01 | Loyal customer, renews every season | A25 fc W 200 (101, finished, plain) → S26 fc W 160 (201, finished: Easter skip, wk10 add-on) → Su26 fc W 160 (301, active: wk6 add-on) → A26 fc W 160 (401, planned) | #1, #6, #7, #10, #12, #15, #16, #18 |
-| C02 | Busy spring, two summer skips | S26 fc W 200 (202, finished: 2 add-ons, Easter skip, wk9 failed) → Su26 fc W 160 (302, active: skips wk2 and wk4, 0 refundable skips left) | #1, #2, #4, #5, #6, #7, #10, #16, #19 |
+| C02 | Busy spring, three summer skips | S26 fc W 200 (202, finished: 2 add-ons, Easter skip, wk9 failed) → Su26 fc W 160 (302, active: skips wk2 and wk4 with refunds, then wk5 without a refund; 0 refundable skips left) | #1, #2, #4, #5, #6, #7, #10, #16, #19, #23 |
 | C03 | Changed mind before spring started | S26 fc B 200 (203, cancelled 2026-02-10 before the range: case A, refund 1200) | #1, #4 |
 | C04 | Used both skips, then quit with nothing back | S26 fc W 200 (204, cancelled 2026-04-14: case B, refund 0, so no refund row) | #4, #5, #7, #8 |
 | C05 | Quit spring early, came back in summer at full price | S26 fc W 200 (205, cancelled 2026-03-18: case B, refund 526) → Su26 fc W 200 (303, active, plain) | #4, #5, #8, #11, #16, #19 |
@@ -71,10 +71,11 @@ The S26 customizable add-ons (Asparagus for 206, Strawberries for 207 and 211) a
 | 16 | Remaining skips 2: 301, 303, 304. 1: 305. 0: 302 |
 | 17 | 304 wk7 Tomatoes 2.00 kg (50.00) |
 | 18 | 401 and 403 (fc), 402 (cz with 8 chosen) |
-| 19 | Su26 active, no A26: C02, C05, C08, C10. Su26 cancelled: C12. No subscription at all: C13 |
+| 19 | Su26 active, no A26: C02, C05, C08, C10 (also the Q06 result). Su26 cancelled: C12. No subscription at all: C13 |
 | 20 | Finished: 101–104, 201, 202, 206–211 |
 | 21 | 306: cancelled on its wk3 delivery day; wk3 stays planned and is recorded as `success` on 06-16 |
 | 22 | `cancellation_date` NULL on every non-cancelled subscription; `refund.week_no` NULL on the `cancelled` refunds of 203, 205, 306 and 307 |
+| 23 | A skip after both refundable skips were used, so it has no refund row: 302 wk5 (Q08) |
 
 ## 5. Test fixtures on the baseline (for Phase 7; each test starts from fresh seed data)
 
@@ -86,7 +87,7 @@ The S26 customizable add-ons (Asparagus for 206, Strawberries for 207 and 211) a
 | UC2 failed delivery with add-on | 301 wk6 | wk6 `failed`; refund 160 + 48 = 208.00 (same figures as the BR7 test example) |
 | UC3 first skip | 303 wk7 | refund 200.00; skips 2 → 1 |
 | UC3 last refundable skip | 305 wk7 | refund 192.00; skips 1 → 0 |
-| UC3 skip with none left | 302 wk7 | wk7 `skipped`; no refund row; skips stay 0 |
+| UC3 skip with none left | 302 wk7 (its 4th skip) | wk7 `skipped`; no refund row; skips stay 0 |
 | UC4 case B | 303 | 2 × 200 = 400.00; wk7–12 `cancelled`; wk6 (07-06) stays `planned` |
 | UC4 case B with add-on | 304 | 2 × 160 + 50 = 370.00; wk7, 9, 11 `cancelled` |
 | UC4 case A | 401; 402; 403 | 12 × 160 = 1920.00; 12 × 240 = 2880.00; 12 × 160 = 1920.00 |
@@ -115,6 +116,7 @@ The S26 customizable add-ons (Asparagus for 206, Strawberries for 207 and 211) a
 - **C06:** Changed from fc to cz. With fc, the S26 fc subscriptions that were not cancelled would be 5 with 3 renewals, exactly 60%. As cz, it also provides the A26 customizable planned subscription (#18).
 - **C07:** Kept, with a Strawberries add-on added for MQ2.
 - **C08–C15:** New. C15 was added to cover #13 after D24. It uses Su26 and A26, so the Spring 2026 results of MQ1–MQ5 do not change.
+- **C02 (2026-11-12):** 302 wk5 changed from `success` to `skipped` without a refund (#23), because Q08 needs a skip that the quota no longer refunds. It is in Su26, so Q01–Q05 do not change; the delivery status distribution becomes success 133, skipped 10.
 
 ## 8. Adding more rows later
 

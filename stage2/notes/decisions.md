@@ -289,7 +289,7 @@ This file records conventions that do not change the Stage 1 design but affect h
 ## D26 Delivery rows are literal values in `sql/02_data.sql`
 
 - **Decision:** All 198 delivery rows are written as literal `INSERT ... VALUES` tuples, generated with the rest of the file from `stage2/notes/seed_plan.xlsx` by `stage2/scratch/export_seed_sql.ps1`. The seed file contains no `INSERT ... SELECT` and no `UPDATE`. The BR7 rule that generates a subscription's deliveries on the first day of its range is implemented once, as a Phase 3 operation, and tested there.
-- **Rationale:** Literal rows can be reviewed directly against `seed_timelines.md`, and the seed data do not depend on operation code that is still to be written. The workbook derives each status by the same rule as BR7 (exceptions first, then cancelled after the cancellation date, then success up to 2026-07-05, otherwise planned), and its checks confirm the distribution 134 / 9 / 2 / 26 / 27.
+- **Rationale:** Literal rows can be reviewed directly against `seed_timelines.md`, and the seed data do not depend on operation code that is still to be written. The workbook derives each status by the same rule as BR7 (exceptions first, then cancelled after the cancellation date, then success up to 2026-07-05, otherwise planned), and its checks confirm the distribution 134 / 9 / 2 / 26 / 27. Since 2026-11-12, when 302 wk5 became a skip without refund for Q08 (`seed_cast.md` coverage #23), the distribution is 133 / 10 / 2 / 26 / 27.
 - **Applies to:** `sql/02_data.sql`, Phase 3 operations, README `# Build`.
 - **Status:** Agreed, 2026-11-10.
 

@@ -162,7 +162,7 @@ foreach ($e in $excluded) {
 $excRows = @(
     @(201, 6, 'skipped'), @(202, 6, 'skipped'), @(202, 9, 'failed'), @(204, 6, 'skipped'),
     @(204, 7, 'skipped'), @(206, 6, 'skipped'), @(207, 6, 'skipped'), @(211, 5, 'failed'),
-    @(302, 2, 'skipped'), @(302, 4, 'skipped'), @(305, 3, 'skipped'))
+    @(302, 2, 'skipped'), @(302, 4, 'skipped'), @(302, 5, 'skipped'), @(305, 3, 'skipped'))
 
 $weekly   = @(101, 102, 201, 202, 204, 205, 206, 207, 301, 302, 303, 307)
 $biweekly = @(103, 104, 208, 209, 210, 211, 304, 305, 306)
@@ -207,7 +207,7 @@ $checks = @(
     @('R04', 'customer has 15 rows',              'row count', '=ROWS(t_customer)=15'),
     @('R05', 'subscription has 25 rows',          'row count', '=ROWS(t_sub)=25'),
     @('R06', 'chosen_products has 64 rows',       'row count', '=ROWS(t_chosen)=64'),
-    @('R07', 'delivery_exc has 11 rows',          'row count', '=ROWS(t_exc)=11'),
+    @('R07', 'delivery_exc has 12 rows',          'row count', '=ROWS(t_exc)=12'),
     @('R08', 'delivery has 198 rows',             'row count', '=ROWS(t_delivery)=198'),
     @('R09', 'add_on has 11 rows',                'row count', '=ROWS(t_add_on)=11'),
     @('R10', 'refund has 15 rows',                'row count', '=ROWS(t_refund)=15'),
@@ -221,8 +221,8 @@ $checks = @(
     @('E08', 'no formula errors in t_delivery',   'formula errors', '=SUMPRODUCT(--ISERROR(t_delivery))=0'),
     @('E09', 'no formula errors in t_add_on',     'formula errors', '=SUMPRODUCT(--ISERROR(t_add_on))=0'),
     @('E10', 'no formula errors in t_refund',     'formula errors', '=SUMPRODUCT(--ISERROR(t_refund))=0'),
-    @('S01', '134 deliveries are success',        'I09, timelines 6.3', '=COUNTIF(t_delivery[status],"success")=134'),
-    @('S02', '9 deliveries are skipped',          'I09, timelines 6.3', '=COUNTIF(t_delivery[status],"skipped")=9'),
+    @('S01', '133 deliveries are success',        'I09, timelines 6.3', '=COUNTIF(t_delivery[status],"success")=133'),
+    @('S02', '10 deliveries are skipped',         'I09, timelines 6.3', '=COUNTIF(t_delivery[status],"skipped")=10'),
     @('S03', '2 deliveries are failed',           'I09, timelines 6.3', '=COUNTIF(t_delivery[status],"failed")=2'),
     @('S04', '26 deliveries are cancelled',       'I09, timelines 6.3', '=COUNTIF(t_delivery[status],"cancelled")=26'),
     @('S05', '27 deliveries are planned',         'I09, timelines 6.3', '=COUNTIF(t_delivery[status],"planned")=27'),

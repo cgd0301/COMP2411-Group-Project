@@ -25,7 +25,7 @@ UNION ALL SELECT 'add_on', COUNT(*) FROM add_on
 UNION ALL SELECT 'refund', COUNT(*) FROM refund;
 
 -- V2 Delivery status distribution.
--- Expected: cancelled 26, failed 2, planned 27, skipped 9, success 134.
+-- Expected: cancelled 26, failed 2, planned 27, skipped 10, success 133.
 SELECT status, COUNT(*) AS deliveries
 FROM delivery
 GROUP BY status

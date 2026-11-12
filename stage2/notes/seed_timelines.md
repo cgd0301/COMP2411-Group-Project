@@ -175,8 +175,9 @@ On the baseline, wk1–5 have been recorded. wk6 (Jul 6) is `planned` and waits 
 | 2026-05-26 | Range starts | — | delivery wk1–12 `planned`; status `active` |
 | 2026-06-03 | Skips wk2 (Jun 8) | Window Jun 2 to Jun 7; 2 left | wk2 `skipped`; refund `skipped` wk2 160.00 on 2026-06-03; skips 2 → 1 |
 | 2026-06-17 | Skips wk4 (Jun 22) | Window Jun 16 to Jun 21; 1 left | wk4 `skipped`; refund `skipped` wk4 160.00 on 2026-06-17; skips 1 → 0 |
+| 2026-06-24 | Skips wk5 (Jun 29) | Window Jun 23 to Jun 28; 0 left, so no refund (BR8) | wk5 `skipped`; no refund row (D20); skips stay 0 |
 
-**Baseline:** `active`, skips 0, no cancellation. wk1, 3, 5 `success`; wk2, 4 `skipped`; wk6–12 `planned`.
+**Baseline:** `active`, skips 0, no cancellation. wk1, 3 `success`; wk2, 4, 5 `skipped`; wk6–12 `planned`. wk5 is the only skip in the seed without a refund (Q08, coverage #23).
 
 ### 304 · C08 · fc · biweekly · 160.00 (renewal)
 
@@ -273,11 +274,11 @@ On the baseline, wk1–5 have been recorded. wk6 (Jul 6) is `planned` and waits 
 
 | Status | Count | Deliveries |
 |---|---|---|
-| `skipped` | 9 | 201 wk6; 202 wk6; 204 wk6, wk7; 206 wk6; 207 wk6; 302 wk2, wk4; 305 wk3 |
+| `skipped` | 10 | 201 wk6; 202 wk6; 204 wk6, wk7; 206 wk6; 207 wk6; 302 wk2, wk4, wk5; 305 wk3 |
 | `failed` | 2 | 202 wk9; 211 wk5 |
 | `cancelled` | 26 | 204 wk8–12; 205 wk4–12; 306 wk5, 7, 9, 11; 307 wk5–12 |
 | `planned` | 27 | 301 wk6–12; 302 wk6–12; 303 wk6–12; 304 wk7, 9, 11; 305 wk7, 9, 11 |
-| `success` | 134 | All other deliveries |
+| `success` | 133 | All other deliveries |
 | Total | 198 | A25 36, S26 96, Su26 66 |
 
 ### 6.4 Subscription state on the baseline
