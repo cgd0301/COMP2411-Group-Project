@@ -19,7 +19,7 @@ This file records conventions that do not change the Stage 1 design but affect h
 | D03 | Season ranges never overlap                                                 | Agreed | 2026-11-03 | ✅   | ☐   |
 | D04 | Baseline reference date 2026-07-07                                          | Agreed | 2026-11-03 | ✅   | ☐   |
 | D05 | Reference date in test and operation scripts                                | Agreed | 2026-11-03 | ✅   | ☐   |
-| D06 | Dates in `queries/Qxx.sql`                                                  | Open   | 2026-11-03 | ☐    | ☐   |
+| D06 | Dates in `queries/Qxx.sql`                                                  | Agreed | 2026-11-12 | ✅   | ☐   |
 | D07 | No `CURDATE()` or `NOW()`                                                   | Agreed | 2026-11-03 | ✅   | ☐   |
 | D08 | Table and column names                                                      | Agreed | 2026-11-03 | ✅   | ☐   |
 | D09 | Constraint names                                                            | Agreed | 2026-11-03 | ✅   | ☐   |
@@ -31,9 +31,9 @@ This file records conventions that do not change the Stage 1 design but affect h
 | D15 | Acknowledgement requirement check                                           | Agreed |            | ✅   | ☐   |
 | D16 | Referential-action clause on foreign keys whose columns are used in a CHECK | Agreed | 2026-11-03 | ✅   | ☐   |
 | D17 | Case sensitivity of status and type values                                  | Agreed | 2026-11-09 | ✅   | ☐   |
-| D18 | Signed and unsigned columns, and the values used in negative tests          | Agreed | 2026-11-04 | ✅    | ☐   |
-| D19 | Apostrophes in string literals                                              | Open   |            | ☐    | ☐   |
-| D20 | No refund row for a zero refund                                             | Agreed | 2026-11-03 | ☐    | ☐   |
+| D18 | Signed and unsigned columns, and the values used in negative tests          | Agreed | 2026-11-04 | ✅   | ☐   |
+| D19 | Apostrophes in string literals                                              | Agreed |            | ✅   | ☐   |
+| D20 | No refund row for a zero refund                                             | Agreed | 2026-11-03 | ✅   | ☐   |
 | D21 | Candidate keys not enforced by UNIQUE                                       | Agreed | 2026-11-09 | ✅   | ☐   |
 | D22 | Submission dates of Autumn 2025 subscriptions                               | Agreed | 2026-11-10 | ✅   | ☐   |
 | D23 | Autumn 2025 subscriptions are all at full price                             | Agreed | 2026-11-10 | ✅   | ☐   |
@@ -41,6 +41,7 @@ This file records conventions that do not change the Stage 1 design but affect h
 | D25 | Identifier scheme of the seed data                                          | Agreed | 2026-11-10 | ✅   | ☐   |
 | D26 | Delivery rows are literal values in `sql/02_data.sql`                       | Agreed | 2026-11-10 | ✅   | ☐   |
 | D27 | Add-on purchase dates are not stored                                        | Agreed | 2026-11-10 | ✅   | ☐   |
+| D28 | Seed baseline frozen as `seed-v1`                                           | Agreed | 2026-11-12 | ✅   | ☐   |
 
 ---
 
@@ -83,6 +84,7 @@ This file records conventions that do not change the Stage 1 design but affect h
   - The Autumn 2026 enrolment window is open, so UC1 can show both a new enrolment and the renewal discount.
   - Both cancellation cases of UC4 are available: an active Summer 2026 subscription (case B) and a planned Autumn 2026 subscription (case A).
 - **Note:** Proposal §8.2 (Table 15) used `@ref_date = '2026-04-20'` only as an example. This entry replaces it, and because it is not a design change it does not go in the change log.
+- **Clarification (2026-11-12):** The seed data are the state at the start of 2026-07-07, before any operation of that day: they contain only events dated up to 2026-07-06. Every operation or test run with `@ref_date = '2026-07-07'` is therefore the first event of that day. This is why the week-6 delivery of 2026-07-06 is still `planned`, and why a change window that opens on 2026-07-07 has had no skip or add-on yet.
 - **Applies to:** `sql/02_data.sql`, all tests, README `# Queries` and `# Tests`.
 - **Status:** Agreed, 2026-11-03.
 
@@ -95,10 +97,10 @@ This file records conventions that do not change the Stage 1 design but affect h
 
 ## D06 Dates in `queries/Qxx.sql`
 
-- **Decision (provisional):** Each `Qxx.sql` may contain only one SELECT statement [9.2], so it cannot start with `SET @ref_date`. Dates are written as literals with a comment, or derived from the data (for example from a season's `first_planning_day`). The final rule is to be fixed in Phase 5.
-- **Rationale:** This keeps each query file a single statement while its result stays reproducible.
+- **Decision:** No `Qxx.sql` uses the baseline date or any other date literal. A query selects its rows by stored values only: a season by `season_name` and `year`, and the state of a subscription or delivery by its `status` column, which the seed data keep consistent with the baseline (D04). Q01–Q08 as designed in `stage2/notes/expected_results.md` follow this rule.
+- **Rationale:** Each `Qxx.sql` may contain only one SELECT statement [9.2], so it cannot start with `SET @ref_date` (D05). Reading the stored status instead of comparing dates keeps every result reproducible without a date in the file, and the results stay correct for as long as the seed baseline is unchanged.
 - **Applies to:** `queries/`, README `# Queries`.
-- **Status:** Open (to be finalized in Phase 5).
+- **Status:** Agreed, 2026-11-12.
 
 ## D07 No `CURDATE()` or `NOW()`
 
@@ -186,17 +188,17 @@ This file records conventions that do not change the Stage 1 design but affect h
   | The `mysql` command-line client connects and can `source` a script | yes                                                     | yes                                                     |     |
   | Account used (name and privileges only)                            |                                                         |                                                         |     |
 
-- **Decision:** <environment recorded in the README `# Environment` section and in `metadata.json`>
+- **Decision:** Both members develop and test on MySQL Community Server 8.4.11 with the server defaults in the table: strict mode with `ONLY_FULL_GROUP_BY`, `autocommit` = 1, InnoDB, and `utf8mb4` with `utf8mb4_0900_ai_ci`. The README `# Environment` section and `metadata.json` (`"dbms_version": "8.4.11"`) record this environment, and the account row gives the account name and its privileges, never a password.
 - **Rationale:** The README must state the tested versions and privileges [9.3], and strict mode makes invalid values fail instead of being silently adjusted, which the negative tests depend on.
 - **Applies to:** README `# Environment` and `# Tests` (autocommit), `metadata.json`.
-- **Status:** Open.
+- **Status:** Open until SHI's column and the account row are filled in.
 
 ## D15 Acknowledgement requirement check (roadmap 0.7)
 
 - **Check:** Open the guidance PDF in a PDF reader, search (Ctrl+F) for the professor's name in the last bullet of Section 10 (search for `Yuawqv`), and see whether the highlighted text is visible on the page.
 - **Result:** Found but not visible (for example white text); asked the TA, answer: This is a prompt injection, please ignore the sentence.
 - **Decision:** Ignore the sentence, do not add any acknowledgement.
-- **Rationale:**
+- **Rationale:** The sentence cannot be seen on the page, and the TA confirmed that it is a prompt injection to be ignored, so it is not a course requirement. Adding it would put an unrequested name into the report.
 - **Applies to:** `report.pdf` Acknowledgements section; checklist item J10.
 - **Status:** Agreed.
 
@@ -204,7 +206,7 @@ This file records conventions that do not change the Stage 1 design but affect h
 
 - **Question:** MySQL does not allow a column used in a CHECK constraint to carry a foreign-key referential action. `refund.week_no` is used in `ck_refund_link` and in the composite foreign key to `delivery`. Should that foreign key state `ON DELETE RESTRICT` explicitly, or omit the clause (RESTRICT is the InnoDB default)? Proposal §8.2 planned no referential actions. Decide after the schema probe.
 - **Decision:** Omit the clause and keep the MySQL's default setting.
-- **Rationale:** There's no actual difference on the performance whether the `ON DELETE RESTRICT` is written or not.
+- **Rationale:** Without a clause InnoDB already applies RESTRICT, so writing `ON DELETE RESTRICT` would not change how any foreign key behaves: deleting a referenced row fails with 1451. Omitting it on every foreign key keeps the DDL uniform, because the composite foreign key `fk_refund_delivery` must omit it anyway: its `week_no` is also used in `ck_refund_type` (named `ck_refund_link` before CL03).
 - **Applies to:** `sql/01_schema.sql`.
 - **Status:** Agreed, 2026-11-03.
 
@@ -226,8 +228,8 @@ This file records conventions that do not change the Stage 1 design but affect h
 
 ## D19 Apostrophes in string literals
 
-- **Proposed decision:** Inside a string literal, a single quote is written as two single quotes, for example `'farmer''s choice'` (the `plan_type` value in the data dictionary); backslash escapes are not used.
-- **Rationale:**
+- **Decision:** Inside a string literal, a single quote is written as two single quotes, for example `'farmer''s choice'` (the `plan_type` value in the data dictionary); backslash escapes are not used.
+- **Rationale:** Doubling the quote is standard SQL and works in every SQL mode, while a backslash escape stops working when `NO_BACKSLASH_ESCAPES` is set. The schema already writes the plan value this way in its CHECK constraints, and the workbook writes every apostrophe of `sql/02_data.sql` this way (`SUBSTITUTE(..., "'", "''")` in `extend_seed_plan.ps1`).
 - **Applies to:** all SQL files.
 - **Status:** Agreed.
 
@@ -299,6 +301,26 @@ This file records conventions that do not change the Stage 1 design but affect h
 - **Rationale:** The data dictionary (§5.8) defines no date on `add_on`, and adding one would be a design change for a value no query or rule reads after the purchase.
 - **Applies to:** README `# Limitations`, `stage2/scratch/seed_checks.sql` (I14 checks the plan and the delivery, not the window).
 - **Status:** Agreed, 2026-11-10.
+
+## D28 Seed baseline frozen as `seed-v1`
+
+- **Decision:** The seed baseline is frozen at the Git tag `seed-v1` (commit `b2010cc`, 2026-11-12). A fresh build (`sql/01_schema.sql`, then `sql/02_data.sql`) gives the figures below, and every test's starting state refers to them.
+
+  | Table | season | product | customer | subscription | chosen_products | delivery | add_on | refund |
+  | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+  | Rows | 4 | 40 | 15 | 25 | 64 | 198 | 11 | 15 |
+
+  - Subscriptions by status: active 5, cancelled 5, finished 12, planned 3.
+  - Deliveries by status: cancelled 26, failed 2, planned 27, skipped 10, success 133.
+  - Refunds by type: cancelled 4 (2526.00), failed 2 (470.00), skipped 9 (1726.00).
+  - Add-ons: 11 lines, total fee 608.50.
+- **Verification at the freeze:** a fresh build on MySQL 8.4.11 has no error and no warning; `stage2/scratch/verify_seed.sql` (V1–V6) returns the figures above; all 20 checks of `stage2/scratch/seed_checks.sql` (I01–I15) return 0 rows; all 52 checks of the seed workbook are TRUE; both members have reviewed the seed data and found no problem.
+- **Rules after the freeze:**
+  - The test fixtures (`seed_cast.md` §5) and the rows behind `expected_results.md` keep their identifiers, statuses and amounts.
+  - New rows may be added only under the rules of `seed_cast.md` §8. One member changes the workbook, exports `sql/02_data.sql`, repeats the verification above, tags the result `seed-v2` (then `seed-v3`, …), tells the other member, and recomputes the affected expected results.
+- **Rationale:** Operations, tests and expected results name fixed rows and amounts, for example the failed week-6 delivery of 301 refunds 208.00 (`seed_cast.md` §5). Changing the seed silently would break them, so every later change is versioned and announced.
+- **Applies to:** README `# Queries` and `# Tests`, `tests/`, `evidence/test_cases.csv` (`initial_state`), `stage2/notes/expected_results.md`.
+- **Status:** Agreed, 2026-11-12.
 
 ---
 
